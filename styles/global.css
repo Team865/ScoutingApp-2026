@@ -1,0 +1,88 @@
+:root {
+    --bg-dark: oklab(18% 1.75% -8%);
+    --bg: oklab(25% 1.75% -8%);
+    --bg-accented: oklab(25% 1.75% -10%);
+    --bg-light: oklab(38% 1.75% -8%);
+    --text: oklab(0.95 0% 0%);
+    --text-muted: oklab(0.85 0% 0%);
+    --accent: oklab(0.6 1.75% -50%);
+    
+    --blue-alliance: oklab(52% 0.02 -0.25);
+    --red-alliance: oklab(52% 0.15 0.08);
+    --blue-alliance-light: oklab(65% 0.02 -0.25);
+    --red-alliance-light: oklab(65% 0.15 0.08);
+    
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: Verdana, sans-serif;
+    min-height: 100dvh;
+}
+
+main {
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    align-items: center;
+}
+
+button {
+    appearance: none;
+    background-color: var(--bg-light);
+    color: var(--text);
+    font-size: 1rem;
+    border-radius: 10px;
+    padding: 10px;
+    border: var(--bg-light) solid 2px;
+}
+
+button:hover {
+    background-color: var(--bg-accented);
+}
+
+.accordion-body {
+    display: block;
+    /* display: flex;
+    flex-flow: column; */
+    /* align-items: center; */
+    transition: max-height 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+.accordion-body > * {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    border: var(--bg-light) 2px solid;
+    background-color: var(--bg-light);
+    height: 20px;
+    width: 20px;
+}
+
+input[type="checkbox"]:hover {
+    background-color: var(--bg-dark);
+}
+
+input[type="checkbox"]:checked {
+    background-size: cover;
+    padding: 2px;
+}
+
+input[type="checkbox"]:not(:disabled):checked {
+    background-image: url("../deploy/checkmark.svg");
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center center;
+}

@@ -1,0 +1,257 @@
+div#filter-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 80%;
+}
+
+div#filter-bar {
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+}
+
+div#filter-bar-buttons {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 5px;
+}
+
+button#filter-button {
+    padding: 5px;
+}
+
+button#filter-button > img {
+    display: block;
+    height: max(2dvh, 30px);
+    aspect-ratio: 1;
+    margin: auto;
+}
+
+div#filter-menu {
+    display: flex;
+    flex-flow: column;
+}
+
+div#sort-menu {
+    margin-left: auto;
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    gap: 10px;
+}
+
+div#sort-menu > label {
+    margin: auto;
+}
+
+select#sorted-by {
+    min-width: 3dvw;
+    font-size: 1rem;
+    padding: 0 5px;
+    background-color: var(--bg-light);
+    color: var(--text);
+    border-radius: 10px;
+    border: var(--bg-light) 2px solid;
+}
+
+select#sorted-by:hover {
+    background-color: var(--bg);
+}
+
+button#sort-order {
+    background-image: url(../deploy/ascendingArrow.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 40px;
+    aspect-ratio: 1;
+    content: "";
+    align-self: center;
+}
+
+button#sort-order.descending {
+    background-image: url(../deploy/descendingArrow.svg);
+}
+
+div#filter-menu {
+    width: 100%;
+    background-color: var(--bg-dark);
+    border-radius: 20px;
+    border: var(--bg-light) 0px solid;
+    margin: 10px 0;
+}
+
+div#filter-menu-wrapper {
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column;
+    align-items: left;
+    justify-content: center;
+    margin: 10px 20px;
+}
+
+div#filter-menu-wrapper > h1 {
+    text-align: center;
+}
+
+div#tags-list-manager {
+    display: flex;
+    flex-flow: column;
+    align-items: start;
+    justify-content: start;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+button#add-tag-button {
+    aspect-ratio: 1;
+    font-size: x-large;
+    font-weight: bold;
+    order: 99999999999999999999999;
+}
+
+div.tag-element-container {
+    padding: 10px;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 5px;
+    touch-action: none;
+}
+
+div.tag-element-container > input[type="checkbox"] {
+    grid-column: 1;
+}
+
+div.tag-element-container > label {
+    font-size: x-large;
+    font-weight: bold;
+    padding: 0;
+    margin: 0 10px 0 0;
+    word-break: break-all;
+    grid-column: 2;
+}
+
+div.edit-tag-buttons-container {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+    display: flex;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+}
+
+button.edit-tag, button.delete-tag {
+    content: "";
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 2rem;
+    min-width: 40px;
+    content: "";
+    align-self: center;
+    font-size: x-large;
+    flex-grow: 1;
+}
+
+div#filter-options {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+div#show-untagged-container {
+    grid-column: 2;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    margin-right: 10px;
+    gap: 3px
+}
+
+button#enable-all-tags, button#disable-all-tags, button#delete-all-tags {
+    font-weight: bold;
+}
+
+button#enable-all-tags {
+    grid-column: 3;
+    background-color: #45813b;
+    border-color: #6cd657;
+    color: #ffffff;
+}
+
+button#enable-all-tags:hover {
+    background-color: #599a4d;
+}
+
+button#disable-all-tags {
+    grid-column: 4;
+    background-color: #813b3b;
+    border-color: #d65757;
+}
+
+button#disable-all-tags:hover {
+    background-color: #9a4d4d;
+}
+
+button#delete-all-tags {
+    grid-column: 5;
+    background-color: #2f0000;
+    border-color: #682f2f;
+    color: #ffffff;
+}
+
+button#delete-all-tags:hover {
+    background-color: #ff0000;
+}
+
+button.edit-tag {
+    background-image: url(../deploy/pencil.svg);
+}
+button.delete-tag {
+    background-image: url(../deploy/trashCan.svg);
+}
+
+input[type="checkbox"] {
+    height: 25px;
+    width: 25px;
+    border-radius: 5px;
+}
+
+@media only screen and (max-width: 700px) {
+    div#filter-bar {
+        flex-flow: column-reverse;
+        align-items: flex-start;
+        gap: 10px
+    }
+
+    div#filter-options {
+        grid-template-columns: repeat(2, auto);
+    }
+
+    div#show-untagged-container {
+        grid-column: 1 / span 2;
+    }
+
+    button#enable-all-tags, button#disable-all-tags {
+        grid-row: 2;
+    }
+
+    button#enable-all-tags {
+        grid-column: 1;
+    }
+    
+    button#disable-all-tags {
+        grid-column: 2;
+    }
+    
+    button#delete-all-tags {
+        grid-column: 1 / span 2;
+        grid-row: 3;
+    }
+}

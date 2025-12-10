@@ -1,0 +1,30 @@
+div.match-data-container {
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    padding: 0;
+    margin-top: 10px;
+}
+
+div.match-data-container > div {
+    padding: 10px;
+}
+
+div.match-data-container h1, div.match-data-container h2 {
+    margin: 0.5rem;
+}
+
+div.match-data-container img {
+    height: 3rem;
+    width: 3rem;
+    margin: 5px 0
+}
+
+/*
+div.match-data-container h1 {
+    font-size: 5rem;
+}
+
+div.match-data-container h2 {
+    font-size: 4rem;
+} */

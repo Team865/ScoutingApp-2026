@@ -1,0 +1,12 @@
+#tba-top-bar {
+    width: 80%;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#tba-top-bar > button {
+    font-size: large;
+}

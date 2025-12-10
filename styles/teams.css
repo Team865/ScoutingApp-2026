@@ -1,0 +1,192 @@
+#teams-list {
+    /** 67 89 */
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: center; 
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+div.team-container {
+    width: 80%;
+    background-color: var(--bg-light);
+    border-radius: 20px;
+}
+
+p {
+    white-space: pre;
+}
+
+div.team-container > button, div.team-container > div {
+    width: 100%;
+}
+
+div.team-container > button {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: auto 1fr min-content;
+    /* flex-flow: row;
+    align-items: center; */
+    gap: 10px;
+    transition: background-color 0.1s ease-in-out;
+}
+
+div.team-container > button  > h1, div.team-tag {
+    text-align: left;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+div.team-container > button > img {
+    grid-column: 1;
+    margin: auto 0;
+    height: 2.5rem;
+    width: 2.5rem;
+}
+
+div.team-container > button > h1 {
+    grid-column: 2;
+}
+
+div.team-container.active > button {
+    background-color: var(--bg);
+}
+
+div.tabs-container {
+    display: flex;
+    gap: 5px;
+    width: fit-content;
+}
+
+button.tab-button.selected {
+    background-color: var(--bg);
+}
+
+div.page-container {
+    box-sizing: border-box;
+    width: calc(100% - 2rem);
+    padding: 10px;
+    margin: 0 auto;
+}
+
+button.edit-team-tags-button {
+    background-color: #4b65c4;
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+button.edit-team-tags-button:hover {
+    background-color: #3851ac;
+}
+
+div.tags-display {
+    display: inline-block;
+}
+
+div.team-tags-display {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    grid-column: 2;
+    gap: 10px;
+    max-width: 100%;
+}
+
+div.team-tag {
+    width: fit-content;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+div.match-list {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    gap: 5px;
+}
+
+div.team-match {
+    border-radius: 10px;
+    background-color: var(--bg);
+}
+
+button.accordion-toggle {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto min-content min-content;
+    gap: 5px;
+}
+
+button.accordion-toggle > p {
+    padding-left: 5px;
+    text-align: left;
+    margin: auto 0;
+    font-weight: 500;
+}
+
+button.view-match-data {
+    grid-column: 2;
+    background-image: url(../deploy/magnifyingGlass.svg);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 1rem;
+    width: 1rem;
+    background-color: transparent;
+    border: none;
+}
+
+div.team-match > button.accordion-toggle::after, div.team-container > button::after {
+    content: "+";
+    margin: auto 0 auto auto;
+    grid-column: 3;
+}
+
+div.team-match.active > button.accordion-toggle::after, div.team-container.active > button::after {
+    content: "–";
+}
+
+button.accordion-toggle.red-alliance {
+    background-color: var(--red-alliance);
+    border-color: var(--red-alliance-light);
+}
+
+button.accordion-toggle.blue-alliance {
+    background-color: var(--blue-alliance);
+    border-color: var(--blue-alliance-light);
+}
+
+button.accordion-toggle.red-alliance:hover {
+    background-color: var(--red-alliance-light);
+}
+
+button.accordion-toggle.blue-alliance:hover {
+    background-color: var(--blue-alliance-light);
+}
+
+div.accordion-body > div[contenteditable="plaintext-only"] {
+    tab-size: 4;
+    min-height: 50px;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 10px;
+    border: none;
+}
+
+div.match-toolbar {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 5px;
+    margin: 5px 0;
+}
+
+div.match-toolbar > button {
+    background-color: var(--bg);
+}
+
+div.match-toolbar > button:hover {
+    background-color: var(--bg-accented);
+}

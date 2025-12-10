@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="./deploy/magnifyingGlass.svg" rel="icon" type="image/x-icon"/>
+    <link href="styles/global.css" rel="stylesheet"/>
+    <link href="styles/tbaTopBar.css" rel="stylesheet"/>
+    <link href="styles/searchBar.css" rel="stylesheet"/>
+    <link href="styles/filterAndSort.css" rel="stylesheet"/>
+    <link href="styles/teams.css" rel="stylesheet"/>
+    <link href="styles/matchData.css" rel="stylesheet"/>
+    <link href="styles/pitScouting.css" rel="stylesheet"/>
+    <title>
+      Super Scouting App
+    </title>
+    <script src="./build/AppData.js" type="module"></script>
+    <script src="./build/appConfig/PitScoutingFields.js" type="module"></script>
+    <script src="./build/components/Accordion.js" type="module"></script>
+    <script src="./build/dataTypes/Color.js" type="module"></script>
+    <script src="./build/dataTypes/HTMLClassObserver.js" type="module"></script>
+    <script src="./build/dataTypes/Signal.js" type="module"></script>
+    <script src="./build/dataTypes/Value.js" type="module"></script>
+    <script src="./build/managers/TeamListManager.js" type="module"></script>
+    <script src="./build/managers/TeamNotesManager.js" type="module"></script>
+    <script src="./build/util/CacheBuster.js" type="module"></script>
+    <script src="./build/util/DOMHelper.js" type="module"></script>
+    <script src="./build/util/StringManipulation.js" type="module"></script>
+    <script src="./build/util/TBAJson.js" type="module"></script>
+    <script src="./build/components/Popup/ColorField.js" type="module"></script>
+    <script src="./build/components/Popup/FieldInterface.js" type="module"></script>
+    <script src="./build/components/Popup/FloatField.js" type="module"></script>
+    <script src="./build/components/Popup/IntegerField.js" type="module"></script>
+    <script src="./build/components/Popup/PopupDialog.js" type="module"></script>
+    <script src="./build/components/Popup/PopupDiv.js" type="module"></script>
+    <script src="./build/components/Popup/TextField.js" type="module"></script>
+    <script src="./build/components/Team/Container.js" type="module"></script>
+    <script src="./build/components/Team/Page.js" type="module"></script>
+    <script src="./build/components/Team/SummaryPage.js" type="module"></script>
+    <script src="./build/components/Team/Match/MatchTextEditor.js" type="module"></script>
+    <script src="./build/components/Team/Match/Page.js" type="module"></script>
+    <script src="./build/components/Team/Match/TeamMatchContainer.js" type="module"></script>
+    <script src="./build/components/Team/Pit/Page.js" type="module"></script>
+    <script src="./build/components/Team/Pit/Field/Boolean.js" type="module"></script>
+    <script src="./build/components/Team/Pit/Field/FieldInterface.js" type="module"></script>
+    <script src="./build/components/Team/Pit/Field/MultipleChoice.js" type="module"></script>
+    <script src="./build/components/Team/Pit/Field/Number.js" type="module"></script>
+    <script src="./build/components/Team/Pit/Field/NumberRange.js" type="module"></script>
+    <script src="./build/components/Team/Pit/Field/SingleChoice.js" type="module"></script>
+    <script src="./build/components/Team/Pit/Field/Text.js" type="module"></script>
+  </head>
+  <body>
+    <main>
+      <div id="tba-top-bar">
+        <button id="set-competition-button">
+          Import Teams
+        </button>
+        <button id="refresh-tba-data-button">
+          Refresh
+        </button>
+      </div>
+      <div id="search-bar-container" type="text">
+        <input id="search-bar-input" type="text"/>
+      </div>
+      <div id="toolbar">
+        <button id="expand-all-teams">
+          Expand All Teams
+        </button>
+        <button id="collapse-all-teams">
+          Collapse All Teams
+        </button>
+      </div>
+      <div id="teams-list">
+      </div>
+    </main>
+    <script src="./build/main.js" type="module"></script>
+  </body>
+</html>

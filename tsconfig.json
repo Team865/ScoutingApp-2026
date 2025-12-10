@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "module": "es6",
+        "allowJs": true,
+        "target": "es2024",
+        "outDir": "./build"
+    },
+    "include": ["./src/**/*"]
+}
