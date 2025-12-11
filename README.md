@@ -1,2 +1,4 @@
 # ScoutingApp-2026
-2026 Warp 7 Scouting app, built on flask and JS
+2026 Warp7 Scouting app
+
+Work in progress
