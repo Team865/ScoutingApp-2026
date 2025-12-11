@@ -1,12 +1,4 @@
-const rootUrl = "https://www.thebluealliance.com/api/v3";
-const apiKey =
-    "0DowkZk6qFmZnOJNxCbySSjS7qHLOJE6rJwxERfY1pwS25bifGjZa9x7Ax5EVlqc";
-const requestInit = {
-    method: "GET",
-    headers: {
-        "X-TBA-Auth-Key": apiKey,
-    },
-};
+const rootUrl = "/api/event";
 
 export type TBAEventJSon = {
     key: string;
@@ -65,129 +57,112 @@ export type TBATeamJSon = {
 };
 
 export type TBAMatchJSon = {
-    "key": string,
-    "comp_level": string,
-    "set_number": 0,
-    "match_number": 0,
-    "alliances": {
-        "red": {
-            "score": 0,
-            "team_keys": [
-                string
-            ],
-            "surrogate_team_keys": [
-                string
-            ],
-            "dq_team_keys": [
-                string
-            ]
-        },
-        "blue": {
-            "score": 0,
-            "team_keys": [
-                string
-            ],
-            "surrogate_team_keys": [
-                string
-            ],
-            "dq_team_keys": [
-                string
-            ]
-        }
-    },
-    "winning_alliance": "red",
-    "event_key": string,
-    "time": 9007199254740991,
-    "actual_time": 9007199254740991,
-    "predicted_time": 9007199254740991,
-    "post_result_time": 9007199254740991,
-    "score_breakdown": {
-        "blue": {
-            "auto_points": 0,
-            "teleop_points": 0,
-            "container_points": 0,
-            "tote_points": 0,
-            "litter_points": 0,
-            "foul_points": 0,
-            "adjust_points": 0,
-            "total_points": 0,
-            "foul_count": 0,
-            "tote_count_far": 0,
-            "tote_count_near": 0,
-            "tote_set": true,
-            "tote_stack": true,
-            "container_count_level1": 0,
-            "container_count_level2": 0,
-            "container_count_level3": 0,
-            "container_count_level4": 0,
-            "container_count_level5": 0,
-            "container_count_level6": 0,
-            "container_set": true,
-            "litter_count_container": 0,
-            "litter_count_landfill": 0,
-            "litter_count_unprocessed": 0,
-            "robot_set": true
-        },
-        "red": {
-            "auto_points": 0,
-            "teleop_points": 0,
-            "container_points": 0,
-            "tote_points": 0,
-            "litter_points": 0,
-            "foul_points": 0,
-            "adjust_points": 0,
-            "total_points": 0,
-            "foul_count": 0,
-            "tote_count_far": 0,
-            "tote_count_near": 0,
-            "tote_set": true,
-            "tote_stack": true,
-            "container_count_level1": 0,
-            "container_count_level2": 0,
-            "container_count_level3": 0,
-            "container_count_level4": 0,
-            "container_count_level5": 0,
-            "container_count_level6": 0,
-            "container_set": true,
-            "litter_count_container": 0,
-            "litter_count_landfill": 0,
-            "litter_count_unprocessed": 0,
-            "robot_set": true
-        },
-        "coopertition": "None",
-        "coopertition_points": 0
-    },
-    "videos": [
+    key: string;
+    comp_level: string;
+    set_number: number;
+    match_number: number;
+    alliances: {
+        red: {
+            score: number;
+            team_keys: [string];
+            surrogate_team_keys: [string];
+            dq_team_keys: [string];
+        };
+        blue: {
+            score: number;
+            team_keys: [string];
+            surrogate_team_keys: [string];
+            dq_team_keys: [string];
+        };
+    };
+    winning_alliance: string;
+    event_key: string;
+    time: number;
+    actual_time: number;
+    predicted_time: number;
+    post_result_time: number;
+    score_breakdown: {
+        blue: {
+            auto_points: number;
+            teleop_points: number;
+            container_points: number;
+            tote_points: number;
+            litter_points: number;
+            foul_points: number;
+            adjust_points: number;
+            total_points: number;
+            foul_count: number;
+            tote_count_far: number;
+            tote_count_near: number;
+            tote_set: boolean;
+            tote_stack: boolean;
+            container_count_level1: number;
+            container_count_level2: number;
+            container_count_level3: number;
+            container_count_level4: number;
+            container_count_level5: number;
+            container_count_level6: number;
+            container_set: boolean;
+            litter_count_container: number;
+            litter_count_landfill: number;
+            litter_count_unprocessed: number;
+            robot_set: boolean;
+        };
+        red: {
+            auto_points: number;
+            teleop_points: number;
+            container_points: number;
+            tote_points: number;
+            litter_points: number;
+            foul_points: number;
+            adjust_points: number;
+            total_points: number;
+            foul_count: number;
+            tote_count_far: number;
+            tote_count_near: number;
+            tote_set: boolean;
+            tote_stack: boolean;
+            container_count_level1: number;
+            container_count_level2: number;
+            container_count_level3: number;
+            container_count_level4: number;
+            container_count_level5: number;
+            container_count_level6: number;
+            container_set: boolean;
+            litter_count_container: number;
+            litter_count_landfill: number;
+            litter_count_unprocessed: number;
+            robot_set: boolean;
+        };
+        coopertition: string;
+        coopertition_points: number;
+    };
+    videos: [
         {
-            "type": string,
-            "key": string
+            type: string;
+            key: string;
         }
-    ]
-}
+    ];
+};
 
 async function genericGetRequest(apiEndpoint: string) {
-    const response = await fetch(apiEndpoint, requestInit);
+    const response = await fetch(apiEndpoint);
     if (!response.ok) {
-        throw new Error(
-            `Get request for ${apiEndpoint} failed with status code: ${response.status}`
-        );
+        throw new Error(`Get request for ${apiEndpoint} failed with status code: ${response.status}`);
     }
-
     return await response.json();
 }
 
 export async function getEventInfo(competitionKey: string): Promise<TBAEventJSon> {
-    return await genericGetRequest(`${rootUrl}/event/${competitionKey}`);
+    return await genericGetRequest(`${rootUrl}/${competitionKey}/info`);
 }
 
-export async function getTeams(competitionKey): Promise<TBATeamJSon[]> {
-    return await genericGetRequest(
-        `${rootUrl}/event/${competitionKey}/teams/simple`
-    );
+export async function getTeams(competitionKey: string): Promise<TBATeamJSon[]> {
+    return await genericGetRequest(`${rootUrl}/${competitionKey}/teams`);
 }
 
 export async function getMatches(competitionKey: string): Promise<TBAMatchJSon[]> {
-    return await genericGetRequest(`${rootUrl}/event/${competitionKey}/matches/simple`);
+    return await genericGetRequest(`${rootUrl}/${competitionKey}/matches`);
 }
 
 // export async function getMatch(matchKey: string): Promise<TBAMatchJSon> {

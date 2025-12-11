@@ -1,11 +1,37 @@
-from flask import Flask, render_template, request, send_from_directory
-from datetime import datetime
+from flask import Flask, jsonify
+import os
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__, static_url_path="", static_folder=".")
 
+API_KEY = os.getenv("TBA_API_KEY")
+ROOT_URL = "https://www.thebluealliance.com/api/v3"
+
 @app.route("/")
 def index():
-    return send_from_directory(".", "index.html")
+    return app.send_static_file("index.html")
+
+
+@app.route("/api/event/<competition_key>/info")
+def get_event_info(competition_key):
+    resp = requests.get(f"{ROOT_URL}/event/{competition_key}",
+                        headers={"X-TBA-Auth-Key": API_KEY})
+    return jsonify(resp.json()), resp.status_code
+
+@app.route("/api/event/<competition_key>/teams")
+def get_teams(competition_key):
+    resp = requests.get(f"{ROOT_URL}/event/{competition_key}/teams/simple",
+                        headers={"X-TBA-Auth-Key": API_KEY})
+    return jsonify(resp.json()), resp.status_code
+
+@app.route("/api/event/<competition_key>/matches")
+def get_matches(competition_key):
+    resp = requests.get(f"{ROOT_URL}/event/{competition_key}/matches/simple",
+                        headers={"X-TBA-Auth-Key": API_KEY})
+    return jsonify(resp.json()), resp.status_code
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)
