@@ -21,12 +21,12 @@ def get_country(ip):
     except:
         return None
 
-@app.before_request
-def restrict_countries():
-    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
-    country = get_country(ip)
-    if country not in ALLOWED_COUNTRIES:
-        return "Access restricted to USA and Canada only.", 403
+# @app.before_request
+# def restrict_countries():
+#     ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+#     country = get_country(ip)
+#     if country not in ALLOWED_COUNTRIES:
+#         return "Access restricted to USA and Canada only.", 403
 
 @app.route("/")
 def scouting():
