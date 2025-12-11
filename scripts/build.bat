@@ -1,2 +1,2 @@
 call scripts\clearBuild.bat
-call tsc
+call npx tsc
