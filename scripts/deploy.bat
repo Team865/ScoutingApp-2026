@@ -1,1 +1,1 @@
-scripts\build & py App.py
+scripts\build.bat & py App.py

@@ -1,2 +1,2 @@
-rmdir .\build /s /q
-md .\build
+rmdir .\static\build /s /q
+md .\static\build

@@ -1,1 +1,1 @@
-scripts\clearBuild & tsc & py scripts\buildImports.py & py scripts\formatHtml.py
+scripts\clearBuild.bat & tsc & py scripts\buildImports.py & py scripts\formatHtml.py

@@ -13,8 +13,8 @@ from bs4 import BeautifulSoup
 import re
 
 for page in pages:
-    jsFolderPath = Path(f"./build/{page}")
-    htmlFilePath = Path(f"{page}.html")
+    jsFolderPath = Path(f"./static/build/{page}")
+    htmlFilePath = Path(f"./templates/{page}.html")
 
     modules = ["./" + jsFile.as_posix() for jsFile in jsFolderPath.rglob("*.js") if jsFile.name not in exclude]
 

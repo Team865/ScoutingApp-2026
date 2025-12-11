@@ -1,26 +1,26 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import os
 import requests
 from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__, static_url_path="", static_folder=".")
+app = Flask(__name__)
 
 API_KEY = os.getenv("TBA_API_KEY")
 ROOT_URL = "https://www.thebluealliance.com/api/v3"
 
 @app.route("/")
 def scouting():
-    return app.send_static_file("scouting.html")
+    return render_template("scouting.html")
 
 @app.route("/superscouting")
 def superscouting():
-    return app.send_static_file("superscouting.html")
+    return render_template("superscouting.html")
 
 @app.route("/analysis")
 def analysis():
-    return app.send_static_file("analysis.html")
+    return render_template("analysis.html")
 
 @app.route("/api/event/<competition_key>/info")
 def get_event_info(competition_key):
