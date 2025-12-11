@@ -11,9 +11,16 @@ API_KEY = os.getenv("TBA_API_KEY")
 ROOT_URL = "https://www.thebluealliance.com/api/v3"
 
 @app.route("/")
-def index():
-    return app.send_static_file("index.html")
+def scouting():
+    return app.send_static_file("scouting.html")
 
+@app.route("/superscouting")
+def superscouting():
+    return app.send_static_file("superscouting.html")
+
+@app.route("/analysis")
+def analysis():
+    return app.send_static_file("analysis.html")
 
 @app.route("/api/event/<competition_key>/info")
 def get_event_info(competition_key):
@@ -34,4 +41,4 @@ def get_matches(competition_key):
     return jsonify(resp.json()), resp.status_code
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
