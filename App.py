@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, send_from_directory, url_for
 import os
 import requests
 from dotenv import load_dotenv
@@ -39,6 +39,10 @@ def get_matches(competition_key):
     resp = requests.get(f"{ROOT_URL}/event/{competition_key}/matches/simple",
                         headers={"X-TBA-Auth-Key": API_KEY})
     return jsonify(resp.json()), resp.status_code
+
+@app.route("/static/deploy/<file_name>")
+def deployedFiles(file_name):
+    return send_from_directory("static", f"deploy/{file_name}")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
