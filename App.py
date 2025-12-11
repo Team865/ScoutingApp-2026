@@ -3,6 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 import geoip2.database
+import re
 
 load_dotenv()
 
@@ -10,6 +11,8 @@ app = Flask(__name__)
 
 API_KEY = os.getenv("TBA_API_KEY")
 ROOT_URL = "https://www.thebluealliance.com/api/v3"
+LOCAL_HOST_REGEX = re.compile(r"127\.\d+\.\d+\.\d+")
+LAN_REGEX = re.compile(r"192\.\d+\.\d+\.\d+")
 
 reader = geoip2.database.Reader("geo/GeoLite2-Country.mmdb")
 ALLOWED_COUNTRIES = {"US", "CA"}
@@ -21,12 +24,15 @@ def get_country(ip):
     except:
         return None
 
-# @app.before_request
-# def restrict_countries():
-#     ip = request.headers.get("X-Forwarded-For", request.remote_addr)
-#     country = get_country(ip)
-#     if country not in ALLOWED_COUNTRIES:
-#         return "Access restricted to USA and Canada only.", 403
+@app.before_request
+def restrict_countries():
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    isLocal = LOCAL_HOST_REGEX.match(ip) or LAN_REGEX.match(ip)
+
+    if not isLocal:
+        country = get_country(ip)
+        if country not in ALLOWED_COUNTRIES:
+            return f"Country Detected: {country}.\nAccess restricted to USA and Canada only.", 403
 
 @app.route("/")
 def scouting():
