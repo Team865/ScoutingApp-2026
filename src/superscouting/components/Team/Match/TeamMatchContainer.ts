@@ -87,7 +87,7 @@ export default class TeamMatchContainer {
                 teamContainer.append(teamImage, teamLabel);
                 teamsContainer.appendChild(teamContainer);
 
-                teamImage.addEventListener("error", () => teamImage.src = "deploy/FIRSTLogo.svg");
+                teamImage.addEventListener("error", () => teamImage.src = "static/deploy/FIRSTLogo.svg");
             } 
 
             const topChunk = document.createElement("div");

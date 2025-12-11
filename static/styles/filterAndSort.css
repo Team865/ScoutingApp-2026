@@ -61,7 +61,7 @@ select#sorted-by:hover {
 }
 
 button#sort-order {
-    background-image: url(../deploy/ascendingArrow.svg);
+    background-image: url(../static/deploy/ascendingArrow.svg);
     background-size: contain;
     background-repeat: no-repeat;
     height: 40px;
@@ -71,7 +71,7 @@ button#sort-order {
 }
 
 button#sort-order.descending {
-    background-image: url(../deploy/descendingArrow.svg);
+    background-image: url(../static/deploy/descendingArrow.svg);
 }
 
 div#filter-menu {
@@ -211,10 +211,10 @@ button#delete-all-tags:hover {
 }
 
 button.edit-tag {
-    background-image: url(../deploy/pencil.svg);
+    background-image: url(../static/deploy/pencil.svg);
 }
 button.delete-tag {
-    background-image: url(../deploy/trashCan.svg);
+    background-image: url(../static/deploy/trashCan.svg);
 }
 
 input[type="checkbox"] {
