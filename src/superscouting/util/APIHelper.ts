@@ -1,3 +1,5 @@
+import AppData from "../AppData.js";
+
 const tbaAPIRoot = "/api/tba";
 const statboticsAPIRoot = "https://api.statbotics.io/v3";
 
@@ -273,46 +275,33 @@ async function genericGetRequest(apiEndpoint: string) {
     return await response.json();
 }
 
-export async function getEPAPercentiles() {
-    
-}
-
 export async function getEventInfo(competitionKey: string): Promise<TBAEventJSon> {
     return await genericGetRequest(`${tbaAPIRoot}/event/${competitionKey}/info`);
 }
 
-export async function getTeams(competitionKey: string): Promise<TeamJSon[]> {
-    const tbaTeamData: TBATeamJSon[] = await genericGetRequest(`${tbaAPIRoot}/event/${competitionKey}/teams`);
+export async function updateEPA(competitionKey: string) {
     const statboticsTeamEventData: StatboticsTeamEventJSon[] = await genericGetRequest(`${statboticsAPIRoot}/team_events?event=${competitionKey}`);
-    const teamJSon: TeamJSon[] = new Array(tbaTeamData.length);
-
+    
     if (statboticsTeamEventData.length > 0) {
-        for (const [teamIndex, statboticsData] of statboticsTeamEventData.entries()) {
-            const tbaData = tbaTeamData.find(team => team.team_number === statboticsData.team);
+        for (const statboticsData of statboticsTeamEventData) {
+            const teamData = AppData.fetchedTeamData.find(team => team.number === statboticsData.team);
 
-            teamJSon[teamIndex] = Object.assign(
-                tbaData,
-                {
-                    epa: statboticsData.epa.total_points.mean,
-                    normalized_epa: statboticsData.epa.norm
-                }
-            );
+            teamData.epa = statboticsData.epa.total_points.mean;
+            teamData.normalized_epa = statboticsData.epa.norm;
         }
     } else {
-        for (const [teamIndex, tbaData] of tbaTeamData.entries()) {
-            const statboticsTeamData: StatboticsTeamData = await genericGetRequest(`${statboticsAPIRoot}/team/${tbaData.team_number}`);
-            teamJSon[teamIndex] = Object.assign(
-                tbaData,
-                {
-                    normalized_epa: statboticsTeamData.norm_epa.current
-                }
-            );
+        for (const teamData of AppData.fetchedTeamData) {
+            const statboticsTeamData: StatboticsTeamData = await genericGetRequest(`${statboticsAPIRoot}/team/${teamData.number}`);
+            
+            teamData.normalized_epa = statboticsTeamData.norm_epa.current;
         }
     }
+}
 
-    console.log(teamJSon);
+export async function getTBATeams(competitionKey: string): Promise<TBATeamJSon[]> {
+    const tbaTeamData: TBATeamJSon[] = await genericGetRequest(`${tbaAPIRoot}/event/${competitionKey}/teams`);
 
-    return teamJSon
+    return tbaTeamData
 }
 
 export async function getMatches(competitionKey: string): Promise<TBAMatchJSon[]> {

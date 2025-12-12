@@ -1,5 +1,5 @@
 import AppData, { FetchedTeamData, MatchData } from "./AppData.js";
-import {getMatches, getTeams} from "./util/APIHelper.js";
+import {getMatches, getTBATeams, updateEPA} from "./util/APIHelper.js";
 import {TeamListManager} from "./managers/TeamListManager.js";
 import PopupDiv from "./components/Popup/PopupDiv.js";
 
@@ -14,12 +14,17 @@ function setCompetition() {
 
     AppData.competitionKey = userInput;
     // getEventInfo(AppData.competitionKey).then(eventInfo => console.log(eventInfo));
-    refreshTBAData().then(TeamListManager.createTeamDivs);
+    refreshTBAData().then(TeamListManager.createTeamDivs).then(refreshStatboticsData);
+}
+
+async function refreshStatboticsData() {
+    await updateEPA(AppData.competitionKey);
+    TeamListManager.updateStatboticStats();
 }
 
 async function refreshTBAData() {
     console.log("Fetching team data.....");
-    const rawTeamsData = await getTeams(AppData.competitionKey);
+    const rawTeamsData = await getTBATeams(AppData.competitionKey);
     console.log("Team Data fetched!");
     const teamsData: FetchedTeamData[] = [];
     const matchesList: MatchData[] = [];
@@ -29,9 +34,7 @@ async function refreshTBAData() {
             name: teamJSon.nickname,
             number: teamJSon.team_number,
             key: teamJSon.key,
-            matchKeys: [],
-            epa: teamJSon.epa,
-            normalized_epa: teamJSon.normalized_epa
+            matchKeys: []
         });
     }
 

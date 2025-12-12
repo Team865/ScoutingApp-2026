@@ -18,8 +18,11 @@ export default class TeamContainer {
     private readonly tabsContainer = document.createElement("div");
     private readonly pageContainer = document.createElement("div");
 
-    private readonly pageToTabButtons: Map<Page, HTMLButtonElement>;
-    private currentPage: Page;
+    private readonly pages: Map<string, {
+        tabButton?: HTMLButtonElement,
+        page: Page
+    }>;
+    private currentPageName: string;
 
     private teamName: string;
     private teamNumber: number;
@@ -37,12 +40,15 @@ export default class TeamContainer {
         this.active = false;
         this.teamNumber = teamNumber;
 
-        this.pageToTabButtons = new Map<Page, HTMLButtonElement>([
-            [new SummaryPage(teamNumber), null],
-            [new MatchesPage(teamNumber), null],
-            [new PitScoutingPage(teamNumber), null]
+        this.pages = new Map<string, {
+            tabButton?: HTMLButtonElement,
+            page: Page
+        }>([
+            ["Summary", { page: new SummaryPage(teamNumber) }],
+            ["Matches", { page: new MatchesPage(teamNumber) }],
+            ["Pit Scouting", { page: new PitScoutingPage(teamNumber) }]
         ]);
-        this.currentPage = this.pageToTabButtons.keys().next().value;
+        this.currentPageName = "Summary";
 
         // Set classes
         this.containerDiv.classList.add("team-container");
@@ -68,20 +74,11 @@ export default class TeamContainer {
         bindAccordionBehavior(this.containerDiv, this.contentsDiv);
 
         // Create tab buttons
-        for (const page of this.pageToTabButtons.keys()) {
-            const tabButton = document.createElement("button");
-            tabButton.value = page.id;
-            tabButton.innerText = page.id;
-            tabButton.classList.add("tab-button");
-            tabButton.addEventListener("click", () => this.switchToPage(page));
-            this.tabsContainer.appendChild(tabButton);
-
-            this.pageToTabButtons.set(page, tabButton);
-
-            if (page === this.currentPage) tabButton.classList.add("selected");
+        for (const pageName of this.pages.keys()) {
+            this.createPageButton(pageName);
         }
 
-        this.currentPage.show(this.pageContainer);
+        this.pages.get(this.currentPageName).page.show(this.pageContainer);
 
         // Add child elements
         this.contentsDiv.appendChild(this.tabsContainer);
@@ -96,15 +93,37 @@ export default class TeamContainer {
         this.containerDiv.appendChild(this.contentsDiv);
     }
 
-    private switchToPage(page: Page): void {
-        if (this.currentPage === page) return;
-        if (this.currentPage !== null) {
-            this.currentPage.hide();
-            this.pageToTabButtons.get(this.currentPage).classList.remove("selected");
+    private createPageButton(pageName: string) {
+        const pageInfo = this.pages.get(pageName);
+        const page = pageInfo.page
+        const tabButton = document.createElement("button");
+        tabButton.value = page.id;
+        tabButton.innerText = page.id;
+        tabButton.classList.add("tab-button");
+        tabButton.addEventListener("click", () => this.switchToPage(pageName));
+        this.tabsContainer.appendChild(tabButton);
+
+        pageInfo.tabButton = tabButton;
+
+        if (pageName === this.currentPageName) tabButton.classList.add("selected");
+    } 
+
+    public updateStatboticStats() {
+        (this.pages.get("Summary").page as SummaryPage).updateData()
+    }
+
+    private switchToPage(pageName: string): void {
+        if (this.currentPageName === pageName) return;
+        const previousPageInfo = this.pages.get(this.currentPageName);
+        if (this.currentPageName !== null) {
+            previousPageInfo.page.hide();
+            previousPageInfo.tabButton.classList.remove("selected");
         }
-        this.currentPage = page;
-        page.show(this.pageContainer);
-        this.pageToTabButtons.get(page).classList.add("selected");
+
+        this.currentPageName = pageName;
+        const currentPageInfo = this.pages.get(pageName);
+        currentPageInfo.page.show(this.pageContainer);
+        currentPageInfo.tabButton.classList.add("selected");
     }
 
     public toggle(force?: boolean) {

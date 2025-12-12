@@ -8,7 +8,7 @@ export type FetchedTeamData = {
     key: string,
     matchKeys?: string[],
     epa?: number,
-    normalized_epa: number
+    normalized_epa?: number
 }
 
 export type TeamTag = {

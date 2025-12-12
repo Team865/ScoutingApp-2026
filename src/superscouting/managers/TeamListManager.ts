@@ -53,6 +53,12 @@ export namespace TeamListManager {
         }
     }
 
+    export function updateStatboticStats() {
+        for(const teamContainer of teamContainers.values()) {
+            teamContainer.updateStatboticStats();
+        }
+    }
+
     export function start() {
         searchBar.addEventListener("input", applySearch);
         expandAllTeamsButton.addEventListener("click", () => teamContainers.forEach(container => container.toggle(true)));
