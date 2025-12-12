@@ -72,6 +72,8 @@ div.page-container {
 
 div.summary-page p {
     font-size: 2rem;
+    line-height: 4rem;
+    text-wrap: auto;
 }
 
 span.epa-number {
