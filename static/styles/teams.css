@@ -70,6 +70,16 @@ div.page-container {
     margin: 0 auto;
 }
 
+div.summary-page p {
+    font-size: 2rem;
+}
+
+span.epa-number {
+    background-color: var(--bg);
+    padding: 10px;
+    border-radius: 1rem;
+}
+
 button.edit-team-tags-button {
     background-color: #4b65c4;
     margin-left: 10px;

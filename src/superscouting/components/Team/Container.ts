@@ -38,7 +38,7 @@ export default class TeamContainer {
         this.teamNumber = teamNumber;
 
         this.pageToTabButtons = new Map<Page, HTMLButtonElement>([
-            [new SummaryPage(), null],
+            [new SummaryPage(teamNumber), null],
             [new MatchesPage(teamNumber), null],
             [new PitScoutingPage(teamNumber), null]
         ]);
