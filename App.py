@@ -17,15 +17,24 @@ ROOT_URL = "https://www.thebluealliance.com/api/v3"
 LOCAL_HOST_REGEX = re.compile(r"127\.\d+\.\d+\.\d+")
 LAN_REGEX = re.compile(r"192\.\d+\.\d+\.\d+")
 
-reader = geoip2.database.Reader("geo/GeoLite2-Country.mmdb")
+reader = geoip2.database.Reader("geo/GeoLite2-City.mmdb")
 ALLOWED_COUNTRIES = {"US", "CA"}
 
-def get_country(ip):
+def get_country_iso(ip):
     try:
-        response = reader.country(ip)
-        return response.country.iso_code
+        return reader.city(ip).country.iso_code
     except:
         return None
+
+def get_location_details(ip):
+    try:
+        resp = reader.city(ip)
+        country = resp.country.name or "Unknown"
+        region = resp.subdivisions.most_specific.name or "Unknown"
+        city = resp.city.name or "Unknown"
+        return country, region, city
+    except:
+        return "Unknown", "Unknown", "Unknown"
 
 @app.before_request
 def restrict_countries():
@@ -33,10 +42,12 @@ def restrict_countries():
     isLocal = LOCAL_HOST_REGEX.match(ip) or LAN_REGEX.match(ip)
     
     if not isLocal:
-        country = get_country(ip)
-        print(ip+" from "+country)
-        if country not in ALLOWED_COUNTRIES:
-            return f"Country Detected: {country}.\nAccess restricted to USA and Canada only.", 403
+        iso = get_country_iso(ip)
+        country, region, city = get_location_details(ip)
+        print(f"{ip} from {country}, {region}, {city}")
+        if iso not in ALLOWED_COUNTRIES:
+            return f"Country Detected: {iso}.\nAccess restricted to USA and Canada only.", 403
+
 
 @app.route("/")
 def scouting():
