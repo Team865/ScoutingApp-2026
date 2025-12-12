@@ -1,12 +1,14 @@
-import Color from "./dataTypes/Color.js";
-import Signal from "./dataTypes/Signal.js";
-import { Value } from "./dataTypes/Value.js";
+import Color from "../lib/dataTypes/Color.js";
+import Signal from "../lib/dataTypes/Signal.js";
+import { Value } from "../lib/dataTypes/Value.js";
 
 export type FetchedTeamData = {
     name: string,
     number: number,
     key: string,
-    matchKeys?: string[]
+    matchKeys?: string[],
+    epa?: number,
+    normalized_epa: number
 }
 
 export type TeamTag = {

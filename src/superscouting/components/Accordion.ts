@@ -1,4 +1,4 @@
-import HTMLClassObserver from "../dataTypes/HTMLClassObserver.js";
+import HTMLClassObserver from "../../lib/dataTypes/HTMLClassObserver.js";
 
 /** accordionContainer is the parent container encompassing the entire accordion,
  * and accordionContentsDiv is the div containing all the content that should collapse/expand

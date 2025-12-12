@@ -47,19 +47,19 @@ def superscouting():
 def analysis():
     return render_template("analysis.html")
 
-@app.route("/api/event/<competition_key>/info")
+@app.route("/api/tba/event/<competition_key>/info")
 def get_event_info(competition_key):
     resp = requests.get(f"{ROOT_URL}/event/{competition_key}",
                         headers={"X-TBA-Auth-Key": API_KEY})
     return jsonify(resp.json()), resp.status_code
 
-@app.route("/api/event/<competition_key>/teams")
+@app.route("/api/tba/event/<competition_key>/teams")
 def get_teams(competition_key):
     resp = requests.get(f"{ROOT_URL}/event/{competition_key}/teams/simple",
                         headers={"X-TBA-Auth-Key": API_KEY})
     return jsonify(resp.json()), resp.status_code
 
-@app.route("/api/event/<competition_key>/matches")
+@app.route("/api/tba/event/<competition_key>/matches")
 def get_matches(competition_key):
     resp = requests.get(f"{ROOT_URL}/event/{competition_key}/matches/simple",
                         headers={"X-TBA-Auth-Key": API_KEY})

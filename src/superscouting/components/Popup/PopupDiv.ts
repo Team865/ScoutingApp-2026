@@ -1,4 +1,4 @@
-import Signal from "../../dataTypes/Signal.js";
+import Signal from "../../../lib/dataTypes/Signal.js";
 
 export default class PopupDiv {
     private mainContainer = document.createElement("div");

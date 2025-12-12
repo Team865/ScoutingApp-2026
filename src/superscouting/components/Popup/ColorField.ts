@@ -1,4 +1,4 @@
-import Color from "../../dataTypes/Color.js";
+import Color from "../../../lib/dataTypes/Color.js";
 import Field, {FieldInstance} from "./FieldInterface.js";
 
 export type ColorFieldParams = {

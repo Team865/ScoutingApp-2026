@@ -1,5 +1,5 @@
 import AppData, { FetchedTeamData, MatchData } from "./AppData.js";
-import {getMatches, getTeams} from "./util/TBAJson.js";
+import {getMatches, getTeams} from "./util/APIHelper.js";
 import {TeamListManager} from "./managers/TeamListManager.js";
 import PopupDiv from "./components/Popup/PopupDiv.js";
 
@@ -29,7 +29,9 @@ async function refreshTBAData() {
             name: teamJSon.nickname,
             number: teamJSon.team_number,
             key: teamJSon.key,
-            matchKeys: []
+            matchKeys: [],
+            epa: teamJSon.epa,
+            normalized_epa: teamJSon.normalized_epa
         });
     }
 

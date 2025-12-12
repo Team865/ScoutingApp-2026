@@ -2,7 +2,7 @@ import TeamContainer from "../components/Team/Container.js";
 import AppData, { TeamTag } from "../AppData.js";
 import {TeamNotesManager} from "./TeamNotesManager.js";
 import { FetchedTeamData } from '../AppData';
-import HTMLClassObserver from "../dataTypes/HTMLClassObserver.js";
+import HTMLClassObserver from "../../lib/dataTypes/HTMLClassObserver.js";
 
 const teamsList: HTMLDivElement = document.querySelector("#teams-list");
 // const filterMenuToggleButton: HTMLButtonElement = document.querySelector("button#filter-button") as HTMLButtonElement;
