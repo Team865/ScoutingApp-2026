@@ -4,3 +4,4 @@ dotenv
 geoip2
 werkzeug
 waitress
+statbotics
