@@ -10,6 +10,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
+trusted_proxy_headers = "x-forwarded-for x-forwarded-host x-forwarded-proto x-forwarded-port"
 
 API_KEY = os.getenv("TBA_API_KEY")
 ROOT_URL = "https://www.thebluealliance.com/api/v3"
@@ -30,6 +31,7 @@ def get_country(ip):
 def restrict_countries():
     ip = request.headers.get("X-Forwarded-For", request.remote_addr)
     isLocal = LOCAL_HOST_REGEX.match(ip) or LAN_REGEX.match(ip)
+    print(ip)
     if not isLocal:
         country = get_country(ip)
         if country not in ALLOWED_COUNTRIES:
@@ -67,4 +69,4 @@ def get_matches(competition_key):
 
 if __name__ == "__main__":
     from waitress import serve
-    serve(app, host="0.0.0.0", port=5000, threads=16)
+    serve(app, host="0.0.0.0", port=5000, threads=16,trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers,)
