@@ -1,3 +1,4 @@
+import time
 from flask import Flask, jsonify, render_template, request
 import os
 import requests
@@ -20,6 +21,9 @@ LAN_REGEX = re.compile(r"192\.\d+\.\d+\.\d+")
 reader = geoip2.database.Reader("geo/GeoLite2-City.mmdb")
 ALLOWED_COUNTRIES = {"US", "CA"}
 
+last_log_time = {}
+DEBOUNCE_SECONDS = 5
+
 def get_country_iso(ip):
     try:
         return reader.city(ip).country.iso_code
@@ -40,14 +44,20 @@ def get_location_details(ip):
 def restrict_countries():
     ip = request.headers.get("X-Forwarded-For", request.remote_addr)
     isLocal = LOCAL_HOST_REGEX.match(ip) or LAN_REGEX.match(ip)
-    
+
     if not isLocal:
         iso = get_country_iso(ip)
         country, region, city = get_location_details(ip)
-        print(f"{ip} from {country}, {region}, {city}")
+        NamedLocation = f"{ip} from {country}, {region}, {city}"
+
+        # Debounce logging per IP
+        now = time.time()
+        if ip not in last_log_time or (now - last_log_time[ip]) > DEBOUNCE_SECONDS:
+            print(NamedLocation)
+            last_log_time[ip] = now
+
         if iso not in ALLOWED_COUNTRIES:
             return f"Country Detected: {iso}.\nAccess restricted to USA and Canada only.", 403
-
 
 @app.route("/")
 def scouting():
@@ -81,4 +91,4 @@ def get_matches(competition_key):
 
 if __name__ == "__main__":
     from waitress import serve
-    serve(app, host="0.0.0.0", port=5000, threads=16,trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers,)
+    serve(app, host="0.0.0.0", port=5000, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)
