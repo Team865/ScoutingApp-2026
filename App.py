@@ -1,14 +1,15 @@
-from flask import Flask, jsonify, render_template, abort, request
+from flask import Flask, jsonify, render_template, request
 import os
 import requests
 from dotenv import load_dotenv
 import geoip2.database
 import re
 from werkzeug.middleware.proxy_fix import ProxyFix
+
 load_dotenv()
 
 app = Flask(__name__)
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 
 API_KEY = os.getenv("TBA_API_KEY")
 ROOT_URL = "https://www.thebluealliance.com/api/v3"
@@ -29,7 +30,6 @@ def get_country(ip):
 def restrict_countries():
     ip = request.headers.get("X-Forwarded-For", request.remote_addr)
     isLocal = LOCAL_HOST_REGEX.match(ip) or LAN_REGEX.match(ip)
-
     if not isLocal:
         country = get_country(ip)
         if country not in ALLOWED_COUNTRIES:
@@ -66,4 +66,5 @@ def get_matches(competition_key):
     return jsonify(resp.json()), resp.status_code
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5000, threads=16)
