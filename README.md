@@ -24,5 +24,8 @@ To host the app locally, please follow the following steps:
    2. Superscouting/Pit Scouting: `localhost:5000/superscouting`
    3. Analysis: `localhost:5000/analysis`
 8. **Additional note: You can access the app from other devices** (i.e. mobile devices) by replacing `localhost:5000` with your host computer's ip address (see https://www.med.unc.edu/it/guide/operating-systems/how-do-i-find-the-host-name-ip-address-or-physical-address-of-my-machine/ for a guide on how to find it)
+
+9. Set up an API key on TBA to use TBA data
+
 ## Mac & Linux
 Unfinished, please view the .bat scripts used in the Windows setup and adapt accordingly.
