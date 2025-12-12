@@ -31,9 +31,10 @@ def get_country(ip):
 def restrict_countries():
     ip = request.headers.get("X-Forwarded-For", request.remote_addr)
     isLocal = LOCAL_HOST_REGEX.match(ip) or LAN_REGEX.match(ip)
-    print(ip)
+    
     if not isLocal:
         country = get_country(ip)
+        print(ip+" from "+country)
         if country not in ALLOWED_COUNTRIES:
             return f"Country Detected: {country}.\nAccess restricted to USA and Canada only.", 403
 
