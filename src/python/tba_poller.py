@@ -2,7 +2,6 @@ import time
 import json
 from queue import Queue
 from typing import List
-from .AppData import appData
 from .apiHelpers.TBAApi import get_matches
 
 MATCH_POLL_INTERVAL = 5
@@ -13,7 +12,11 @@ def is_match_complete(match_json):
     red_score = match_json["alliances"]["red"]["score"]
     return red_score is not None and red_score >= 0
 
-def broadcast_match_update(match_key: str):
+def register_sse_client(q: Queue):
+    sse_clients.append(q)
+    
+
+def broadcast_match_update(appData, match_key: str):
     match_obj = next(
         (m for m in appData.superscouting_data.match_data if m["key"] == match_key),
         None
@@ -21,7 +24,7 @@ def broadcast_match_update(match_key: str):
     if not match_obj:
         return
 
-    payload = f"data: {json.dumps(match_obj)}\n\n"
+    payload = "data: " + json.dumps(match_obj) + "\n\n"
 
     dead = []
     for q in sse_clients:
@@ -34,10 +37,7 @@ def broadcast_match_update(match_key: str):
         if q in sse_clients:
             sse_clients.remove(q)
 
-def register_sse_client(q: Queue):
-    sse_clients.append(q)
-
-def poll_tba_matches(event_key: str):
+def poll_tba_matches(appData, event_key: str):
     while True:
         try:
             matches = get_matches(event_key)
@@ -63,6 +63,7 @@ def poll_tba_matches(event_key: str):
                         )
                         if key not in team_data["match_keys"]:
                             team_data["match_keys"].append(key)
+
                         teams_in_match.append({
                             "team_number": team_data["number"],
                             "alliance": alliance
@@ -77,7 +78,7 @@ def poll_tba_matches(event_key: str):
                     "teams": teams_in_match
                 })
 
-                broadcast_match_update(key)
+                broadcast_match_update(appData, key)
 
             time.sleep(MATCH_POLL_INTERVAL)
         except Exception as e:
