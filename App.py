@@ -1,12 +1,15 @@
 import time
 from flask import Flask, jsonify, render_template, request
 import os
+import sys
 import requests
 from dotenv import load_dotenv
 import geoip2.database
 import re
+import gspread
 from werkzeug.middleware.proxy_fix import ProxyFix
-
+from google.oauth2.service_account import Credentials
+from waitress import serve
 load_dotenv()
 
 app = Flask(__name__)
@@ -17,6 +20,21 @@ API_KEY = os.getenv("TBA_API_KEY")
 ROOT_URL = "https://www.thebluealliance.com/api/v3"
 LOCAL_HOST_REGEX = re.compile(r"127\.\d+\.\d+\.\d+")
 LAN_REGEX = re.compile(r"192\.\d+\.\d+\.\d+")
+SHEETS_ID =os.getenv("SHEETS_ID")
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+
+try: 
+    creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
+except:
+    print('WARNING: Google credentials not found. Have you set up the service_account JSON?')
+    sys.exit(0)
+
+gc = gspread.authorize(creds)
+try: 
+    sheet = gc.open_by_key(SHEETS_ID).sheet1
+except:
+    print('WARNING: Google sheet not set. Have you set the id in .env?')
+    sys.exit(0)
 
 reader = geoip2.database.Reader("geo/GeoLite2-City.mmdb")
 ALLOWED_COUNTRIES = {"US", "CA"}
@@ -58,7 +76,7 @@ def restrict_countries():
 
         if iso not in ALLOWED_COUNTRIES:
             return f"Country Detected: {iso}.\nAccess restricted to USA and Canada only.", 403
-
+        
 @app.route("/")
 def scouting():
     return render_template("scouting.html")
@@ -90,5 +108,5 @@ def get_matches(competition_key):
     return jsonify(resp.json()), resp.status_code
 
 if __name__ == "__main__":
-    from waitress import serve
+    
     serve(app, host="0.0.0.0", port=5000, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)

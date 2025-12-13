@@ -5,3 +5,5 @@ geoip2
 werkzeug
 waitress
 statbotics
+google-auth
+gspread
