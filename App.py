@@ -191,4 +191,4 @@ if  int(config["TEST_MODE"]) == True:
 threading.Thread(target=poll_tba_matches, args=(appData, EVENT_KEY), daemon=True).start()
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=5005, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)
+    serve(app, host="0.0.0.0", port=5000, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)
