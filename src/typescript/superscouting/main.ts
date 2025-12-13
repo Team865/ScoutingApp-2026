@@ -27,7 +27,7 @@ async function initNotedData() {
         AppData.notedTeamData.set(match.number, new Map(match.teams.map(team => [team.team_number, ""])));
     }
 }
-const eventSource = new EventSource("/api/sse/match-updates");
+const eventSource = new EventSource("/api/sse/tba-match-updates");
 eventSource.onmessage = function handleMatchUpdate(e: MessageEvent) {
     const newMatchData: MatchData = JSON.parse(e.data);
 

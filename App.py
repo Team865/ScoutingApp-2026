@@ -13,11 +13,12 @@ from waitress import serve
 from src.python.AppData import AppData
 from pprint import pprint
 from queue import Queue
-from src.python.tba_poller import poll_tba_matches, register_sse_client, sse_clients
+from src.python.sse.TBAPoller import poll_tba_matches
+from src.python.sse.TBAPoller import sse_manager as tba_sse_manager
 import threading
 import json
 from pathlib import Path
-from src.python.config_parser import parse_config
+from src.python.ConfigParser import parse_config
 load_dotenv()
 
 APP_DIR = Path(__file__).resolve().parent
@@ -132,25 +133,14 @@ def get_superscouting_data():
     return jsonify(appData.superscouting_data.serialized), 200
 
 #SSE feed for TBA data  to clients
-@app.route("/api/sse/match-updates")
+@app.route("/api/sse/tba-match-updates")
 def match_updates():
-    q = Queue()
-    register_sse_client(q)
-
-    def stream():
-        try:
-            while True:
-                yield q.get()
-        finally:
-            if q in sse_clients:
-                sse_clients.remove(q)
+    stream = tba_sse_manager.register_client()
 
     return Response(stream(), mimetype="text/event-stream")
 
 ##NOT A PRODUCTION FUNCTION, will remove  later for cleanliness
 def send_test_messages():
-    
-    
     match_key = f"{EVENT_KEY}_qm10"
 
     while True:
@@ -171,26 +161,14 @@ def send_test_messages():
 
         message = f"data: {json.dumps(payload)}\n\n"
 
-        dead = []
-        for q in sse_clients:
-            try:
-                q.put(message)
-            except:
-                dead.append(q)
-
-        for q in dead:
-            if q in sse_clients:
-                sse_clients.remove(q)
-
-        
-
+        tba_sse_manager.add_payload(message)
 
 if __name__ == "__main__":
     threading.Thread(target=poll_tba_matches, args=(appData, EVENT_KEY), daemon=True).start()
 
     #Put anything  that needs  to run only for testing here
-    if  int(config["TEST_MODE"]) == True:
-        serve(app, host="0.0.0.0", port=5005, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)
+    if  int(config["TEST_MODE"]) > 0:
         threading.Thread(target=send_test_messages, daemon=True).start()
+        serve(app, host="0.0.0.0", port=5005, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)
     else:
         serve(app, host="0.0.0.0", port=5000, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)

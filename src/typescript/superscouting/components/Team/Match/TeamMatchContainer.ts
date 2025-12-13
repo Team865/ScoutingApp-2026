@@ -56,7 +56,12 @@ export default class TeamMatchContainer {
         bindTextEditorBehavior(this.noteTakingArea);
         this.initMatchDataPopup();
         this.viewMatchDataButton.addEventListener("click", (e) => this.viewMatchDataClicked(e));
-        this.noteTakingArea.addEventListener("focusout", () => this.notesChanged())
+        this.noteTakingArea.addEventListener("focusout", () => this.clientNotesChanged());
+
+        AppData.serverMatchNotesChanged.connect(([matchNumber, teamNumber]: [matchNumber: number, teamNumber: number]) => {
+            if(matchNumber === this.matchNumber && teamNumber === this.teamNumber)
+                this.setText(AppData.notedTeamData.get(matchNumber).get(teamNumber));
+        });
 
         this.toggleButton.appendChild(this.matchLabel);
         this.toggleButton.appendChild(this.viewMatchDataButton);
@@ -174,10 +179,9 @@ export default class TeamMatchContainer {
         this.matchDataPopup.show();
     }
 
-    public notesChanged() {
+    public clientNotesChanged() {
         // SEND DATA TO BACKEND HERE
-        TeamNotesManager.setTeamNotes(this.matchNumber, this.teamNumber, this.noteTakingArea.textContent);
-        console.log(AppData.notedTeamData);
+        TeamNotesManager.setMatchNotesFromClient(this.matchNumber, this.teamNumber, this.noteTakingArea.textContent);
     }
 
     public setText(text: string) {

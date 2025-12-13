@@ -2,21 +2,19 @@ import time
 import json
 from queue import Queue
 from typing import List
-from .apiHelpers.TBAApi import get_matches
+from ..apiHelpers.TBAApi import get_matches
+from .SSEManager import SSEManager
+from ..AppData import AppData
 
 MATCH_POLL_INTERVAL = 5
 completed_matches = set()
-sse_clients: List[Queue] = []
+sse_manager = SSEManager()
 
 def is_match_complete(match_json):
     red_score = match_json["alliances"]["red"]["score"]
     return red_score is not None and red_score >= 0
-
-def register_sse_client(q: Queue):
-    sse_clients.append(q)
     
-
-def broadcast_match_update(appData, match_key: str):
+def broadcast_match_update(appData: AppData, match_key: str):
     match_obj = next(
         (m for m in appData.superscouting_data.match_data if m["key"] == match_key),
         None
@@ -25,19 +23,9 @@ def broadcast_match_update(appData, match_key: str):
         return
 
     payload = "data: " + json.dumps(match_obj) + "\n\n"
+    sse_manager.add_payload(payload)
 
-    dead = []
-    for q in sse_clients:
-        try:
-            q.put(payload)
-        except:
-            dead.append(q)
-
-    for q in dead:
-        if q in sse_clients:
-            sse_clients.remove(q)
-
-def poll_tba_matches(appData, event_key: str):
+def poll_tba_matches(appData: AppData, event_key: str):
     while True:
         try:
             matches = get_matches(event_key)

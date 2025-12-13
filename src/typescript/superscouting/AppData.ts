@@ -34,11 +34,13 @@ const AppData: {
     competitionKey: string,
     fetchedTeamData: FetchedTeamData[],
     notedTeamData: Map<number, NotedMatchData>, // match_number: noted_match_data
+    serverMatchNotesChanged: Signal<[number, number]>,
     matches: MatchData[]
 } = {
     competitionKey: "2025onham2",
     fetchedTeamData: [],
     notedTeamData: new Map(),
+    serverMatchNotesChanged: new Signal(),
     matches: []
 };
 
