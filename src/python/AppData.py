@@ -1,7 +1,10 @@
 from typing import Literal, TypedDict
 from .apiHelpers.TBAApi import get_teams, get_matches
 from time import time
-
+import os
+from dotenv import load_dotenv
+load_dotenv() 
+EVENT_KEY = os.getenv("EVENT_KEY")
 """
 This python class will act as a container for all of the App Data used by the backend
 """
@@ -103,3 +106,5 @@ class AppData:
                 "blue_score": match_json["alliances"]["blue"]["score"],
                 "teams": teams_in_match
             })
+appData = AppData(EVENT_KEY)
+#Is this sketchy? Its functionally the same as the other way of calling it but it makes it cleaner  in app.py

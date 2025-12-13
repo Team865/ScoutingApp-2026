@@ -1,5 +1,5 @@
 import time
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, Response
 import os
 import sys
 import requests
@@ -12,8 +12,16 @@ from google.oauth2.service_account import Credentials
 from waitress import serve
 from src.python.AppData import AppData
 from pprint import pprint
+from queue import Queue
+from src.python.tba_poller import poll_tba_matches, register_sse_client, sse_clients
+import threading
+import json
+from pathlib import Path
+from src.python.config_parser import parse_config
 load_dotenv()
 
+APP_DIR = Path(__file__).resolve().parent
+config = parse_config(APP_DIR / "config.txt")
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 trusted_proxy_headers = "x-forwarded-for x-forwarded-host x-forwarded-proto x-forwarded-port"
@@ -25,6 +33,7 @@ LOCAL_HOST_REGEX = re.compile(r"127\.\d+\.\d+\.\d+")
 LAN_REGEX = re.compile(r"192\.\d+\.\d+\.\d+")
 SHEETS_ID =os.getenv("SHEETS_ID")
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+
 
 ### Check for prerequisite files
 try: 
@@ -58,6 +67,7 @@ def get_country_iso(ip):
 
 def get_location_details(ip):
     try:
+
         resp = reader.city(ip)
         country = resp.country.name or "Unknown"
         region = resp.subdivisions.most_specific.name or "Unknown"
@@ -120,6 +130,63 @@ def get_matches(competition_key):
 @app.route("/api/superscouting")
 def get_superscouting_data():
     return jsonify(appData.superscouting_data.serialized), 200
+
+#SSE feed for TBA data  to clients
+@app.route("/api/sse/match-updates")
+def match_updates():
+    q = Queue()
+    register_sse_client(q)
+
+    def stream():
+        try:
+            while True:
+                yield q.get()
+        finally:
+            if q in sse_clients:
+                sse_clients.remove(q)
+
+    return Response(stream(), mimetype="text/event-stream")
+
+##NOT A PRODUCTION FUNCTION, will remove  later for cleanliness
+def send_test_messages():
+    
+    
+    match_key = f"{EVENT_KEY}_qm10"
+
+    while True:
+        time.sleep(2)
+        payload = {
+            "key": match_key,
+            "red_score": 67,   
+            "blue_score": 41,  
+            "teams": [
+                {"team_number": 9589, "alliance": "red"},
+                {"team_number": 6865, "alliance": "red"},
+                {"team_number": 7476, "alliance": "red"},
+                {"team_number": 7757, "alliance": "blue"},
+                {"team_number": 865, "alliance": "blue"},
+                {"team_number": 244, "alliance": "blue"}
+            ]
+        }
+
+        message = f"data: {json.dumps(payload)}\n\n"
+
+        dead = []
+        for q in sse_clients:
+            try:
+                q.put(message)
+            except:
+                dead.append(q)
+
+        for q in dead:
+            if q in sse_clients:
+                sse_clients.remove(q)
+
+        
+
+#Put anything  that needs  to run only for testing here
+if  int(config["TEST_MODE"]) == True:
+    threading.Thread(target=send_test_messages, daemon=True).start()
 
 if __name__ == "__main__":
     serve(app, host="0.0.0.0", port=5000, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)

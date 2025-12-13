@@ -7,3 +7,4 @@ waitress
 statbotics
 google-auth
 gspread
+pathlib

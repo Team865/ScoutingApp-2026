@@ -24,13 +24,25 @@ async function initNotedData() {
         AppData.notedTeamData.set(match.number, new Map(match.teams.map(team => [team.team_number, ""])));
     }
 }
+const eventSource = new EventSource("/api/sse/match-updates");
 
-function handleMatchUpdate(e: MessageEvent) {
-    const newMatchData: MatchData = e.data;
-    const matchIndex = AppData.matches.findIndex(match => match.key === newMatchData.key);
+eventSource.onmessage = function handleMatchUpdate(e: MessageEvent) {
+    const newMatchData: MatchData = JSON.parse(e.data);
 
-    AppData.matches[matchIndex] = newMatchData;
-}
+    console.log("Received SSE message:", newMatchData);
+
+    const matchIndex = AppData.matches.findIndex(
+        match => match.key === newMatchData.key
+    );
+
+    if (matchIndex !== -1) {
+        //Update in place
+        Object.assign(AppData.matches[matchIndex], newMatchData);
+    } else {
+        //push new data
+        AppData.matches.push(newMatchData);
+    }
+};
 
 TeamListManager.start();
 refreshTBAData().then(initNotedData).then(TeamListManager.createTeamDivs).then(refreshStatboticsData);
