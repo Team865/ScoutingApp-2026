@@ -16,9 +16,7 @@ export type TeamTag = {
     bgColor: Value<Color>,
     textColor: Value<Color>
 };
-export type NotedTeamData = {
-    
-}
+export type NotedMatchData = Map<number, string>; // team_number: notes
 
 export type MatchData = {
     key: string
@@ -35,7 +33,7 @@ export type MatchData = {
 const AppData: {
     competitionKey: string,
     fetchedTeamData: FetchedTeamData[],
-    notedTeamData: Map<number, NotedTeamData>,
+    notedTeamData: Map<number, NotedMatchData>, // match_number: noted_match_data
     matches: MatchData[]
 } = {
     competitionKey: "2025onham2",

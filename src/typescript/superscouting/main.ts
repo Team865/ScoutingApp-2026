@@ -17,5 +17,13 @@ async function refreshTBAData() {
     AppData.matches = backendData["match_data"];
 }
 
+async function initNotedData() {
+    AppData.notedTeamData.clear();
+
+    for(const match of AppData.matches) {
+        AppData.notedTeamData.set(match.number, new Map(match.teams.map(team => [team.team_number, ""])));
+    }
+}
+
 TeamListManager.start();
-refreshTBAData().then(TeamListManager.createTeamDivs).then(refreshStatboticsData);
+refreshTBAData().then(initNotedData).then(TeamListManager.createTeamDivs).then(refreshStatboticsData);

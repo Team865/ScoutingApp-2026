@@ -1,6 +1,7 @@
-import AppData, {TeamTag} from "../AppData.js";
-import { NotedTeamData } from '../AppData';
+import AppData from "../AppData.js";
 
 export namespace TeamNotesManager {
-    
+    export function setTeamNotes(matchNumber: number, teamNumber: number, notes: string) {
+        AppData.notedTeamData.get(matchNumber).set(teamNumber, notes);
+    }
 }

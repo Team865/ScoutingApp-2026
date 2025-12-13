@@ -1,4 +1,5 @@
 import AppData from "../../../AppData.js";
+import { TeamNotesManager } from "../../../managers/TeamNotesManager.js";
 import { titleCase, removeSuffix } from "../../../util/StringManipulation.js";
 import { bindAccordionBehavior } from "../../Accordion.js";
 import PopupDiv from "../../Popup/PopupDiv.js";
@@ -55,6 +56,7 @@ export default class TeamMatchContainer {
         bindTextEditorBehavior(this.noteTakingArea);
         this.initMatchDataPopup();
         this.viewMatchDataButton.addEventListener("click", (e) => this.viewMatchDataClicked(e));
+        this.noteTakingArea.addEventListener("focusout", () => this.notesChanged())
 
         this.toggleButton.appendChild(this.matchLabel);
         this.toggleButton.appendChild(this.viewMatchDataButton);
@@ -170,6 +172,26 @@ export default class TeamMatchContainer {
         e.stopPropagation();
         this.updateMatchDataPopup();
         this.matchDataPopup.show();
+    }
+
+    public notesChanged() {
+        // SEND DATA TO BACKEND HERE
+        TeamNotesManager.setTeamNotes(this.matchNumber, this.teamNumber, this.noteTakingArea.textContent);
+        console.log(AppData.notedTeamData);
+    }
+
+    public setText(text: string) {
+        const lines = text.split("\n");
+
+        this.noteTakingArea.innerHTML = null;
+
+        for(const [lineIndex, line] of lines.entries()) {
+            this.noteTakingArea.append(document.createTextNode(line));
+
+            if (lineIndex < lines.length - 1) {
+                this.noteTakingArea.append(document.createTextNode("\n"));
+            }
+        }
     }
 
     public toggle(force?: boolean) {
