@@ -1,4 +1,4 @@
-import AppData from "./AppData.js";
+import AppData, { MatchData } from "./AppData.js";
 import {updateEPA, fetchBackendData} from "./util/APIHelper.js";
 import {TeamListManager} from "./managers/TeamListManager.js";
 
@@ -23,6 +23,13 @@ async function initNotedData() {
     for(const match of AppData.matches) {
         AppData.notedTeamData.set(match.number, new Map(match.teams.map(team => [team.team_number, ""])));
     }
+}
+
+function handleMatchUpdate(e: MessageEvent) {
+    const newMatchData: MatchData = e.data;
+    const matchIndex = AppData.matches.findIndex(match => match.key === newMatchData.key);
+
+    AppData.matches[matchIndex] = newMatchData;
 }
 
 TeamListManager.start();
