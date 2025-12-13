@@ -184,14 +184,11 @@ def send_test_messages():
 
         
 
-#Put anything  that needs  to run only for testing here
-
-    
-
-
 
 if __name__ == "__main__":
     threading.Thread(target=poll_tba_matches, args=(appData, EVENT_KEY), daemon=True).start()
+
+    #Put anything  that needs  to run only for testing here
     if  int(config["TEST_MODE"]) == True:
         serve(app, host="0.0.0.0", port=5005, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)
         threading.Thread(target=send_test_messages, daemon=True).start()
