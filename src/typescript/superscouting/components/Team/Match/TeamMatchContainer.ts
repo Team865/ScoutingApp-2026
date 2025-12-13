@@ -146,7 +146,7 @@ export default class TeamMatchContainer {
 
             const scoreLabel = this.matchDataPopupTags[`${alliance}Score`];
             
-            scoreLabel.innerText = matchData[`${alliance}Score`].toString();
+            scoreLabel.innerText = matchData[`${alliance}_score`].toString();
 
             for(const [teamIndex, team] of teams.entries()) {
                 const teamLabel: HTMLHeadingElement = this.matchDataPopupTags[`${alliance}${teamIndex}TeamLabel`];
