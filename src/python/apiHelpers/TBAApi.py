@@ -15,6 +15,10 @@ __all__ = ["get_teams"]
 def _tba_get_request(path: str) -> dict | list:
     resp = get(f"{_TBA_API_ROOT}/{path}",
                         headers=_TBA_HEADER)
+    
+    if(not resp.ok):
+        raise ValueError(f"GET failed with HTTP code {resp.status_code} ({resp.reason}): {resp.json()}")
+
     return resp.json()
 
 def get_teams(event_key: str) -> list[TBATeamData]:
