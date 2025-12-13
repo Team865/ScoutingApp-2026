@@ -1,7 +1,6 @@
-import AppData, { FetchedTeamData, MatchData } from "./AppData.js";
-import {getMatches, getTBATeams, updateEPA, fetchBackendData} from "./util/APIHelper.js";
+import AppData from "./AppData.js";
+import {updateEPA, fetchBackendData} from "./util/APIHelper.js";
 import {TeamListManager} from "./managers/TeamListManager.js";
-import PopupDiv from "./components/Popup/PopupDiv.js";
 
 const refreshDataButton = document.getElementById("refresh-tba-data-button");
 const mainTag = document.querySelector("main");
