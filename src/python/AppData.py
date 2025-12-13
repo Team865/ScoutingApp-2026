@@ -1,7 +1,9 @@
 from typing import Literal, TypedDict
 from .apiHelpers.TBAApi import get_teams, get_matches, get_event_info
+from .apiHelpers.StatboticsAPI import update_epa
 from time import time
 import os
+from threading import Thread
 from dotenv import load_dotenv
 load_dotenv() 
 EVENT_KEY = os.getenv("EVENT_KEY")
@@ -58,9 +60,14 @@ class AppData:
         fetchedTeamData = {}
         self.event_key = event_key
         self.superscouting_data = SuperScoutingData()
-        self.fetchTBAData()
+        self.fetch_TBA_data()
+        self.fetch_statbotics_data_async()
+        
+    def fetch_statbotics_data_async(self):
+        # Fetch on a different thread
+        Thread(target=lambda: update_epa(self, self.event_key)).start()
 
-    def fetchTBAData(self):
+    def fetch_TBA_data(self):
         event_info = get_event_info(self.event_key)
         self.superscouting_data.event_name = event_info.get("name", "No event found")
         
@@ -68,7 +75,6 @@ class AppData:
         # Fetch team data first
         tbaTeams = get_teams(self.event_key)
         tbaTeams.sort(key=lambda team: team["team_number"])
-
         
         for teamJSon in tbaTeams:
             self.superscouting_data.fetched_team_data.append({
@@ -113,3 +119,5 @@ class AppData:
                 "blue_score": match_json["alliances"]["blue"]["score"],
                 "teams": teams_in_match
             })
+
+        print("Fetch complete")

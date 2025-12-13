@@ -127,27 +127,18 @@ async function genericGetRequest(apiEndpoint: string) {
     return await response.json();
 }
 
-export async function updateEPA(competitionKey: string) {
-    const statboticsTeamEventData: StatboticsTeamEventJSon[] = await genericGetRequest(`${statboticsAPIRoot}/team_events?event=${competitionKey}`);
-    
-    if (statboticsTeamEventData.length > 0) {
-        for (const statboticsData of statboticsTeamEventData) {
-            const teamData = AppData.fetchedTeamData.find(team => team.number === statboticsData.team);
-
-            teamData.epa = statboticsData.epa.total_points.mean;
-            teamData.normalized_epa = statboticsData.epa.norm;
-        }
-    } else {
-        for (const teamData of AppData.fetchedTeamData) {
-            const statboticsTeamData: StatboticsTeamData = await genericGetRequest(`${statboticsAPIRoot}/team/${teamData.number}`);
-            
-            teamData.normalized_epa = statboticsTeamData.norm_epa.current;
-        }
-    }
+export async function fetchBackendData() {
+    return await genericGetRequest(`${superscoutingAPIRoot}`);
 }
 
-export async function fetchBackendData() {
-    return await genericGetRequest(`${superscoutingAPIRoot}`)
+export async function updateEPA() {
+    const epaData: {[key: number]: {epa?: number, normalized_epa: number}} = await genericGetRequest(`${superscoutingAPIRoot}/epa`);
+
+    for(const [teamNumber, {epa, normalized_epa}] of Object.entries(epaData)) {
+        const teamData = AppData.fetchedTeamData.find(team => team.number === Number.parseInt(teamNumber));
+        teamData.epa = epa;
+        teamData.normalized_epa = normalized_epa;
+    }
 }
 
 // export async function getMatch(matchKey: string): Promise<TBAMatchJSon> {

@@ -17,6 +17,7 @@ from src.python.sse.TBAPoller import poll_tba_matches
 from src.python.sse.TBAPoller import sse_manager as tba_sse_manager
 import threading
 import json
+from typing import TypedDict
 from pathlib import Path
 from src.python.ConfigParser import parse_config
 load_dotenv()
@@ -52,7 +53,7 @@ except:
 ###
 
 # Create App Data
-appData = AppData(EVENT_KEY)
+app_data = AppData(EVENT_KEY)
 
 reader = geoip2.database.Reader("geo/GeoLite2-City.mmdb")
 ALLOWED_COUNTRIES = {"US", "CA"}
@@ -130,7 +131,27 @@ def get_matches(competition_key):
 # App API Endpoints
 @app.route("/api/superscouting")
 def get_superscouting_data():
-    return jsonify(appData.superscouting_data.serialized), 200
+    return jsonify(app_data.superscouting_data.serialized), 200
+
+@app.route("/api/superscouting/epa")
+def get_epa_data():
+    # Create JSon to return
+    class EPAGroup(TypedDict):
+        epa: float | None
+        normalized_epa: int
+    
+    epaJSon: dict[int, EPAGroup] = {}
+
+    for app_team_data in app_data.superscouting_data.fetched_team_data:
+        while "normalized_epa" not in app_team_data:
+            pass
+
+        epaJSon[app_team_data["number"]] = {
+            "epa": "epa" in app_team_data and app_team_data["epa"] or None,
+            "normalized_epa": app_team_data["normalized_epa"]
+        }
+
+    return jsonify(epaJSon)
 
 #SSE feed for TBA data  to clients
 @app.route("/api/sse/tba-match-updates")
@@ -164,7 +185,7 @@ def send_test_messages():
         tba_sse_manager.add_payload(message)
 
 if __name__ == "__main__":
-    threading.Thread(target=poll_tba_matches, args=(appData, EVENT_KEY), daemon=True).start()
+    threading.Thread(target=poll_tba_matches, args=(app_data, EVENT_KEY), daemon=True).start()
 
     #Put anything  that needs  to run only for testing here
     if  int(config["TEST_MODE"]) > 0:
