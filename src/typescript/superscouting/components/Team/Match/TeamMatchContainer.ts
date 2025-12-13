@@ -1,5 +1,6 @@
 import AppData from "../../../AppData.js";
-import { TeamNotesManager } from "../../../managers/TeamNotesManager.js";
+import { MatchNotesManager } from "../../../managers/TeamNotesManager.js";
+import { MatchNotesRequest } from "../../../util/APIHelper.js";
 import { titleCase, removeSuffix } from "../../../util/StringManipulation.js";
 import { bindAccordionBehavior } from "../../Accordion.js";
 import PopupDiv from "../../Popup/PopupDiv.js";
@@ -57,11 +58,12 @@ export default class TeamMatchContainer {
         this.initMatchDataPopup();
         this.viewMatchDataButton.addEventListener("click", (e) => this.viewMatchDataClicked(e));
         this.noteTakingArea.addEventListener("focusout", () => this.clientNotesChanged());
+        AppData.serverMatchNotesChanged.connect(e => this.serverNotesReceived(e));
 
-        AppData.serverMatchNotesChanged.connect(([matchNumber, teamNumber]: [matchNumber: number, teamNumber: number]) => {
-            if(matchNumber === this.matchNumber && teamNumber === this.teamNumber)
-                this.setText(AppData.notedTeamData.get(matchNumber).get(teamNumber));
-        });
+        { // Set preexisting notes if they exist
+            const preexistingNotes = MatchNotesManager.getNotes(teamNumber, matchNumber);
+            if(preexistingNotes) this.setText(preexistingNotes);
+        }
 
         this.toggleButton.appendChild(this.matchLabel);
         this.toggleButton.appendChild(this.viewMatchDataButton);
@@ -181,7 +183,20 @@ export default class TeamMatchContainer {
 
     public clientNotesChanged() {
         // SEND DATA TO BACKEND HERE
-        TeamNotesManager.setMatchNotesFromClient(this.matchNumber, this.teamNumber, this.noteTakingArea.textContent);
+        MatchNotesManager.setMatchNotesFromClient(this.teamNumber, this.matchNumber, this.noteTakingArea.textContent);
+    }
+
+    public serverNotesReceived([teamNumber, matchNumber]: [teamNumber: number, matchNumber: number]) {
+        if(
+            matchNumber !== this.matchNumber || 
+            teamNumber !== this.teamNumber
+        ) return;
+
+        const notes = MatchNotesManager.getNotes(teamNumber, matchNumber);
+
+        if(notes === this.noteTakingArea.textContent) return; // This client is the one that made the edit
+        
+        this.setText(notes);
     }
 
     public setText(text: string) {

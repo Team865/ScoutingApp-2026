@@ -21,9 +21,8 @@ def broadcast_match_update(appData: AppData, match_key: str):
     )
     if not match_obj:
         return
-
-    payload = "data: " + json.dumps(match_obj) + "\n\n"
-    sse_manager.add_payload(payload)
+    
+    sse_manager.add_payload(match_obj)
 
 def poll_tba_matches(appData: AppData, event_key: str):
     while True:

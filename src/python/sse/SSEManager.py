@@ -1,5 +1,6 @@
 from queue import Queue
 from typing import Generator, Any, NoReturn
+import json
 
 """
 A helper class for managing SSE clients for a given route
@@ -9,9 +10,8 @@ class SSEManager:
 
     def __init__(self):
         self.sse_clients = []
-
     
-    def register_client(self, client_queue: Queue = Queue()) -> Generator[Any, Any, NoReturn]:
+    def register_client(self, client_queue: Queue = None) -> Generator[Any, Any, NoReturn]:
         """
         Registers a client queue to the manager. Returns a generator function for the stream
         
@@ -22,6 +22,7 @@ class SSEManager:
             `Generator`: The generator stream. Can be used as the response argument when creating a Response object for an SSE route
         """
 
+        client_queue = client_queue or Queue()
         self.sse_clients.append(client_queue)
 
         def stream():
@@ -34,11 +35,13 @@ class SSEManager:
 
         return stream
 
-    def add_payload(self, payload: str):
+    def add_payload(self, payload: dict):
+        payloadStr = "data: " + json.dumps(payload) + "\n\n"
+
         dead_clients: list[Queue] = []
         for q in self.sse_clients:
             try:
-                q.put(payload)
+                q.put(payloadStr)
             except:
                 dead_clients.append(q)
 

@@ -1,5 +1,5 @@
 import AppData, { TeamTag } from "../../AppData.js";
-import { TeamNotesManager } from "../../managers/TeamNotesManager.js";
+import { MatchNotesManager } from "../../managers/TeamNotesManager.js";
 import { bindAccordionBehavior } from "../Accordion.js";
 import PopupDialog, { PopupExitCode } from "../Popup/PopupDialog.js";
 import MatchesPage from "./Match/Page.js";

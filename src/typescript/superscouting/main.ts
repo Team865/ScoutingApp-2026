@@ -1,7 +1,8 @@
 import AppData, { MatchData } from "./AppData.js";
-import { updateEPA, fetchBackendData } from "./util/APIHelper.js";
+import { updateEPA, fetchBackendData, MatchNotesRequest } from "./util/APIHelper.js";
 import { TeamListManager } from "./managers/TeamListManager.js";
 import { setPageTitle } from './util/PageTitle.js';
+import { MatchNotesManager } from "./managers/TeamNotesManager.js";
 const refreshDataButton = document.getElementById("refresh-tba-data-button");
 const mainTag = document.querySelector("main");
 
@@ -16,22 +17,16 @@ async function refreshTBAData() {
 
     AppData.fetchedTeamData = backendData["fetched_team_data"];
     AppData.matches = backendData["match_data"];
+    AppData.matchNotes = backendData["match_notes"];
     const eventName = backendData["event_name"];
     setPageTitle(eventName);
 }
 
-async function initNotedData() {
-    AppData.notedTeamData.clear();
+const tbaMatchDataSource = new EventSource("/api/sse/tba-match-updates");
+const matchNotesSource = new EventSource("/api/sse/server-match-notes");
 
-    for (const match of AppData.matches) {
-        AppData.notedTeamData.set(match.number, new Map(match.teams.map(team => [team.team_number, ""])));
-    }
-}
-const eventSource = new EventSource("/api/sse/tba-match-updates");
-eventSource.onmessage = function handleMatchUpdate(e: MessageEvent) {
+tbaMatchDataSource.onmessage = (e) => {
     const newMatchData: MatchData = JSON.parse(e.data);
-
-    console.log("Received SSE message:", newMatchData);
 
     const matchIndex = AppData.matches.findIndex(
         match => match.key === newMatchData.key
@@ -46,8 +41,13 @@ eventSource.onmessage = function handleMatchUpdate(e: MessageEvent) {
     }
 };
 
+matchNotesSource.onmessage = (e) => {
+    const newNotes: MatchNotesRequest = JSON.parse(e.data);
+    
+    MatchNotesManager.incomingMatchNotesFromServer(newNotes.team_number, newNotes.match_number, newNotes.notes);
+}
+
 TeamListManager.start();
 refreshTBAData()
-.then(initNotedData)
 .then(TeamListManager.createTeamDivs)
 .then(refreshStatboticsData)

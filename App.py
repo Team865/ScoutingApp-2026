@@ -13,8 +13,8 @@ from waitress import serve
 from src.python.AppData import AppData
 from pprint import pprint
 from queue import Queue
-from src.python.sse.TBAPoller import poll_tba_matches
-from src.python.sse.TBAPoller import sse_manager as tba_sse_manager
+import src.python.sse.TBAPoller as TBAPoller
+import src.python.sse.MatchNotes as MatchNotesManager
 import threading
 import json
 from typing import TypedDict
@@ -153,10 +153,35 @@ def get_epa_data():
 
     return jsonify(epaJSon)
 
-#SSE feed for TBA data  to clients
+@app.post("/api/superscouting/match-notes")
+def match_notes_from_client():
+    class MatchNotesJSon(TypedDict):
+        team_number: int
+        match_number: int
+        notes: str
+
+    match_notes: MatchNotesJSon = request.json
+    app_data.superscouting_data.set_match_notes(
+        match_notes["team_number"], 
+        match_notes["match_number"], 
+        match_notes["notes"]
+    )
+
+    MatchNotesManager.broadcast_match_notes(match_notes)
+
+    return {"message": "SUCCESS"}, 200
+
+#SSE feed for TBA data to clients
 @app.route("/api/sse/tba-match-updates")
 def match_updates():
-    stream = tba_sse_manager.register_client()
+    stream = TBAPoller.sse_manager.register_client()
+
+    return Response(stream(), mimetype="text/event-stream")
+
+# # SSE feed for superscouting match notes to clients
+@app.route("/api/sse/server-match-notes")
+def server_match_notes_feed():
+    stream = MatchNotesManager.sse_manager.register_client()
 
     return Response(stream(), mimetype="text/event-stream")
 
@@ -180,12 +205,10 @@ def send_test_messages():
             ]
         }
 
-        message = f"data: {json.dumps(payload)}\n\n"
-
-        tba_sse_manager.add_payload(message)
+        TBAPoller.sse_manager.add_payload(payload)
 
 if __name__ == "__main__":
-    threading.Thread(target=poll_tba_matches, args=(app_data, EVENT_KEY), daemon=True).start()
+    threading.Thread(target=TBAPoller.poll_tba_matches, args=(app_data, EVENT_KEY), daemon=True).start()
 
     #Put anything  that needs  to run only for testing here
     if  int(config["TEST_MODE"]) > 0:

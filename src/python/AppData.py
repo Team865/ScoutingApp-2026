@@ -2,11 +2,7 @@ from typing import Literal, TypedDict
 from .apiHelpers.TBAApi import get_teams, get_matches, get_event_info
 from .apiHelpers.StatboticsAPI import update_epa
 from time import time
-import os
 from threading import Thread
-from dotenv import load_dotenv
-load_dotenv() 
-EVENT_KEY = os.getenv("EVENT_KEY")
 """
 This python class will act as a container for all of the App Data used by the backend
 """
@@ -36,18 +32,30 @@ class MatchData(TypedDict):
 
 class SuperScoutingData:
     fetched_team_data: list[FetchedTeamData]
+
+    # {
+    #     match_number: {
+    #         team_number: notes
+    #     }
+    # }
+    match_notes: dict[int, dict[int, str]]
+
     match_data: list[MatchData]
     event_name: str
 
     def __init__(self):
         self.fetched_team_data = []
+        self.match_notes = {}
         self.match_data = []
-        
+    
+    def set_match_notes(self, team_number: int, match_number: int, notes: str):
+        self.match_notes[team_number][match_number] = notes
 
     @property
     def serialized(self):
         return {
             "fetched_team_data": self.fetched_team_data,
+            "match_notes": self.match_notes,
             "match_data": self.match_data,
             "event_name": self.event_name
         }
@@ -57,10 +65,14 @@ class AppData:
     superscouting_data: SuperScoutingData
 
     def __init__(self, event_key: str):
-        fetchedTeamData = {}
         self.event_key = event_key
         self.superscouting_data = SuperScoutingData()
         self.fetch_TBA_data()
+
+        # Create match notes dictionaries
+        for team in self.superscouting_data.fetched_team_data:
+            self.superscouting_data.match_notes[team["number"]] = {}
+
         self.fetch_statbotics_data_async()
         
     def fetch_statbotics_data_async(self):
@@ -119,5 +131,3 @@ class AppData:
                 "blue_score": match_json["alliances"]["blue"]["score"],
                 "teams": teams_in_match
             })
-
-        print("Fetch complete")

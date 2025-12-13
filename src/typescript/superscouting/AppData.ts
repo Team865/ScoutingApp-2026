@@ -16,7 +16,6 @@ export type TeamTag = {
     bgColor: Value<Color>,
     textColor: Value<Color>
 };
-export type NotedMatchData = Map<number, string>; // team_number: notes
 
 export type MatchData = {
     key: string
@@ -32,12 +31,19 @@ export type MatchData = {
 
 const AppData: {
     fetchedTeamData: FetchedTeamData[],
-    notedTeamData: Map<number, NotedMatchData>, // match_number: noted_match_data
-    serverMatchNotesChanged: Signal<[number, number]>,
+    /* Match Notes format:
+    {
+        team_number: {
+            match_number: notes
+        }
+    }
+    */
+    matchNotes: {[key: number]: {[key: number]: string}},
+    serverMatchNotesChanged: Signal<[number, number]>, // [team_number, match_number]
     matches: MatchData[]
 } = {
     fetchedTeamData: [],
-    notedTeamData: new Map(),
+    matchNotes: {},
     serverMatchNotesChanged: new Signal(),
     matches: []
 };
