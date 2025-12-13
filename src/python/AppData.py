@@ -1,5 +1,5 @@
 from typing import Literal, TypedDict
-from .apiHelpers.TBAApi import get_teams, get_matches
+from .apiHelpers.TBAApi import get_teams, get_matches, get_event_info
 from time import time
 import os
 from dotenv import load_dotenv
@@ -35,16 +35,19 @@ class MatchData(TypedDict):
 class SuperScoutingData:
     fetched_team_data: list[FetchedTeamData]
     match_data: list[MatchData]
+    event_name: str
 
     def __init__(self):
         self.fetched_team_data = []
         self.match_data = []
+        
 
     @property
     def serialized(self):
         return {
             "fetched_team_data": self.fetched_team_data,
-            "match_data": self.match_data
+            "match_data": self.match_data,
+            "event_name": self.event_name
         }
 
 class AppData:
@@ -58,10 +61,14 @@ class AppData:
         self.fetchTBAData()
 
     def fetchTBAData(self):
+        event_info = get_event_info(self.event_key)
+        self.superscouting_data.event_name = event_info.get("name", "No event found")
+        
         startTime = time()
         # Fetch team data first
         tbaTeams = get_teams(self.event_key)
         tbaTeams.sort(key=lambda team: team["team_number"])
+
         
         for teamJSon in tbaTeams:
             self.superscouting_data.fetched_team_data.append({
@@ -106,5 +113,3 @@ class AppData:
                 "blue_score": match_json["alliances"]["blue"]["score"],
                 "teams": teams_in_match
             })
-appData = AppData(EVENT_KEY)
-#Is this sketchy? Its functionally the same as the other way of calling it but it makes it cleaner  in app.py

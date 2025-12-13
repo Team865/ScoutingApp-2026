@@ -26,3 +26,6 @@ def get_teams(event_key: str) -> list[TBATeamData]:
 
 def get_matches(event_key: str) -> list[TBAMatchData]:
     return _tba_get_request(f"event/{event_key}/matches/simple")
+
+def get_event_info(event_key: str) -> dict:
+    return _tba_get_request(f"event/{event_key}")

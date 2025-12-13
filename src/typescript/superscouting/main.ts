@@ -1,9 +1,10 @@
 import AppData, { MatchData } from "./AppData.js";
 import {updateEPA, fetchBackendData} from "./util/APIHelper.js";
 import {TeamListManager} from "./managers/TeamListManager.js";
-
+import { setPageTitle } from './util/PageTitle.js';
 const refreshDataButton = document.getElementById("refresh-tba-data-button");
 const mainTag = document.querySelector("main");
+
 
 async function refreshStatboticsData() {
     await updateEPA(AppData.competitionKey);
@@ -15,6 +16,8 @@ async function refreshTBAData() {
 
     AppData.fetchedTeamData = backendData["fetched_team_data"];
     AppData.matches = backendData["match_data"];
+    const eventName = backendData["event_name"];
+    setPageTitle(eventName);
 }
 
 async function initNotedData() {
@@ -25,7 +28,6 @@ async function initNotedData() {
     }
 }
 const eventSource = new EventSource("/api/sse/match-updates");
-
 eventSource.onmessage = function handleMatchUpdate(e: MessageEvent) {
     const newMatchData: MatchData = JSON.parse(e.data);
 
