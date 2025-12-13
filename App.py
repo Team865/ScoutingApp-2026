@@ -10,6 +10,8 @@ import gspread
 from werkzeug.middleware.proxy_fix import ProxyFix
 from google.oauth2.service_account import Credentials
 from waitress import serve
+from src.python.AppData import AppData
+from pprint import pprint
 load_dotenv()
 
 app = Flask(__name__)
@@ -17,12 +19,14 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 trusted_proxy_headers = "x-forwarded-for x-forwarded-host x-forwarded-proto x-forwarded-port"
 
 API_KEY = os.getenv("TBA_API_KEY")
-ROOT_URL = "https://www.thebluealliance.com/api/v3"
+EVENT_KEY = os.getenv("EVENT_KEY")
+TBA_ROOT_URL = "https://www.thebluealliance.com/api/v3"
 LOCAL_HOST_REGEX = re.compile(r"127\.\d+\.\d+\.\d+")
 LAN_REGEX = re.compile(r"192\.\d+\.\d+\.\d+")
 SHEETS_ID =os.getenv("SHEETS_ID")
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
+### Check for prerequisite files
 try: 
     creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
 except:
@@ -35,6 +39,10 @@ try:
 except:
     print('WARNING: Google sheet not set. Have you set the id in .env?')
     sys.exit(0)
+###
+
+# Create App Data
+appData = AppData(EVENT_KEY)
 
 reader = geoip2.database.Reader("geo/GeoLite2-City.mmdb")
 ALLOWED_COUNTRIES = {"US", "CA"}
@@ -89,24 +97,29 @@ def superscouting():
 def analysis():
     return render_template("analysis.html")
 
+# TBA Calls
 @app.route("/api/tba/event/<competition_key>/info")
 def get_event_info(competition_key):
-    resp = requests.get(f"{ROOT_URL}/event/{competition_key}",
+    resp = requests.get(f"{TBA_ROOT_URL}/event/{competition_key}",
                         headers={"X-TBA-Auth-Key": API_KEY})
     return jsonify(resp.json()), resp.status_code
 
 @app.route("/api/tba/event/<competition_key>/teams")
 def get_teams(competition_key):
-    resp = requests.get(f"{ROOT_URL}/event/{competition_key}/teams/simple",
+    resp = requests.get(f"{TBA_ROOT_URL}/event/{competition_key}/teams/simple",
                         headers={"X-TBA-Auth-Key": API_KEY})
     return jsonify(resp.json()), resp.status_code
 
 @app.route("/api/tba/event/<competition_key>/matches")
 def get_matches(competition_key):
-    resp = requests.get(f"{ROOT_URL}/event/{competition_key}/matches/simple",
+    resp = requests.get(f"{TBA_ROOT_URL}/event/{competition_key}/matches/simple",
                         headers={"X-TBA-Auth-Key": API_KEY})
     return jsonify(resp.json()), resp.status_code
 
+# App API Endpoints
+@app.route("/api/superscouting")
+def get_superscouting_data():
+    return jsonify(appData.superscouting_data.serialized), 200
+
 if __name__ == "__main__":
-    
     serve(app, host="0.0.0.0", port=5000, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)

@@ -4,3 +4,4 @@ build/
 .env
 package-lock.json
 service_account.json
+__pycache__

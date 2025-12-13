@@ -6,7 +6,7 @@ export type FetchedTeamData = {
     name: string,
     number: number,
     key: string,
-    matchKeys?: string[],
+    match_keys?: string[],
     epa?: number,
     normalized_epa?: number
 }
@@ -23,11 +23,11 @@ export type NotedTeamData = {
 export type MatchData = {
     key: string
     number: number,
-    compLevel: string,
-    redScore: number,
-    blueScore: number,
+    comp_level: string,
+    red_score: number,
+    blue_score: number,
     teams: {
-        teamNumber: number,
+        team_number: number,
         alliance: "red" | "blue"
     }[]
 }

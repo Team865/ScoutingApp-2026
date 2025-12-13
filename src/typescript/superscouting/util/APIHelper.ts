@@ -1,6 +1,8 @@
 import AppData from "../AppData.js";
 
-const tbaAPIRoot = "/api/tba";
+const backendAPIRoot = "/api"
+const superscoutingAPIRoot = `${backendAPIRoot}/superscouting`
+const tbaAPIRoot = `${backendAPIRoot}/tba`;
 const statboticsAPIRoot = "https://api.statbotics.io/v3";
 
 export type TBAEventJSon = {
@@ -306,6 +308,10 @@ export async function getTBATeams(competitionKey: string): Promise<TBATeamJSon[]
 
 export async function getMatches(competitionKey: string): Promise<TBAMatchJSon[]> {
     return await genericGetRequest(`${tbaAPIRoot}/event/${competitionKey}/matches`);
+}
+
+export async function fetchBackendData() {
+    return await genericGetRequest(`${superscoutingAPIRoot}`)
 }
 
 // export async function getMatch(matchKey: string): Promise<TBAMatchJSon> {

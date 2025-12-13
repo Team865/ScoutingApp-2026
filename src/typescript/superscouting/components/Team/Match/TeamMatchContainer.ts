@@ -43,7 +43,7 @@ export default class TeamMatchContainer {
         this.matchNumber = matchNumber;
 
         const matchData = AppData.matches.find(v => v.number === matchNumber);
-        const alliance = matchData.teams.find(v => v.teamNumber === teamNumber).alliance;
+        const alliance = matchData.teams.find(v => v.team_number === teamNumber).alliance;
 
         this.matchContainer.classList.add("team-match");
         this.toggleButton.classList.add("accordion-toggle", `${alliance.toLowerCase()}-alliance`);
@@ -135,9 +135,9 @@ export default class TeamMatchContainer {
     private updateMatchDataPopup() {
         const matchData = AppData.matches.find(v => v.number === this.matchNumber);
         const winningAlliance = 
-            (matchData.redScore === matchData.blueScore) ? 
+            (matchData.red_score === matchData.blue_score) ? 
             "neither" :
-            (matchData.redScore > matchData.blueScore) ? "red" : "blue";
+            (matchData.red_score > matchData.blue_score) ? "red" : "blue";
 
         const updateAlliance = (alliance: "red" | "blue") => {
             const teams = matchData.teams.filter(team => team.alliance === alliance);
@@ -150,8 +150,8 @@ export default class TeamMatchContainer {
                 const teamLabel: HTMLHeadingElement = this.matchDataPopupTags[`${alliance}${teamIndex}TeamLabel`];
                 const teamImage: HTMLImageElement = this.matchDataPopupTags[`${alliance}${teamIndex}TeamImage`];
 
-                teamImage.src = `https://www.thebluealliance.com/avatar/2025/frc${team.teamNumber}.png`;
-                teamLabel.innerText = team.teamNumber.toString();
+                teamImage.src = `https://www.thebluealliance.com/avatar/2025/frc${team.team_number}.png`;
+                teamLabel.innerText = team.team_number.toString();
             }
             
             const allianceTitle = this.matchDataPopupTags[`${alliance}Title`];

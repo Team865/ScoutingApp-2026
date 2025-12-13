@@ -30,7 +30,7 @@ export default class MatchesPage implements Page {
         this.expandAllButton.addEventListener("click", () => this.teamMatchContainers.forEach(container => container.toggle(true)));
         this.collapseAllButton.addEventListener("click", () => this.teamMatchContainers.forEach(container => container.toggle(false)));
 
-        for(const matchKey of teamData.matchKeys) {
+        for(const matchKey of teamData.match_keys) {
             const matchData = AppData.matches.find(v => v.key === matchKey);
             this.teamMatchContainers.set(matchKey, new TeamMatchContainer(teamNumber, matchData.number, this.matchList));
         }
