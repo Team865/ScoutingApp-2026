@@ -36,7 +36,6 @@ LAN_REGEX = re.compile(r"192\.\d+\.\d+\.\d+")
 SHEETS_ID =os.getenv("SHEETS_ID")
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-
 ### Check for prerequisite files
 try: 
     creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
@@ -44,6 +43,7 @@ except:
     print('WARNING: Google credentials not found. Have you set up the service_account JSON?')
     sys.exit(0)
 
+print("Authorizing spreadsheet...")
 gc = gspread.authorize(creds)
 try: 
     sheet = gc.open_by_key(SHEETS_ID).sheet1
@@ -51,9 +51,9 @@ except:
     print('WARNING: Google sheet not set. Have you set the id in .env?')
     sys.exit(0)
 ###
+print("Spreadsheet Authorized!")
 
-# Create App Data
-app_data = AppData(EVENT_KEY)
+app_data: AppData
 
 reader = geoip2.database.Reader("geo/GeoLite2-City.mmdb")
 ALLOWED_COUNTRIES = {"US", "CA"}
@@ -208,11 +208,18 @@ def send_test_messages():
         TBAPoller.sse_manager.add_payload(payload)
 
 if __name__ == "__main__":
+    is_test_mode = int(config["TEST_MODE"]) > 0
+    port = 5005 if is_test_mode else 5000
+
+    print("Creating App Data...")
+    app_data = AppData(EVENT_KEY)
+    print("App Data initialized!")
+
     threading.Thread(target=TBAPoller.poll_tba_matches, args=(app_data, EVENT_KEY), daemon=True).start()
 
     #Put anything  that needs  to run only for testing here
-    if  int(config["TEST_MODE"]) > 0:
+    if is_test_mode:
         threading.Thread(target=send_test_messages, daemon=True).start()
-        serve(app, host="0.0.0.0", port=5005, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)
-    else:
-        serve(app, host="0.0.0.0", port=5000, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)
+
+    print(f"\n===STARTING SERVER ON PORT {port}===\nAccess it locally at http://localhost:{port}")
+    serve(app, host="0.0.0.0", port=port, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)
