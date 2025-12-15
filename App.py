@@ -20,6 +20,7 @@ import json
 from typing import TypedDict
 from pathlib import Path
 from src.python.ConfigParser import parse_config
+from src.python.debug.DebugMenu import DebugMenu
 load_dotenv()
 
 APP_DIR = Path(__file__).resolve().parent
@@ -206,6 +207,22 @@ def send_test_messages():
         }
 
         TBAPoller.sse_manager.add_payload(payload)
+
+def debug_menu_behavior():
+    DEBUG_MENU = DebugMenu()
+
+    def stream():
+        while True:
+            yield DEBUG_MENU.message_queue.get()
+
+    for message in stream():
+        match message:
+            case "print_tba_clients":
+                print(len(TBAPoller.sse_manager.sse_clients), "match update clients")
+            case "print_match_notes_clients":
+                print(len(MatchNotesManager.sse_manager.sse_clients), "match note clients")
+            case _:
+                print("Message received:", message)
 
 if __name__ == "__main__":
     is_test_mode = int(config["TEST_MODE"]) > 0
