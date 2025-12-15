@@ -2,7 +2,7 @@ import { insertString, removePrefix, removeSuffix } from "../../../util/StringMa
 
 export default function bindTextEditorBehavior(textEditorDiv: HTMLDivElement) {
     textEditorDiv.contentEditable = "plaintext-only";
-    textEditorDiv.style.whiteSpace = "pre";
+    textEditorDiv.style.whiteSpace = "pre-wrap";
 
     // Returns null if the selection isn't valid
     const getSelection = (): Selection | null => {
