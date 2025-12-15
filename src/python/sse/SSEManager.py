@@ -1,4 +1,4 @@
-from queue import Queue
+from queue import Queue, Empty
 from typing import Generator, Any, NoReturn
 import json
 
@@ -28,7 +28,11 @@ class SSEManager:
         def stream():
             try:
                 while True:
-                    yield client_queue.get()
+                    try:
+                        data = client_queue.get(timeout=15)
+                        yield data
+                    except Empty:
+                        yield ": keep-alive\n\n"
             finally:
                 if client_queue in self.sse_clients:
                     self.sse_clients.remove(client_queue)
