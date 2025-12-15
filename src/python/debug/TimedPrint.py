@@ -1,7 +1,9 @@
 from time import time
 from math import floor, ceil, copysign
+from typing import Callable
+import functools
 
-__all__ = ["start", "end"]
+__all__ = ["start", "end", "timed"]
 
 _time_starts: dict[str, float] = {}
 
@@ -44,3 +46,38 @@ def end(label: str = "default", num_decimals: int = None):
     del _time_starts[label]
     
     print(f"Time taken{f" for timer {label}" if label != "default" else ""}: {time_taken} seconds")
+
+def timed(print_msg: str | Callable[[float], str] = None, num_decimals: int = None):
+    """
+    Makes a function print the time it takes to complete in seconds.
+    
+    :param print_msg: A string to print before printing the time taken, or a function that takes in the time taken to return the string to print.
+    :type print_msg: str
+    :param num_decimals: How many decimals do you want to print. Is None by default, meaning it prints as many as it can.
+    :type num_decimals: int
+    """
+
+    def timed(function_to_time: Callable):
+        @functools.wraps(function_to_time)
+        def wrapper(*args, **kwargs):
+            start_time = time()
+            function_to_time(*args, **kwargs)
+            time_taken = time() - start_time
+
+            msg: str
+
+            if num_decimals:
+                time_taken = conventional_round(time_taken, num_decimals)
+
+            if isinstance(print_msg, str):
+                msg = print_msg + f"{time_taken}s"
+            elif isinstance(print_msg, Callable):
+                msg = print_msg(time_taken)
+            else:
+                msg = f"{function_to_time.__name__}: {time_taken}s"
+
+            print(msg)
+
+        return wrapper
+    
+    return timed
