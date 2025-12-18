@@ -11,6 +11,9 @@
     --red-alliance: oklab(52% 0.15 0.08);
     --blue-alliance-light: oklab(65% 0.02 -0.25);
     --red-alliance-light: oklab(65% 0.15 0.08);
+
+    --bg-complete: oklab(52% -0.13 0.07);
+    --bg-complete-light: oklab(64% -0.13 0.07);
     
     box-sizing: border-box;
 }

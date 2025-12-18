@@ -16,3 +16,21 @@ div.pit-scouting-container input[type="checkbox"] {
 div.pit-scouting-container input[type="checkbox"]:hover {
     background-color: var(--bg-dark);
 }
+
+button.submit-pit-scouting {
+    background-color: var(--accent);
+    transition: 0.1s scale ease-in-out;
+}
+
+button.submit-pit-scouting:hover {
+    scale: 1.01;
+}
+
+div.accordion-body:has(button[value="Pit Scouting"].complete) button.submit-pit-scouting,
+button[value="Pit Scouting"].complete {
+    background-color: var(--bg-complete);
+}
+
+button[value="Pit Scouting"].complete:hover {
+    background-color: var(--bg-complete-light);
+}

@@ -4,15 +4,23 @@ export default class NumberField implements Field {
     public name: string;
     private readonly fieldContainer = document.createElement("div");
     private readonly title = document.createElement("h2");
-    private readonly textInput = document.createElement("input");
+    private readonly numberInput = document.createElement("input");
 
     constructor(teamNumber: number, name: string) {
         this.name = name;
 
-        this.textInput.type = "number";
+        this.numberInput.type = "number";
         this.title.innerText = name;
         this.fieldContainer.appendChild(this.title);
-        this.fieldContainer.appendChild(this.textInput);
+        this.fieldContainer.appendChild(this.numberInput);
+    }
+
+    get value(): [isIncomplete: boolean, data: number | undefined] {
+        const strValue = this.numberInput.value;
+
+        if(!strValue) return [true, undefined];
+
+        return [false, Number.parseFloat(strValue)];
     }
 
     get domElement() {

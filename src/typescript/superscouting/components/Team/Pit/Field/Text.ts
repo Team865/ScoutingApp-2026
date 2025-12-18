@@ -14,6 +14,14 @@ export default class TextField implements Field {
         this.fieldContainer.appendChild(this.textInput);
     }
 
+    get value(): [isIncomplete: boolean, data: string | undefined] {
+        const strValue = this.textInput.value;
+
+        if(!strValue) return [true, undefined];
+        
+        return [false, strValue];
+    }
+
     get domElement() {
         return this.fieldContainer;
     }

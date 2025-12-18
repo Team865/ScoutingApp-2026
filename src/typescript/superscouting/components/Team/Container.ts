@@ -6,6 +6,7 @@ import MatchesPage from "./Match/Page.js";
 import Page from "./Page.js";
 import SummaryPage from "./SummaryPage.js";
 import PitScoutingPage from "./Pit/Page.js";
+import FieldInterface from "./Pit/Field/FieldInterface.js";
 
 export default class TeamContainer {
     private readonly containerDiv = document.createElement("div");
@@ -22,6 +23,7 @@ export default class TeamContainer {
         tabButton?: HTMLButtonElement,
         page: Page
     }>;
+
     private currentPageName: string;
 
     private teamName: string;
@@ -80,6 +82,13 @@ export default class TeamContainer {
 
         this.pages.get(this.currentPageName).page.show(this.pageContainer);
 
+        // Set pit scouting submit button
+        {
+            const pitScoutingPageInfo = (this.pages.get("Pit Scouting"));
+            (pitScoutingPageInfo.page as PitScoutingPage)
+                .submitPitScoutingButton.addEventListener("click", () => this.submitPitScouting(pitScoutingPageInfo));
+        }
+
         // Add child elements
         this.contentsDiv.appendChild(this.tabsContainer);
         this.contentsDiv.appendChild(this.pageContainer);
@@ -110,6 +119,28 @@ export default class TeamContainer {
 
     public updateStatboticStats() {
         (this.pages.get("Summary").page as SummaryPage).updateData()
+    }
+
+    public submitPitScouting(pitScoutingPageInfo: {tabButton?: HTMLButtonElement, page: Page}) {
+        const pitScoutingPage = pitScoutingPageInfo.page as PitScoutingPage;
+        const tabButton = pitScoutingPageInfo.tabButton;
+
+        const scoutingData = pitScoutingPage.getData;
+
+        if(scoutingData.isIncomplete) {
+            const missingField = scoutingData.data as FieldInterface;
+            missingField.domElement.scrollIntoView();
+            alert(`Missing field: ${missingField.name}`);
+            return;
+        }
+
+        tabButton.classList.add("complete");
+        pitScoutingPage.submitPitScoutingButton.innerText = "Resubmit";
+
+        AppData.pitscoutingNotes[this.teamNumber] = scoutingData.data;
+
+        this.containerDiv.scrollIntoView();
+        this.switchToPage("Summary");
     }
 
     private switchToPage(pageName: string): void {

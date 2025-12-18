@@ -7,9 +7,10 @@ export enum FieldType {
     MULTIPLE_CHOICE
 }
 
-type FieldConfig = {
+export type FieldConfig = {
     name: string,
     type: FieldType,
+    isOptional?: boolean,
     [key: string]: unknown
 }
 
@@ -21,11 +22,16 @@ const Fields: FieldConfig[] = [
     },
     {
         name: "Robot Size",
-        type: FieldType.TEXT
+        type: FieldType.TEXT,
+        isOptional: true
     },
     {
         name: "/w Bumpers?",
         type: FieldType.BOOLEAN,
+    },
+    {
+        name: "Test Number Field",
+        type: FieldType.NUMBER
     },
     {
         name: "Coral Scoring Locations",

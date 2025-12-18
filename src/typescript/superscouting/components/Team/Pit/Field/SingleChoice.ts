@@ -4,6 +4,7 @@ export default class SingleChoiceField implements Field {
     public name: string;
     private readonly fieldContainer = document.createElement("div");
     private readonly title = document.createElement("h2");
+    private currentChoice?: string;
 
     private radioChoices: Map<string, HTMLInputElement> = new Map();
 
@@ -28,8 +29,17 @@ export default class SingleChoiceField implements Field {
             choiceContainer.appendChild(label);
             this.fieldContainer.appendChild(choiceContainer);
 
+            radio.addEventListener("click", () => this.currentChoice = choice);
+
             this.radioChoices.set(choice, radio);
         }
+    }
+
+    get value(): [isIncomplete: boolean, data: string | undefined] {
+        if(this.currentChoice === undefined || this.currentChoice === null)
+            return [true, undefined];
+        
+        return [false, this.currentChoice];
     }
 
     get domElement() {

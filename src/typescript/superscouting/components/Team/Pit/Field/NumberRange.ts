@@ -26,6 +26,12 @@ export default class NumberRangeField implements Field {
         );
     }
 
+    get value(): [isIncomplete: boolean, data: number] {
+        const strValue = this.input.value;
+
+        return [false, Number.parseFloat(strValue)];
+    }
+
     get domElement() {
         return this.fieldContainer;
     }

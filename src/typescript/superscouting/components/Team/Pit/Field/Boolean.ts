@@ -20,6 +20,10 @@ export default class BooleanField implements FieldInterface {
         this.mainContainer.append(this.checkbox, this.title);
     }
 
+    get value(): [isIncomplete: boolean, data: boolean] {
+        return [false, this.checkbox.checked];
+    }
+
     get domElement() {
         return this.mainContainer;
     }
