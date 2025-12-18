@@ -36,6 +36,14 @@ export default class MultipleChoiceField implements Field {
         }
     }
 
+    public setValue(selectedChoices: string[]) {
+        for(const [choiceName, checkbox] of this.checkboxes.entries()) {
+            const value = selectedChoices.includes(choiceName);
+
+            checkbox.checked = value;
+        }
+    }
+
     get value(): [isIncomplete: boolean, data: string[]] {
         const selectedChoices: string[] = [];
 

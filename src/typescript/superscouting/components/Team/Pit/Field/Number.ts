@@ -15,6 +15,10 @@ export default class NumberField implements Field {
         this.fieldContainer.appendChild(this.numberInput);
     }
 
+    public setValue(value: number) {
+        this.numberInput.value = value.toString();
+    }
+
     get value(): [isIncomplete: boolean, data: number | undefined] {
         const strValue = this.numberInput.value;
 

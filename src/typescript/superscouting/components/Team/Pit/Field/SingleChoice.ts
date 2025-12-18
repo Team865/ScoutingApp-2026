@@ -35,6 +35,10 @@ export default class SingleChoiceField implements Field {
         }
     }
 
+    public setValue(choice: string) {
+        this.radioChoices.get(choice).checked = true;
+    }
+
     get value(): [isIncomplete: boolean, data: string | undefined] {
         if(this.currentChoice === undefined || this.currentChoice === null)
             return [true, undefined];

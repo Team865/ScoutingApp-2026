@@ -26,6 +26,11 @@ export default class NumberRangeField implements Field {
         );
     }
 
+    public setValue(value: number) {
+        this.input.value = value.toString();
+        this.output.value = this.input.value;
+    }
+
     get value(): [isIncomplete: boolean, data: number] {
         const strValue = this.input.value;
 
