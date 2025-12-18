@@ -1,5 +1,5 @@
 import AppData from "../../../AppData.js";
-import { MatchNotesManager } from "../../../managers/TeamNotesManager.js";
+import { TeamNotesManager } from "../../../managers/TeamNotesManager.js";
 import { MatchNotesRequest } from "../../../util/APIHelper.js";
 import { titleCase, removeSuffix } from "../../../util/StringManipulation.js";
 import { bindAccordionBehavior } from "../../Accordion.js";
@@ -61,7 +61,7 @@ export default class TeamMatchContainer {
         AppData.serverMatchNotesChanged.connect(e => this.serverNotesReceived(e));
 
         { // Set preexisting notes if they exist
-            const preexistingNotes = MatchNotesManager.getNotes(teamNumber, matchNumber);
+            const preexistingNotes = TeamNotesManager.getMatchNotes(teamNumber, matchNumber);
             if(preexistingNotes) this.setText(preexistingNotes);
         }
 
@@ -183,7 +183,7 @@ export default class TeamMatchContainer {
 
     public clientNotesChanged() {
         // SEND DATA TO BACKEND HERE
-        MatchNotesManager.setMatchNotesFromClient(this.teamNumber, this.matchNumber, this.noteTakingArea.textContent);
+        TeamNotesManager.setMatchNotesFromClient(this.teamNumber, this.matchNumber, this.noteTakingArea.textContent);
     }
 
     public serverNotesReceived([teamNumber, matchNumber]: [teamNumber: number, matchNumber: number]) {
@@ -192,7 +192,7 @@ export default class TeamMatchContainer {
             teamNumber !== this.teamNumber
         ) return;
 
-        const notes = MatchNotesManager.getNotes(teamNumber, matchNumber);
+        const notes = TeamNotesManager.getMatchNotes(teamNumber, matchNumber);
 
         if(notes === this.noteTakingArea.textContent) return; // This client is the one that made the edit
         

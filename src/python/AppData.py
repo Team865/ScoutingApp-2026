@@ -1,4 +1,4 @@
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, Any
 from .apiHelpers.TBAApi import get_teams, get_matches, get_event_info
 from .apiHelpers.StatboticsAPI import update_epa
 from time import time
@@ -29,7 +29,6 @@ class MatchData(TypedDict):
     blue_score: int
     teams: list[Team]
 
-
 class SuperScoutingData:
     fetched_team_data: list[FetchedTeamData]
 
@@ -40,6 +39,13 @@ class SuperScoutingData:
     # }
     match_notes: dict[int, dict[int, str]]
 
+    # {
+    #     team_number: {
+    #         field_name: field_value
+    #     }
+    # }
+    pit_scouting_notes: dict[int, dict[str, Any]]
+
     match_data: list[MatchData]
     event_name: str
 
@@ -47,15 +53,20 @@ class SuperScoutingData:
         self.fetched_team_data = []
         self.match_notes = {}
         self.match_data = []
+        self.pit_scouting_notes = []
     
     def set_match_notes(self, team_number: int, match_number: int, notes: str):
         self.match_notes[team_number][match_number] = notes
+
+    def set_pit_scouting_notes(self, team_number: int, notes: dict[str, Any]):
+        self.match_notes[team_number] = notes
 
     @property
     def serialized(self):
         return {
             "fetched_team_data": self.fetched_team_data,
             "match_notes": self.match_notes,
+            "pit_scouting_notes": self.pit_scouting_notes,
             "match_data": self.match_data,
             "event_name": self.event_name
         }

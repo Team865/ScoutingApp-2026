@@ -11,6 +11,11 @@ export type MatchNotesRequest = {
     notes: string
 }
 
+export type PitScoutingNotesRequest = {
+    team_number: number,
+    data: {[key: string]: any}
+}
+
 async function genericGetRequest(apiEndpoint: string) {
     const response = await fetch(apiEndpoint);
     if (!response.ok) {
@@ -51,6 +56,10 @@ export async function updateEPA() {
 
 export async function sendMatchNotesFromClient(matchNotes: MatchNotesRequest) {
     return await genericPostRequest(`${superscoutingAPIRoot}/match-notes`, JSON.stringify(matchNotes));
+}
+
+export async function sendPitScoutingNotesFromClient(pitScoutingNotes: PitScoutingNotesRequest) {
+    return await genericPostRequest(`${superscoutingAPIRoot}/pit-scouting-notes`, JSON.stringify(pitScoutingNotes));
 }
 
 // export async function getMatch(matchKey: string): Promise<TBAMatchJSon> {

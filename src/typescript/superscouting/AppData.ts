@@ -39,18 +39,20 @@ const AppData: {
     }
     */
     matchNotes: {[key: number]: {[key: number]: string}},
-    pitscoutingNotes: {
+    pitScoutingNotes: {
         [key: number]: { // Team number
             [key: string]: any, // {field_name: field_value}
         }
     },
     serverMatchNotesChanged: Signal<[number, number]>, // [team_number, match_number]
+    serverPitScoutingNotesChanged: Signal<number>, // team_number
     matches: MatchData[]
 } = {
     fetchedTeamData: [],
     matchNotes: {},
-    pitscoutingNotes: {},
+    pitScoutingNotes: {},
     serverMatchNotesChanged: new Signal(),
+    serverPitScoutingNotesChanged: new Signal(),
     matches: []
 };
 

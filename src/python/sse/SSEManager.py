@@ -40,7 +40,7 @@ class SSEManager:
         return stream
 
     def add_payload(self, payload: dict):
-        payloadStr = "data: " + json.dumps(payload) + "\n\n"
+        payloadStr = f"data: {json.dumps(payload)}\n\n"
 
         dead_clients: list[Queue] = []
         for q in self.sse_clients:

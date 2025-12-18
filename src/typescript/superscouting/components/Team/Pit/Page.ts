@@ -8,6 +8,7 @@ import NumberRangeField from "./Field/NumberRange.js";
 import MultipleChoiceField from "./Field/MultipleChoice.js";
 import BooleanField from "./Field/Boolean.js";
 import NumberField from "./Field/Number.js";
+import { TeamNotesManager } from "../../../managers/TeamNotesManager.js";
 
 type PitScoutingResults = {
     isIncomplete: boolean, // Whether required fields are missing values
@@ -20,10 +21,12 @@ export default class PitScoutingPage implements Page {
     public readonly id = "Pit Scouting";
     private readonly mainContainer = document.createElement("div");
     public readonly submitPitScoutingButton = document.createElement("button");
+    private readonly teamNumber: number;
     
     private readonly fields: Map<FieldConfig, FieldInterface> = new Map();
 
     constructor(teamNumber: number) {
+        this.teamNumber = teamNumber;
         this.mainContainer.classList.add("pit-scouting-container");
         
         // Create fields
@@ -65,6 +68,15 @@ export default class PitScoutingPage implements Page {
 
     public show(pageContainer: HTMLDivElement): void {
         pageContainer.appendChild(this.mainContainer);
+    }
+
+    public serverNotesReceived(teamNumber: number) {
+        const notes = TeamNotesManager.getPitScoutingNotes(teamNumber);
+
+        for(const [fieldConfig, field] of this.fields.entries()) {
+            const serverNotesFieldValue = notes[fieldConfig.name];
+            field.setValue(serverNotesFieldValue);
+        }
     }
 
     public get getData(): PitScoutingResults {

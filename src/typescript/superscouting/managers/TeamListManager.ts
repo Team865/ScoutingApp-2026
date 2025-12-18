@@ -1,6 +1,6 @@
 import TeamContainer from "../components/Team/Container.js";
 import AppData, { TeamTag } from "../AppData.js";
-import {MatchNotesManager} from "./TeamNotesManager.js";
+import {TeamNotesManager} from "./TeamNotesManager.js";
 import { FetchedTeamData } from '../AppData';
 import HTMLClassObserver from "../../lib/dataTypes/HTMLClassObserver.js";
 

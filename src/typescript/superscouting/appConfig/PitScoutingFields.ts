@@ -30,10 +30,6 @@ const Fields: FieldConfig[] = [
         type: FieldType.BOOLEAN,
     },
     {
-        name: "Test Number Field",
-        type: FieldType.NUMBER
-    },
-    {
         name: "Coral Scoring Locations",
         type: FieldType.MULTIPLE_CHOICE,
         choices: ["L1", "L2", "L3", "L4"]

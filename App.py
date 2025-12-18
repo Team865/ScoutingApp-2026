@@ -13,11 +13,13 @@ from waitress import serve
 from src.python.AppData import AppData
 from pprint import pprint
 from queue import Queue
+from src.python.sse.SuperScoutingEndpoint import sse_manager as SuperScoutingSSEManager
 import src.python.sse.TBAPoller as TBAPoller
 import src.python.sse.MatchNotes as MatchNotesManager
+import src.python.sse.PitScoutingNotes as PitScoutingManager
 import threading
 import json
-from typing import TypedDict
+from typing import TypedDict, Any
 from pathlib import Path
 from src.python.ConfigParser import parse_config
 from src.python.debug.DebugMenu import DebugMenu
@@ -172,17 +174,27 @@ def match_notes_from_client():
 
     return {"message": "SUCCESS"}, 200
 
-#SSE feed for TBA data to clients
-@app.route("/api/sse/tba-match-updates")
+@app.post("/api/superscouting/pit-scouting-notes")
+def pit_scouting_notes_from_client():
+    class PitScoutingNotesJSon(TypedDict):
+        team_number: int
+        data: dict[str, Any]
+
+    pit_scouting_notes: PitScoutingNotesJSon = request.json
+
+    app_data.superscouting_data.set_pit_scouting_notes(
+        pit_scouting_notes["team_number"],
+        pit_scouting_notes["data"]
+    )
+
+    PitScoutingManager.broadcast_pit_scouting_notes(pit_scouting_notes)
+
+    return {"message": "SUCCESS"}, 200
+
+#SSE feed for Superscouting App clients
+@app.route("/api/sse/superscouting")
 def match_updates():
     stream = TBAPoller.sse_manager.register_client()
-
-    return Response(stream(), mimetype="text/event-stream")
-
-# # SSE feed for superscouting match notes to clients
-@app.route("/api/sse/server-match-notes")
-def server_match_notes_feed():
-    stream = MatchNotesManager.sse_manager.register_client()
 
     return Response(stream(), mimetype="text/event-stream")
 
@@ -206,7 +218,10 @@ def send_test_messages():
             ]
         }
 
-        TBAPoller.sse_manager.add_payload(payload)
+        TBAPoller.sse_manager.add_payload({
+            "event_name": "match-updates",
+            "match_updates": payload
+        })
 
 def debug_menu_behavior():
     DEBUG_MENU = DebugMenu()

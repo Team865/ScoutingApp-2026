@@ -1,14 +1,10 @@
 import time
-import json
-from queue import Queue
-from typing import List
 from ..apiHelpers.TBAApi import get_matches
-from .SSEManager import SSEManager
+from .SuperScoutingEndpoint import sse_manager
 from ..AppData import AppData
 
 MATCH_POLL_INTERVAL = 5
 completed_matches = set()
-sse_manager = SSEManager()
 
 def is_match_complete(match_json):
     red_score = match_json["alliances"]["red"]["score"]
@@ -22,7 +18,10 @@ def broadcast_match_update(appData: AppData, match_key: str):
     if not match_obj:
         return
     
-    sse_manager.add_payload(match_obj)
+    sse_manager.add_payload({
+        "event_name": "match-updates",
+        "match_updates": match_obj
+    })
 
 def poll_tba_matches(appData: AppData, event_key: str):
     while True:

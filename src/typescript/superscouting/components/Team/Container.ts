@@ -1,5 +1,5 @@
 import AppData, { TeamTag } from "../../AppData.js";
-import { MatchNotesManager } from "../../managers/TeamNotesManager.js";
+import { TeamNotesManager } from "../../managers/TeamNotesManager.js";
 import { bindAccordionBehavior } from "../Accordion.js";
 import PopupDialog, { PopupExitCode } from "../Popup/PopupDialog.js";
 import MatchesPage from "./Match/Page.js";
@@ -82,11 +82,20 @@ export default class TeamContainer {
 
         this.pages.get(this.currentPageName).page.show(this.pageContainer);
 
-        // Set pit scouting submit button
         {
+            // Set pit scouting submit button
             const pitScoutingPageInfo = (this.pages.get("Pit Scouting"));
-            (pitScoutingPageInfo.page as PitScoutingPage)
-                .submitPitScoutingButton.addEventListener("click", () => this.submitPitScouting(pitScoutingPageInfo));
+            const pitScoutingPage = pitScoutingPageInfo.page as PitScoutingPage
+            pitScoutingPage.submitPitScoutingButton.addEventListener("click", () => this.submitPitScouting(pitScoutingPageInfo));
+
+            
+            // Pit scouting notes from the server
+            AppData.serverPitScoutingNotesChanged.connect((teamNumber) => {
+                if(teamNumber !== this.teamNumber) return;
+
+                this.enableSubmittedAppearance(pitScoutingPageInfo);
+                pitScoutingPage.serverNotesReceived(teamNumber);
+            });
         }
 
         // Add child elements
@@ -121,9 +130,13 @@ export default class TeamContainer {
         (this.pages.get("Summary").page as SummaryPage).updateData()
     }
 
+    private enableSubmittedAppearance(pitScoutingPageInfo: {tabButton?: HTMLButtonElement, page: Page}) {
+        pitScoutingPageInfo.tabButton.classList.add("complete");
+        (pitScoutingPageInfo.page as PitScoutingPage).submitPitScoutingButton.innerText = "Resubmit";
+    }
+
     public submitPitScouting(pitScoutingPageInfo: {tabButton?: HTMLButtonElement, page: Page}) {
         const pitScoutingPage = pitScoutingPageInfo.page as PitScoutingPage;
-        const tabButton = pitScoutingPageInfo.tabButton;
 
         const scoutingData = pitScoutingPage.getData;
 
@@ -134,10 +147,9 @@ export default class TeamContainer {
             return;
         }
 
-        tabButton.classList.add("complete");
-        pitScoutingPage.submitPitScoutingButton.innerText = "Resubmit";
+        this.enableSubmittedAppearance(pitScoutingPageInfo);
 
-        AppData.pitscoutingNotes[this.teamNumber] = scoutingData.data;
+        TeamNotesManager.setPitScoutingFromClient(this.teamNumber, scoutingData.data);
 
         this.containerDiv.scrollIntoView();
         this.switchToPage("Summary");
