@@ -59,7 +59,7 @@ class SuperScoutingData:
         self.match_notes[team_number][match_number] = notes
 
     def set_pit_scouting_notes(self, team_number: int, notes: dict[str, Any]):
-        self.match_notes[team_number] = notes
+        self.pit_scouting_notes[team_number] = notes
 
     @property
     def serialized(self):
