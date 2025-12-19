@@ -53,7 +53,7 @@ class SuperScoutingData:
         self.fetched_team_data = []
         self.match_notes = {}
         self.match_data = []
-        self.pit_scouting_notes = []
+        self.pit_scouting_notes = {}
     
     def set_match_notes(self, team_number: int, match_number: int, notes: str):
         self.match_notes[team_number][match_number] = notes
