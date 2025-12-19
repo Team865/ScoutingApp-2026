@@ -18,10 +18,10 @@ export default class TextField implements Field {
         this.textInput.value = value;
     }
 
-    get value(): [isIncomplete: boolean, data: string | undefined] {
+    get value(): [isIncomplete: boolean, data: string | null] {
         const strValue = this.textInput.value;
 
-        if(!strValue) return [true, undefined];
+        if(!strValue) return [true, null];
         
         return [false, strValue];
     }

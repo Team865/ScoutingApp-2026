@@ -22,7 +22,7 @@ export default class NumberField implements Field {
     get value(): [isIncomplete: boolean, data: number | undefined] {
         const strValue = this.numberInput.value;
 
-        if(!strValue) return [true, undefined];
+        if(!strValue) return [true, null];
 
         return [false, Number.parseFloat(strValue)];
     }
