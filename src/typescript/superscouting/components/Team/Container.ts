@@ -88,7 +88,12 @@ export default class TeamContainer {
             const pitScoutingPage = pitScoutingPageInfo.page as PitScoutingPage
             pitScoutingPage.submitPitScoutingButton.addEventListener("click", () => this.submitPitScouting(pitScoutingPageInfo));
 
-            
+            // Check for preexisting notes
+            if(TeamNotesManager.getPitScoutingNotes(this.teamNumber)) {
+                this.enableSubmittedAppearance(pitScoutingPageInfo);
+                pitScoutingPage.serverNotesReceived(teamNumber);
+            }
+
             // Pit scouting notes from the server
             AppData.serverPitScoutingNotesChanged.connect((teamNumber) => {
                 if(teamNumber !== this.teamNumber) return;

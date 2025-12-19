@@ -18,7 +18,9 @@ async function refreshTBAData() {
     AppData.fetchedTeamData = backendData["fetched_team_data"];
     AppData.matches = backendData["match_data"];
     AppData.matchNotes = backendData["match_notes"];
+    AppData.pitScoutingNotes = backendData["pit_scouting_notes"];
     const eventName = backendData["event_name"];
+
     setPageTitle(eventName);
 }
 
