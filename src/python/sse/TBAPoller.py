@@ -23,7 +23,7 @@ def broadcast_match_update(appData: AppData, match_key: str):
         "match_updates": match_obj
     })
 
-def poll_tba_matches(appData: AppData, event_key: str):
+def poll_tba_matches(app_data: AppData, event_key: str):
     while True:
         try:
             matches = get_matches(event_key)
@@ -44,7 +44,7 @@ def poll_tba_matches(appData: AppData, event_key: str):
                 for alliance in ["red", "blue"]:
                     for team_key in match_json["alliances"][alliance]["team_keys"]:
                         team_data = next(
-                            t for t in appData.superscouting_data.fetched_team_data
+                            t for t in app_data.superscouting_data.fetched_team_data
                             if t["key"] == team_key
                         )
                         if key not in team_data["match_keys"]:
@@ -55,7 +55,7 @@ def poll_tba_matches(appData: AppData, event_key: str):
                             "alliance": alliance
                         })
 
-                appData.superscouting_data.match_data.append({
+                app_data.superscouting_data.match_data.append({
                     "key": key,
                     "number": match_json["match_number"],
                     "comp_level": match_json["comp_level"],
@@ -64,7 +64,7 @@ def poll_tba_matches(appData: AppData, event_key: str):
                     "teams": teams_in_match
                 })
 
-                broadcast_match_update(appData, key)
+                broadcast_match_update(app_data, key)
 
             time.sleep(MATCH_POLL_INTERVAL)
         except Exception as e:
