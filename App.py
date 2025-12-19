@@ -6,9 +6,7 @@ import requests
 from dotenv import load_dotenv
 import geoip2.database
 import re
-import gspread
 from werkzeug.middleware.proxy_fix import ProxyFix
-from google.oauth2.service_account import Credentials
 from waitress import serve
 from src.python.AppData import AppData
 from pprint import pprint
@@ -17,6 +15,7 @@ from src.python.sse.SuperScoutingEndpoint import sse_manager as SuperScoutingSSE
 import src.python.sse.TBAPoller as TBAPoller
 import src.python.sse.MatchNotes as MatchNotesManager
 import src.python.sse.PitScoutingNotes as PitScoutingManager
+from src.python.apiHelpers.GoogleSheetsAPI import GoogleSpreadsheet
 import threading
 import json
 from typing import TypedDict, Any
@@ -37,23 +36,9 @@ TBA_ROOT_URL = "https://www.thebluealliance.com/api/v3"
 LOCAL_HOST_REGEX = re.compile(r"127\.\d+\.\d+\.\d+")
 LAN_REGEX = re.compile(r"192\.\d+\.\d+\.\d+")
 SHEETS_ID =os.getenv("SHEETS_ID")
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-
-### Check for prerequisite files
-try: 
-    creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
-except:
-    print('WARNING: Google credentials not found. Have you set up the service_account JSON?')
-    sys.exit(0)
 
 print("Authorizing spreadsheet...")
-gc = gspread.authorize(creds)
-try: 
-    sheet = gc.open_by_key(SHEETS_ID).sheet1
-except:
-    print('WARNING: Google sheet not set. Have you set the id in .env?')
-    sys.exit(0)
-###
+spreadsheet_manager = GoogleSpreadsheet(SHEETS_ID)
 print("Spreadsheet Authorized!")
 
 app_data: AppData
