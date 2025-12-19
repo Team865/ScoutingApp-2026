@@ -15,7 +15,7 @@ from src.python.sse.SuperScoutingEndpoint import sse_manager as SuperScoutingSSE
 import src.python.sse.TBAPoller as TBAPoller
 import src.python.sse.MatchNotes as MatchNotesManager
 import src.python.sse.PitScoutingNotes as PitScoutingManager
-from src.python.apiHelpers.GoogleSheetsAPI import GoogleSpreadsheet
+from src.python.api_helpers.GoogleSheetsAPI import GoogleSpreadsheet, BackendWorksheet
 import threading
 import json
 from typing import TypedDict, Any
@@ -39,6 +39,7 @@ SHEETS_ID =os.getenv("SHEETS_ID")
 
 print("Authorizing spreadsheet...")
 spreadsheet_manager = GoogleSpreadsheet(SHEETS_ID)
+spreadsheet_manager.clear_backend_worksheets() # FOR NOW, CLEAR THE WORKSHEET EVERY TIME THE APP STARTS UP
 print("Spreadsheet Authorized!")
 
 app_data: AppData
@@ -156,6 +157,7 @@ def match_notes_from_client():
     )
 
     MatchNotesManager.broadcast_match_notes(match_notes)
+    spreadsheet_manager.set_row_col_values(BackendWorksheet.MATCH_NOTES, app_data.superscouting_data.get_match_notes_csv)
 
     return {"message": "SUCCESS"}, 200
 
@@ -173,6 +175,7 @@ def pit_scouting_notes_from_client():
     )
 
     PitScoutingManager.broadcast_pit_scouting_notes(pit_scouting_notes)
+    spreadsheet_manager.set_row_col_values(BackendWorksheet.PIT_SCOUTING, app_data.superscouting_data.get_pit_scouting_notes_csv)
 
     return {"message": "SUCCESS"}, 200
 

@@ -1,4 +1,5 @@
 from google.oauth2.service_account import Credentials
+from xlsxwriter.utility import xl_rowcol_to_cell_fast
 from enum import StrEnum
 import gspread
 import sys
@@ -7,12 +8,12 @@ __all__ = ["GoogleSpreadsheet"]
 
 _SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-class GoogleSpreadsheet:
-    class BackendWorksheet(StrEnum):
-        MATCH_DATA = "Match Data"
-        MATCH_NOTES = "Match Notes"
-        PIT_SCOUTING = "Pit Scouting"
+class BackendWorksheet(StrEnum):
+    MATCH_DATA = "Match Data"
+    MATCH_NOTES = "Match Notes"
+    PIT_SCOUTING = "Pit Scouting"
 
+class GoogleSpreadsheet:
     sheets_id: str
     spreadsheet: gspread.Spreadsheet
 
@@ -22,6 +23,16 @@ class GoogleSpreadsheet:
         self.sheets_id = sheets_id
         self._authenticate()
         self._fetch_backend_worksheets()
+
+    def set_row_col_values(self, worksheet: BackendWorksheet, values: list[list]):
+        self.backend_worksheets[worksheet].update(
+            values=values,
+            range_name=f"{xl_rowcol_to_cell_fast(0, 0)}:{xl_rowcol_to_cell_fast(len(values), len(values[0]))}"
+        )
+
+    def clear_backend_worksheets(self):
+        for backend_sheet_enum in BackendWorksheet:
+            self.backend_worksheets[backend_sheet_enum].clear()
 
     def _authenticate(self):
         ### Check for prerequisite files
@@ -40,7 +51,7 @@ class GoogleSpreadsheet:
             sys.exit(0)
 
     def _fetch_backend_worksheets(self):
-        for backend_sheet_enum in GoogleSpreadsheet.BackendWorksheet:
+        for backend_sheet_enum in BackendWorksheet:
             self.backend_worksheets[backend_sheet_enum] = self._fetch_worksheet(f"{backend_sheet_enum.value} Backend")
 
     def _fetch_worksheet(self, worksheet_name: str) -> gspread.Worksheet:
@@ -48,5 +59,5 @@ class GoogleSpreadsheet:
             preexisting_worksheet = self.spreadsheet.worksheet(worksheet_name)
             return preexisting_worksheet
         except gspread.WorksheetNotFound:
-            new_worksheet = self.spreadsheet.add_worksheet(worksheet_name, 200, 200)
+            new_worksheet = self.spreadsheet.add_worksheet(worksheet_name, 1000, 1000)
             return new_worksheet

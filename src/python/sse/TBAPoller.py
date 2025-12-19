@@ -1,5 +1,5 @@
 import time
-from ..apiHelpers.TBAApi import get_matches
+from ..api_helpers.TBAApi import get_matches
 from .SuperScoutingEndpoint import sse_manager
 from ..AppData import AppData
 

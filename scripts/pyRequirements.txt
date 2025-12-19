@@ -8,3 +8,5 @@ statbotics
 google-auth
 gspread
 pathlib
+chompjs
+xlsxwriter

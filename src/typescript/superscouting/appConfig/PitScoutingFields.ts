@@ -22,8 +22,7 @@ const Fields: FieldConfig[] = [
     },
     {
         name: "Robot Size",
-        type: FieldType.TEXT,
-        isOptional: true
+        type: FieldType.TEXT
     },
     {
         name: "/w Bumpers?",
