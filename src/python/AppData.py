@@ -139,7 +139,7 @@ class SuperScoutingData:
             team_number = int(row[0])
             match_note_cells = row[1:]
 
-            changed_match_notes: dict[int, str] = {}
+            changed_notes_match_numbers: list[int] = []
 
             for match_note_cell in match_note_cells:
                 match_number_match = _match_notes_csv_match_number_regex.search(match_note_cell)
@@ -155,9 +155,10 @@ class SuperScoutingData:
                 preexisting_match_notes = match_number in self.match_notes[team_number] and self.match_notes[team_number]
                 
                 if(not(preexisting_match_notes) or (match_notes != preexisting_match_notes[match_number])):
-                    changed_match_notes[match_number] = match_notes
+                    changed_notes_match_numbers.append(match_number)
+                    self.match_notes[team_number][match_number] = match_notes
 
-            return team_number, changed_match_notes
+            return team_number, changed_notes_match_numbers
 
         team_rows = csv[1:]
 
@@ -166,13 +167,13 @@ class SuperScoutingData:
 
             if(parsed_team_row is None): continue
 
-            team_number, changed_match_notes = parsed_team_row
+            team_number, changed_notes_match_numbers = parsed_team_row
 
-            for match_number, match_notes in changed_match_notes.items():
+            for match_number in changed_notes_match_numbers:
                 MatchNotesSSE.broadcast_match_notes({
                     "team_number": team_number,
                     "match_number": match_number,
-                    "notes": match_notes
+                    "notes": self.match_notes[team_number][match_number]
                 })
 
     def set_pit_scouting_from_csv(self, csv: list[list[str]]):
@@ -209,20 +210,20 @@ class SuperScoutingData:
 
                 team_notes[field_name] = field_value
 
-            if(has_changed): return team_number, team_notes
+            if(has_changed): 
+                self.pit_scouting_notes[team_number] = team_notes
+                return team_number
 
         team_rows = csv[1:]
 
         for team_row in team_rows:
-            parsed_team_row = parse_team_row(team_row)
+            team_number = parse_team_row(team_row)
 
-            if(parsed_team_row is None): continue
-            team_number, notes = parsed_team_row
+            if(team_number is None): continue # Notes didn't change
             
-            self.pit_scouting_notes[team_number] = notes
             PitScoutingSSE.broadcast_pit_scouting_notes({
                 "team_number": team_number,
-                "data": notes
+                "data": self.pit_scouting_notes[team_number]
             })
 
     @property
