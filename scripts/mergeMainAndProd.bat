@@ -1,4 +1,5 @@
 @echo off
+
 call git checkout main
 call git push
 call git checkout production
