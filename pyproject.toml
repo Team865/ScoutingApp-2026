@@ -1,0 +1,20 @@
+[project]
+name = "scoutingapp-2026"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "chompjs>=1.4.0",
+    "dotenv>=0.9.9",
+    "flask>=3.1.2",
+    "geoip2>=5.2.0",
+    "google-auth>=2.45.0",
+    "gspread>=6.2.1",
+    "pathlib>=1.0.1",
+    "requests>=2.32.5",
+    "statbotics>=3.0.0",
+    "waitress>=3.0.2",
+    "werkzeug>=3.1.4",
+    "xlsxwriter>=3.2.9",
+]

@@ -1,7 +1,8 @@
-venv/
+.venv/
 node_modules/
 build/
+__pycache__/
 .env
+uv.lock
 package-lock.json
 service_account.json
-__pycache__
