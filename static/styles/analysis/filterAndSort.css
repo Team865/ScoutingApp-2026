@@ -1,0 +1,122 @@
+div#filter-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 80%;
+}
+
+div#filter-bar {
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+}
+
+div#filter-bar-buttons {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 5px;
+}
+
+button#filter-button {
+    padding: 5px;
+}
+
+button#filter-button > img {
+    display: block;
+    height: max(2dvh, 30px);
+    aspect-ratio: 1;
+    margin: auto;
+}
+
+div#filter-menu {
+    display: flex;
+    flex-flow: column;
+}
+
+div#sort-menu {
+    margin-left: auto;
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    gap: 10px;
+}
+
+div#sort-menu > label {
+    margin: auto;
+}
+
+select#sorted-by {
+    min-width: 3dvw;
+    font-size: 1rem;
+    padding: 0 5px;
+    background-color: var(--bg-light);
+    color: var(--text);
+    border-radius: 10px;
+    border: var(--bg-light) 2px solid;
+}
+
+select#sorted-by:hover {
+    background-color: var(--bg);
+}
+
+button#sort-order {
+    background-image: url(../../deploy/ascendingArrow.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 40px;
+    aspect-ratio: 1;
+    content: "";
+    align-self: center;
+}
+
+button#sort-order.descending {
+    background-image: url(../../deploy/descendingArrow.svg);
+}
+
+div#filter-menu {
+    width: 100%;
+    background-color: var(--bg-dark);
+    border-radius: 20px;
+    border: var(--bg-light) 0px solid;
+    margin: 10px 0;
+}
+
+div#filter-menu-wrapper {
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column;
+    align-items: left;
+    justify-content: center;
+    margin: 10px 20px;
+}
+
+div#filter-menu-wrapper > h1 {
+    text-align: center;
+}
+
+div#filter-options {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+input[type="checkbox"] {
+    height: 25px;
+    width: 25px;
+    border-radius: 5px;
+}
+
+@media only screen and (max-width: 700px) {
+    div#filter-bar {
+        flex-flow: column-reverse;
+        align-items: flex-start;
+        gap: 10px
+    }
+
+    div#filter-options {
+        grid-template-columns: repeat(2, auto);
+    }
+}

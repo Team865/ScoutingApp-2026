@@ -1,34 +1,9 @@
+import { genericGetRequest, genericPostRequest } from "../../lib/APIHelper";
 import { MatchNotesRequest, PitScoutingNotesRequest } from "../../lib/APITypes";
 import AppData from "../AppData";
 
 const backendAPIRoot = "/api"
 const superscoutingAPIRoot = `${backendAPIRoot}/superscouting`
-const tbaAPIRoot = `${backendAPIRoot}/tba`;
-const statboticsAPIRoot = "https://api.statbotics.io/v3";
-
-async function genericGetRequest(apiEndpoint: string) {
-    const response = await fetch(apiEndpoint);
-    if (!response.ok) {
-        throw new Error(`GET request for ${apiEndpoint} failed with status code: ${response.status}`);
-    }
-    return await response.json();
-}
-
-async function genericPostRequest(apiEndpoint: string, data: string) {
-    const response = await fetch(apiEndpoint, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json; charset=utf-8'
-        },
-        body: data
-    });
-
-    if(!response.ok) {
-        throw new Error(`POST request for ${apiEndpoint} failed with status code: ${response.status}`);
-    }
-
-    return await response.json();
-}
 
 export async function fetchBackendData() {
     return await genericGetRequest(`${superscoutingAPIRoot}`);

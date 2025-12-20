@@ -2,7 +2,7 @@ import AppData, { MatchData } from "./AppData";
 import { updateEPA, fetchBackendData } from "./util/APIHelper";
 import { MatchNotesRequest, PitScoutingNotesRequest } from "../lib/APITypes";
 import { TeamListManager } from "./managers/TeamListManager";
-import { setPageTitle } from "./util/PageTitle";
+import { setTitleHeading } from "../lib/DOMHelper";
 import { TeamNotesManager } from "./managers/TeamNotesManager";
 
 async function refreshStatboticsData() {
@@ -19,7 +19,7 @@ async function refreshTBAData() {
     AppData.pitScoutingNotes = backendData["pit_scouting_notes"];
     const eventName = backendData["event_name"];
 
-    setPageTitle(eventName);
+    setTitleHeading(eventName);
 }
 
 // const tbaMatchDataSource = new EventSource("/api/sse/tba-match-updates");

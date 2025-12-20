@@ -1,7 +1,6 @@
 import AppData, { TeamTag } from "../../AppData";
 import { TeamNotesManager } from "../../managers/TeamNotesManager";
-import { bindAccordionBehavior } from "../Accordion";
-import PopupDialog, { PopupExitCode } from "../Popup/PopupDialog";
+import { bindAccordionBehavior } from "../../../lib/components/Accordion";
 import MatchesPage from "./Match/Page";
 import Page from "./Page";
 import SummaryPage from "./SummaryPage";

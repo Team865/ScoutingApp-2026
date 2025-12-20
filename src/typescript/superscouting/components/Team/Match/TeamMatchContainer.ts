@@ -1,7 +1,7 @@
 import AppData from "../../../AppData";
 import { TeamNotesManager } from "../../../managers/TeamNotesManager";
 import { titleCase, removeSuffix } from "../../../util/StringManipulation";
-import { bindAccordionBehavior } from "../../Accordion";
+import { bindAccordionBehavior } from "../../../../lib/components/Accordion";
 import PopupDiv from "../../Popup/PopupDiv";
 import bindTextEditorBehavior from "./MatchTextEditor";
 
