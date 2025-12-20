@@ -160,7 +160,7 @@ def pit_scouting_notes_from_client():
 
     return {"message": "SUCCESS"}, 200
 
-#SSE feed for Superscouting App clients
+#SSE feed for Superscouting App data
 @app.route("/api/sse/superscouting")
 def match_updates():
     stream = TBAPoller.sse_manager.register_client()

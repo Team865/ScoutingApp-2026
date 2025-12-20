@@ -139,7 +139,7 @@ button.accordion-toggle > p {
 
 button.view-match-data {
     grid-column: 2;
-    background-image: url(../deploy/magnifyingGlass.svg);
+    background-image: url(../../deploy/magnifyingGlass.svg);
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;

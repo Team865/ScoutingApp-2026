@@ -1,11 +1,9 @@
 import AppData, { MatchData } from "./AppData.js";
-import { updateEPA, fetchBackendData, MatchNotesRequest, PitScoutingNotesRequest } from "./util/APIHelper.js";
+import { updateEPA, fetchBackendData } from "./util/APIHelper.js";
+import { MatchNotesRequest, PitScoutingNotesRequest } from "../lib/APITypes.js";
 import { TeamListManager } from "./managers/TeamListManager.js";
 import { setPageTitle } from './util/PageTitle.js';
 import { TeamNotesManager } from "./managers/TeamNotesManager.js";
-const refreshDataButton = document.getElementById("refresh-tba-data-button");
-const mainTag = document.querySelector("main");
-
 
 async function refreshStatboticsData() {
     await updateEPA();

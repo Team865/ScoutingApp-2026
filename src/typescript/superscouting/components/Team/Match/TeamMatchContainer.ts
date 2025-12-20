@@ -1,6 +1,5 @@
 import AppData from "../../../AppData.js";
 import { TeamNotesManager } from "../../../managers/TeamNotesManager.js";
-import { MatchNotesRequest } from "../../../util/APIHelper.js";
 import { titleCase, removeSuffix } from "../../../util/StringManipulation.js";
 import { bindAccordionBehavior } from "../../Accordion.js";
 import PopupDiv from "../../Popup/PopupDiv.js";

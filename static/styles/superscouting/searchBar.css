@@ -12,7 +12,7 @@ div#search-bar-container {
 }
 
 div#search-bar-container::after {
-    background-image: url("../deploy/magnifyingGlass.svg");
+    background-image: url(../../deploy/magnifyingGlass.svg);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

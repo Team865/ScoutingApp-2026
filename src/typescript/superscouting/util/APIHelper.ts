@@ -1,20 +1,10 @@
+import { MatchNotesRequest, PitScoutingNotesRequest } from "../../lib/APITypes.js";
 import AppData from "../AppData.js";
 
 const backendAPIRoot = "/api"
 const superscoutingAPIRoot = `${backendAPIRoot}/superscouting`
 const tbaAPIRoot = `${backendAPIRoot}/tba`;
 const statboticsAPIRoot = "https://api.statbotics.io/v3";
-
-export type MatchNotesRequest = {
-    team_number: number
-    match_number: number
-    notes: string
-}
-
-export type PitScoutingNotesRequest = {
-    team_number: number,
-    data: {[key: string]: any}
-}
 
 async function genericGetRequest(apiEndpoint: string) {
     const response = await fetch(apiEndpoint);
