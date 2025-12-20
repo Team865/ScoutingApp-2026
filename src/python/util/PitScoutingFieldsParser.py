@@ -7,7 +7,7 @@ _pit_scouting_fields_config_path = Path(__file__).parent.parent.parent.parent / 
 _fields_list_regex = re.compile(r"(?<=const Fields = )\[.*\]", re.RegexFlag.DOTALL)
 _field_type_stripper = re.compile(r"(?<=FieldType\.).*")
 
-def get_fields():
+def get_fields() -> list:
     with _pit_scouting_fields_config_path.open("r") as file:
         text_data = file.read()
         fields_list_str = _fields_list_regex.search(text_data).group().replace("\n", "").replace("\t", "")

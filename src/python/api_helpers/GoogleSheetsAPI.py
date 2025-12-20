@@ -1,8 +1,11 @@
+from ..AppData import AppData
+
 from google.oauth2.service_account import Credentials
 from xlsxwriter.utility import xl_rowcol_to_cell_fast
 from enum import StrEnum
 import gspread
 import sys
+from time import sleep
 
 __all__ = ["GoogleSpreadsheet"]
 
@@ -33,6 +36,22 @@ class GoogleSpreadsheet:
     def clear_backend_worksheets(self):
         for backend_sheet_enum in BackendWorksheet:
             self.backend_worksheets[backend_sheet_enum].clear()
+
+    def poll_sheets_data(self, app_data: AppData, poll_period: int | float):
+        while True:
+            try:
+                # Poll match data (UNIMPLEMENTED)
+                # Poll match notes
+                match_notes_csv = self.backend_worksheets[BackendWorksheet.MATCH_NOTES].get()
+                app_data.superscouting_data.set_match_notes_from_csv(match_notes_csv)
+                
+                # Poll pit scouting notes
+                pit_scouting_csv = self.backend_worksheets[BackendWorksheet.PIT_SCOUTING].get()
+                app_data.superscouting_data.set_pit_scouting_from_csv(pit_scouting_csv)
+            except Exception as e:
+                print("Error polling sheets data:", e)
+
+            sleep(poll_period)
 
     def _authenticate(self):
         ### Check for prerequisite files

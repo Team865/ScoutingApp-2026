@@ -28,6 +28,8 @@ async function refreshTBAData() {
 // const matchNotesSource = new EventSource("/api/sse/server-match-notes");
 const superscoutingSSESource = new EventSource("/api/sse/superscouting");
 
+// An intermediary function that converts a value to an integer without type checking (a bit hacky but works)
+
 const matchUpdateReceived = (newMatchData: MatchData) => {
     const matchIndex = AppData.matches.findIndex(
         match => match.key === newMatchData.key

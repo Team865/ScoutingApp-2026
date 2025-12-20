@@ -8,7 +8,7 @@ import geoip2.database
 import re
 from werkzeug.middleware.proxy_fix import ProxyFix
 from waitress import serve
-from src.python.AppData import AppData
+from src.python.AppData import AppData, MatchNotesChunkJSon, PitScoutingNotesChunkJSon
 from pprint import pprint
 from queue import Queue
 from src.python.sse.SuperScoutingEndpoint import sse_manager as SuperScoutingSSEManager
@@ -39,7 +39,7 @@ SHEETS_ID =os.getenv("SHEETS_ID")
 
 print("Authorizing spreadsheet...")
 spreadsheet_manager = GoogleSpreadsheet(SHEETS_ID)
-spreadsheet_manager.clear_backend_worksheets() # FOR NOW, CLEAR THE WORKSHEET EVERY TIME THE APP STARTS UP
+# spreadsheet_manager.clear_backend_worksheets() # FOR NOW, CLEAR THE WORKSHEET EVERY TIME THE APP STARTS UP
 print("Spreadsheet Authorized!")
 
 app_data: AppData
@@ -144,37 +144,18 @@ def get_epa_data():
 
 @app.post("/api/superscouting/match-notes")
 def match_notes_from_client():
-    class MatchNotesJSon(TypedDict):
-        team_number: int
-        match_number: int
-        notes: str
-
-    match_notes: MatchNotesJSon = request.json
-    app_data.superscouting_data.set_match_notes(
-        match_notes["team_number"], 
-        match_notes["match_number"], 
-        match_notes["notes"]
-    )
-
-    MatchNotesManager.broadcast_match_notes(match_notes)
+    match_notes: MatchNotesChunkJSon = request.json
+    
+    app_data.superscouting_data.set_match_notes(match_notes)
     spreadsheet_manager.set_row_col_values(BackendWorksheet.MATCH_NOTES, app_data.superscouting_data.get_match_notes_csv)
 
     return {"message": "SUCCESS"}, 200
 
 @app.post("/api/superscouting/pit-scouting-notes")
 def pit_scouting_notes_from_client():
-    class PitScoutingNotesJSon(TypedDict):
-        team_number: int
-        data: dict[str, Any]
+    pit_scouting_notes: PitScoutingNotesChunkJSon = request.json
 
-    pit_scouting_notes: PitScoutingNotesJSon = request.json
-
-    app_data.superscouting_data.set_pit_scouting_notes(
-        pit_scouting_notes["team_number"],
-        pit_scouting_notes["data"]
-    )
-
-    PitScoutingManager.broadcast_pit_scouting_notes(pit_scouting_notes)
+    app_data.superscouting_data.set_pit_scouting_notes(pit_scouting_notes)
     spreadsheet_manager.set_row_col_values(BackendWorksheet.PIT_SCOUTING, app_data.superscouting_data.get_pit_scouting_notes_csv)
 
     return {"message": "SUCCESS"}, 200
@@ -236,6 +217,7 @@ if __name__ == "__main__":
     print("App Data initialized!")
 
     threading.Thread(target=TBAPoller.poll_tba_matches, args=(app_data, EVENT_KEY), daemon=True).start()
+    threading.Thread(target=spreadsheet_manager.poll_sheets_data, args=(app_data, 5), daemon=True).start()
 
     #Put anything  that needs  to run only for testing here
     if is_test_mode:

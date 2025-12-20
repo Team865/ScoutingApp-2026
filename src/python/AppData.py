@@ -1,9 +1,12 @@
-from typing import Literal, TypedDict, Any
+from typing import Literal, TypedDict, Any, Callable
+from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
 from .api_helpers.StatboticsAPI import update_epa
 from .util import PitScoutingFieldsParser
 from time import time
 from threading import Thread
+import re
+
 """
 This python class will act as a container for all of the App Data used by the backend
 """
@@ -11,6 +14,17 @@ This python class will act as a container for all of the App Data used by the ba
 __all__ = ["AppData"]
 
 _pit_scouting_fields = PitScoutingFieldsParser.get_fields()
+_match_notes_csv_match_number_regex = re.compile(r"[\d]+\n")
+_pit_scouting_csv_field_type_regex = re.compile(r"(?<=Type: ).+\n")
+
+_pit_scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
+    "BOOLEAN": lambda value: value.lower() == "false",
+    "TEXT": lambda value: value,
+    "NUMBER": lambda value: float(value) if "." in value else int(value),
+    "NUMBER_RANGE": lambda value: int(value),
+    "SINGLE_CHOICE": lambda value: value,
+    "MULTIPLE_CHOICE": lambda value: value.split(", ")
+}
 
 class FetchedTeamData(TypedDict):
     name: str
@@ -32,7 +46,25 @@ class MatchData(TypedDict):
     blue_score: int
     teams: list[Team]
 
+class MatchNotesChunkJSon(TypedDict):
+    team_number: int
+    match_number: int
+    notes: str
+
+class PitScoutingNotesChunkJSon(TypedDict):
+    team_number: int
+    data: dict[str, Any]
+
 class SuperScoutingData:
+    data_received_timestamps: dict[str, float] = {}
+    """
+    A dictionary of recently pushed data and the time it was sent at. This allows
+    the class the put a "lock" on the data, so when it receives data from the remote spreadsheet,
+    it will reject the data if there was data recently sent from a frontend.
+    """
+
+    data_lockout_time_s = 5
+
     fetched_team_data: list[FetchedTeamData]
 
     # {
@@ -58,15 +90,137 @@ class SuperScoutingData:
         self.match_data = []
         self.pit_scouting_notes = {}
     
-    def set_match_notes(self, team_number: int, match_number: int, notes: str):
+    def set_match_notes(self, match_notes_chunk: MatchNotesChunkJSon):
+        # Create aliases for cleaner code
+        team_number = match_notes_chunk["team_number"]
+        match_number = match_notes_chunk["match_number"]
+        notes = match_notes_chunk["notes"]
+
+        # Lock notes
+        self.data_received_timestamps[f"match_notes/{team_number}/{match_number}"] = time()
+
+        # Update notes
         self.match_notes[team_number][match_number] = notes
         # Resort notes
         self.match_notes[team_number] = dict(sorted(self.match_notes[team_number].items()))
+        # Broadcast updates
+        MatchNotesSSE.broadcast_match_notes(match_notes_chunk)
 
-    def set_pit_scouting_notes(self, team_number: int, notes: dict[str, Any]):
+    def set_pit_scouting_notes(self, pit_scouting_notes: PitScoutingNotesChunkJSon):
+        team_number = pit_scouting_notes["team_number"]
+        notes = pit_scouting_notes["data"]
+
+        # Lock notes
+        self.data_received_timestamps[f"pit_scouting_notes/{team_number}"] = time()
+
+        # Update notes
         self.pit_scouting_notes[team_number] = notes
         # Resort notes
         self.pit_scouting_notes = dict(sorted(self.pit_scouting_notes.items()))
+        # Broadcast updates
+        PitScoutingSSE.broadcast_pit_scouting_notes(pit_scouting_notes)
+
+    def _is_client_data_lockedout(self, timestamp_key: str) -> bool:
+        # Check for lockout
+        last_timestamp = timestamp_key in self.data_received_timestamps and self.data_received_timestamps[timestamp_key]
+
+        if last_timestamp:
+            time_since_last_client_update = time() - last_timestamp
+            if(time_since_last_client_update < self.data_lockout_time_s): return True # Not enough time has passed yet, lock the data
+
+        return False
+
+    def set_match_notes_from_csv(self, csv: list[list[str]]):
+        if(len(csv) < 2): return # No match notes
+
+        def parse_team_match_notes(row: list[str]) -> tuple[int, dict[int, str]] | None:
+            if(len(row) < 2): return # No match notes
+
+            team_number = int(row[0])
+            match_note_cells = row[1:]
+
+            changed_match_notes: dict[int, str] = {}
+
+            for match_note_cell in match_note_cells:
+                match_number_match = _match_notes_csv_match_number_regex.search(match_note_cell)
+
+                if(match_number_match is None): continue
+
+                match_number = int(match_number_match.group())
+
+                if(self._is_client_data_lockedout(f"match_notes/{team_number}/{match_number}")): return
+
+                match_notes = match_note_cell[match_number_match.end():]
+
+                preexisting_match_notes = match_number in self.match_notes[team_number] and self.match_notes[team_number]
+                
+                if(not(preexisting_match_notes) or match_notes != preexisting_match_notes):
+                    changed_match_notes[match_number] = match_notes
+
+            return team_number, changed_match_notes
+
+        team_rows = csv[1:]
+
+        for team_row in team_rows:
+            parsed_team_row = parse_team_match_notes(team_row)
+
+            if(parsed_team_row is None): continue
+
+            team_number, changed_match_notes = parsed_team_row
+
+            for match_number, match_notes in changed_match_notes.items():
+                MatchNotesSSE.broadcast_match_notes({
+                    "team_number": team_number,
+                    "match_number": match_number,
+                    "notes": match_notes
+                })
+
+    def set_pit_scouting_from_csv(self, csv: list[list[str]]):
+        if(len(csv) < 2): return # No pit scouting data
+        
+        def parse_team_row(row: list[str]) -> tuple[int, dict[str, Any]] | None:
+            team_number = int(row[0])
+            
+            if(self._is_client_data_lockedout(f"pit_scouting_notes/{team_number}")): return
+
+            fields = row[1:]
+
+            preexisting_notes = team_number in self.pit_scouting_notes and self.pit_scouting_notes[team_number]
+            has_changed = bool(preexisting_notes) or False
+            team_notes: dict[str, Any] = {}
+
+            for field_index, field_value_cell in enumerate(fields):
+                field_type_match = _pit_scouting_csv_field_type_regex.search(field_value_cell)
+                field_name = _pit_scouting_fields[field_index]["name"]
+                field_value: Any
+
+                if field_type_match is not None:
+                    field_type = field_type_match.group().strip()
+                    field_value_str = field_value_cell[field_type_match.end():]
+                    field_value = _pit_scouting_field_value_parser[field_type](field_value_str)
+                else:
+                    field_value = None
+
+                if(not(has_changed) and field_value != preexisting_notes):
+                    has_changed = True
+
+                team_notes[field_name] = field_value
+
+            if(has_changed): return team_number, team_notes
+
+        team_rows = csv[1:]
+
+        for team_row in team_rows:
+            parsed_team_row = parse_team_row(team_row)
+
+            if(parsed_team_row is None): continue
+            team_number, notes = parsed_team_row
+            
+            self.pit_scouting_notes[team_number] = notes
+            PitScoutingSSE.broadcast_pit_scouting_notes({
+                "team_number": team_number,
+                "data": notes
+            })
 
     @property
     def serialized(self):
