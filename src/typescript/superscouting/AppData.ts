@@ -1,6 +1,6 @@
-import Color from "../lib/dataTypes/Color.js";
-import Signal from "../lib/dataTypes/Signal.js";
-import { Value } from "../lib/dataTypes/Value.js";
+import Color from "../lib/dataTypes/Color";
+import Signal from "../lib/dataTypes/Signal";
+import { Value } from "../lib/dataTypes/Value";
 
 export type FetchedTeamData = {
     name: string,

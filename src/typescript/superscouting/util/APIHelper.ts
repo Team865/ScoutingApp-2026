@@ -1,5 +1,5 @@
-import { MatchNotesRequest, PitScoutingNotesRequest } from "../../lib/APITypes.js";
-import AppData from "../AppData.js";
+import { MatchNotesRequest, PitScoutingNotesRequest } from "../../lib/APITypes";
+import AppData from "../AppData";
 
 const backendAPIRoot = "/api"
 const superscoutingAPIRoot = `${backendAPIRoot}/superscouting`

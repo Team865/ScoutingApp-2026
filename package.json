@@ -1,5 +1,10 @@
 {
+  "devDependencies": {
+    "ts-loader": "^9.5.4",
+    "webpack": "^5.104.1",
+    "webpack-cli": "^6.0.1"
+  },
   "dependencies": {
-    "typescript": "^5.9.3"
+    "chart.js": "^4.5.1"
   }
 }

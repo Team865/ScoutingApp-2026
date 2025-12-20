@@ -1,4 +1,4 @@
-import Field from "./FieldInterface.js";
+import Field from "./FieldInterface";
 
 export default class NumberField implements Field {
     public name: string;

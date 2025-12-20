@@ -1,7 +1,7 @@
-import AppData from "../../../AppData.js";
-import { titleCase } from "../../../util/StringManipulation.js";
-import Page from "../Page.js";
-import TeamMatchContainer from "./TeamMatchContainer.js";
+import AppData from "../../../AppData";
+import { titleCase } from "../../../util/StringManipulation";
+import Page from "../Page";
+import TeamMatchContainer from "./TeamMatchContainer";
 
 type MatchKey = string;
 

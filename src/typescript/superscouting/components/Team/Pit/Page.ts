@@ -1,14 +1,14 @@
-import AppData from "../../../AppData.js";
-import Page from "../Page.js";
-import PitScoutingFields, { FieldConfig, FieldType } from "../../../appConfig/PitScoutingFields.js";
-import SingleChoiceField from "./Field/SingleChoice.js";
-import TextField from "./Field/Text.js";
-import FieldInterface from "./Field/FieldInterface.js";
-import NumberRangeField from "./Field/NumberRange.js";
-import MultipleChoiceField from "./Field/MultipleChoice.js";
-import BooleanField from "./Field/Boolean.js";
-import NumberField from "./Field/Number.js";
-import { TeamNotesManager } from "../../../managers/TeamNotesManager.js";
+import AppData from "../../../AppData";
+import Page from "../Page";
+import PitScoutingFields, { FieldConfig, FieldType } from "../../../appConfig/PitScoutingFields";
+import SingleChoiceField from "./Field/SingleChoice";
+import TextField from "./Field/Text";
+import FieldInterface from "./Field/FieldInterface";
+import NumberRangeField from "./Field/NumberRange";
+import MultipleChoiceField from "./Field/MultipleChoice";
+import BooleanField from "./Field/Boolean";
+import NumberField from "./Field/Number";
+import { TeamNotesManager } from "../../../managers/TeamNotesManager";
 
 type PitScoutingResults = {
     isIncomplete: boolean, // Whether required fields are missing values

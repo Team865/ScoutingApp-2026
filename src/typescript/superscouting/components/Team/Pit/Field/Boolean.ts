@@ -1,4 +1,4 @@
-import FieldInterface from "./FieldInterface.js";
+import FieldInterface from "./FieldInterface";
 
 export default class BooleanField implements FieldInterface {
     public name;

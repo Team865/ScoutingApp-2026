@@ -1,12 +1,12 @@
-import AppData, { TeamTag } from "../../AppData.js";
-import { TeamNotesManager } from "../../managers/TeamNotesManager.js";
-import { bindAccordionBehavior } from "../Accordion.js";
-import PopupDialog, { PopupExitCode } from "../Popup/PopupDialog.js";
-import MatchesPage from "./Match/Page.js";
-import Page from "./Page.js";
-import SummaryPage from "./SummaryPage.js";
-import PitScoutingPage from "./Pit/Page.js";
-import FieldInterface from "./Pit/Field/FieldInterface.js";
+import AppData, { TeamTag } from "../../AppData";
+import { TeamNotesManager } from "../../managers/TeamNotesManager";
+import { bindAccordionBehavior } from "../Accordion";
+import PopupDialog, { PopupExitCode } from "../Popup/PopupDialog";
+import MatchesPage from "./Match/Page";
+import Page from "./Page";
+import SummaryPage from "./SummaryPage";
+import PitScoutingPage from "./Pit/Page";
+import FieldInterface from "./Pit/Field/FieldInterface";
 
 export default class TeamContainer {
     private readonly containerDiv = document.createElement("div");

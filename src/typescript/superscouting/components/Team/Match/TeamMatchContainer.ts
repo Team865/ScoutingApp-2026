@@ -1,9 +1,9 @@
-import AppData from "../../../AppData.js";
-import { TeamNotesManager } from "../../../managers/TeamNotesManager.js";
-import { titleCase, removeSuffix } from "../../../util/StringManipulation.js";
-import { bindAccordionBehavior } from "../../Accordion.js";
-import PopupDiv from "../../Popup/PopupDiv.js";
-import bindTextEditorBehavior from "./MatchTextEditor.js";
+import AppData from "../../../AppData";
+import { TeamNotesManager } from "../../../managers/TeamNotesManager";
+import { titleCase, removeSuffix } from "../../../util/StringManipulation";
+import { bindAccordionBehavior } from "../../Accordion";
+import PopupDiv from "../../Popup/PopupDiv";
+import bindTextEditorBehavior from "./MatchTextEditor";
 
 export default class TeamMatchContainer {
     private readonly teamNumber: number;

@@ -1,5 +1,5 @@
-import AppData from "../../AppData.js";
-import Page from "./Page.js";
+import AppData from "../../AppData";
+import Page from "./Page";
 
 export default class SummaryPage implements Page {
     private readonly teamNumber: number;

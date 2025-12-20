@@ -1,4 +1,4 @@
-import Field, {FieldInstance} from "./FieldInterface.js";
+import Field, {FieldInstance} from "./FieldInterface";
 
 export type FloatFieldParams = {
     header: string, 

@@ -1,4 +1,4 @@
-import { insertString, removePrefix, removeSuffix } from "../../../util/StringManipulation.js";
+import { insertString, removePrefix, removeSuffix } from "../../../util/StringManipulation";
 
 export default function bindTextEditorBehavior(textEditorDiv: HTMLDivElement) {
     textEditorDiv.contentEditable = "plaintext-only";

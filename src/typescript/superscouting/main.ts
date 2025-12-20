@@ -1,9 +1,9 @@
-import AppData, { MatchData } from "./AppData.js";
-import { updateEPA, fetchBackendData } from "./util/APIHelper.js";
-import { MatchNotesRequest, PitScoutingNotesRequest } from "../lib/APITypes.js";
-import { TeamListManager } from "./managers/TeamListManager.js";
-import { setPageTitle } from './util/PageTitle.js';
-import { TeamNotesManager } from "./managers/TeamNotesManager.js";
+import AppData, { MatchData } from "./AppData";
+import { updateEPA, fetchBackendData } from "./util/APIHelper";
+import { MatchNotesRequest, PitScoutingNotesRequest } from "../lib/APITypes";
+import { TeamListManager } from "./managers/TeamListManager";
+import { setPageTitle } from "./util/PageTitle";
+import { TeamNotesManager } from "./managers/TeamNotesManager";
 
 async function refreshStatboticsData() {
     await updateEPA();

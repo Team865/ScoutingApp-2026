@@ -1,6 +1,6 @@
-import { Extension } from "../../../../node_modules/typescript/lib/typescript.js";
-import AppData from "../AppData.js";
-import { sendMatchNotesFromClient, sendPitScoutingNotesFromClient } from "../util/APIHelper.js";
+import { Extension } from "../../../../node_modules/typescript/lib/typescript";
+import AppData from "../AppData";
+import { sendMatchNotesFromClient, sendPitScoutingNotesFromClient } from "../util/APIHelper";
 
 export namespace TeamNotesManager {
     export function setMatchNotesFromClient(teamNumber: number, matchNumber: number, notes: string) {
