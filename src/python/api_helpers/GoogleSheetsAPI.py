@@ -27,11 +27,14 @@ class GoogleSpreadsheet:
         self._authenticate()
         self._fetch_backend_worksheets()
 
-    def set_row_col_values(self, worksheet: BackendWorksheet, values: list[list]):
-        self.backend_worksheets[worksheet].update(
+    def set_row_col_values(self, worksheetEnum: BackendWorksheet, values: list[list]):
+        worksheet = self.backend_worksheets[worksheetEnum]
+
+        worksheet.update(
             values=values,
             range_name=f"{xl_rowcol_to_cell_fast(0, 0)}:{xl_rowcol_to_cell_fast(len(values), len(values[0]))}"
         )
+        self._style_backend_worksheet(worksheet, values)
 
     def clear_backend_worksheets(self):
         for backend_sheet_enum in BackendWorksheet:
@@ -80,3 +83,42 @@ class GoogleSpreadsheet:
         except gspread.WorksheetNotFound:
             new_worksheet = self.spreadsheet.add_worksheet(worksheet_name, 1000, 1000)
             return new_worksheet
+        
+    def _style_backend_worksheet(self, worksheet: gspread.Worksheet, csv: list[list]):
+        num_rows = len(csv)
+        if num_rows < 2: return
+        
+        num_columns = len(csv[0])
+
+        worksheet.batch_format([
+            {
+                "range": f"A2:A{num_rows}",
+                "format": {
+                    "backgroundColor": {
+                        "red": 0.7,
+                        "green": 0.7,
+                        "blue": 0.7
+                    }
+                }
+            },
+            {
+                "range": f"A1:{xl_rowcol_to_cell_fast(0, num_columns - 1)}",
+                "format": {
+                    "backgroundColor": {
+                        "red": 0.1,
+                        "green": 0.27,
+                        "blue": 0.53
+                    },
+                    "textFormat": {
+                        "foregroundColor": {
+                            "red": 1,
+                            "green": 1,
+                            "blue": 1
+                        }
+                    }
+                }
+            }
+        ])
+
+        # Column auto resize is not great but is better than nothing
+        worksheet.columns_auto_resize(0, num_columns)
