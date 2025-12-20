@@ -36,6 +36,7 @@ export default class SingleChoiceField implements Field {
     }
 
     public setValue(choice: string) {
+        this.currentChoice = choice;
         this.radioChoices.get(choice).checked = true;
     }
 

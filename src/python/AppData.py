@@ -18,7 +18,7 @@ _match_notes_csv_match_number_regex = re.compile(r"[\d]+\n")
 _pit_scouting_csv_field_type_regex = re.compile(r"(?<=Type: ).+\n")
 
 _pit_scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
-    "BOOLEAN": lambda value: value.lower() == "false",
+    "BOOLEAN": lambda value: value.lower() != "false",
     "TEXT": lambda value: value,
     "NUMBER": lambda value: float(value) if "." in value else int(value),
     "NUMBER_RANGE": lambda value: int(value),
@@ -186,7 +186,7 @@ class SuperScoutingData:
             fields = row[1:]
 
             preexisting_notes = team_number in self.pit_scouting_notes and self.pit_scouting_notes[team_number]
-            has_changed = bool(preexisting_notes) or False
+            has_changed = False
             team_notes: dict[str, Any] = {}
 
             for field_index, field_value_cell in enumerate(fields):
@@ -201,8 +201,11 @@ class SuperScoutingData:
                 else:
                     field_value = None
 
-                if(not(has_changed) and field_value != preexisting_notes):
-                    has_changed = True
+                if(not has_changed):
+                    if(not preexisting_notes):
+                        has_changed = True
+                    elif(field_value != preexisting_notes[field_name]):
+                        has_changed = True
 
                 team_notes[field_name] = field_value
 
