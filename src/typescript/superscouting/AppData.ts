@@ -1,6 +1,4 @@
-import Color from "../lib/dataTypes/Color";
 import Signal from "../lib/dataTypes/Signal";
-import { Value } from "../lib/dataTypes/Value";
 
 export type FetchedTeamData = {
     name: string,
@@ -10,12 +8,6 @@ export type FetchedTeamData = {
     epa?: number,
     normalized_epa?: number
 }
-
-export type TeamTag = {
-    name: Value<string>,
-    bgColor: Value<Color>,
-    textColor: Value<Color>
-};
 
 export type MatchData = {
     key: string

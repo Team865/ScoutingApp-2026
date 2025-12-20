@@ -1,4 +1,15 @@
-div#search-bar-container {
+.accordion-body {
+    display: block;
+    transition: max-height 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+.accordion-body > * {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div.search-bar {
     width: 80%;
     border: var(--bg-light) solid 2px;
     min-height: 60px;
@@ -11,8 +22,8 @@ div#search-bar-container {
     padding: 0;
 }
 
-div#search-bar-container::after {
-    background-image: url(../../deploy/magnifyingGlass.svg);
+div.search-bar::after {
+    background-image: url(../deploy/magnifyingGlass.svg);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -24,7 +35,7 @@ div#search-bar-container::after {
     align-self: center;
 }
 
-input#search-bar-input {
+div.search-bar > input {
     width: 100%;
     background-color: transparent;
     border: none;

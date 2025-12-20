@@ -52,20 +52,6 @@ button:hover {
     background-color: var(--bg-accented);
 }
 
-.accordion-body {
-    display: block;
-    /* display: flex;
-    flex-flow: column; */
-    /* align-items: center; */
-    transition: max-height 0.2s ease-in-out;
-    overflow: hidden;
-}
-
-.accordion-body > * {
-    margin-left: auto;
-    margin-right: auto;
-}
-
 input[type="checkbox"] {
     appearance: none;
     border: var(--bg-light) 2px solid;

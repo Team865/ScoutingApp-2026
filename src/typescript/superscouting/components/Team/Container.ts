@@ -1,4 +1,4 @@
-import AppData, { TeamTag } from "../../AppData";
+import AppData from "../../AppData";
 import { TeamNotesManager } from "../../managers/TeamNotesManager";
 import { bindAccordionBehavior } from "../../../lib/components/Accordion";
 import MatchesPage from "./Match/Page";

@@ -1,15 +1,12 @@
+import SearchBar from "../../lib/components/SearchBar";
+import AppData from "../AppData";
 import TeamContainer from "../components/Team/Container";
-import AppData, { TeamTag } from "../AppData";
-import {TeamNotesManager} from "./TeamNotesManager";
-import { FetchedTeamData } from '../AppData';
-import HTMLClassObserver from "../../lib/dataTypes/HTMLClassObserver";
 
 const teamsList: HTMLDivElement = document.querySelector("#teams-list");
-// const filterMenuToggleButton: HTMLButtonElement = document.querySelector("button#filter-button") as HTMLButtonElement;
-// const filterMenu: HTMLDivElement = document.querySelector("div#filter-menu") as HTMLDivElement;
-const searchBar: HTMLInputElement = document.getElementById("search-bar-input") as HTMLInputElement;
+let searchBar: SearchBar;
 const expandAllTeamsButton: HTMLButtonElement = document.querySelector("button#expand-all-teams");
 const collapseAllTeamsButton: HTMLButtonElement = document.querySelector("button#collapse-all-teams");
+const pageHeaderContainer = document.getElementById("page-header");
 
 /** {teamNumber: TeamContainer} */
 let teamContainers: Map<number, TeamContainer> = new Map();
@@ -19,22 +16,17 @@ function convertToOptionValue(value: string) {
 }
 
 function applySearch(){
-    if(!searchBar.value) {
-        for(const teamContainer of teamContainers.values()) {
-            teamContainer.domElement.hidden = false;
-        }
-        
-        return;
-    }
+    const orderedTeamContainers = Array.from(teamContainers.values());
+    const searchResults = searchBar.batchSearchTest(
+        orderedTeamContainers
+        .map(teamContainer => teamContainer.teamString)
+    );
 
-    const searchRegex = new RegExp(searchBar.value, "gi");
-
-    for(const teamContainer of teamContainers.values()) {
-        if(searchRegex.test(teamContainer.teamString)) {
+    for(const [index, teamContainer] of orderedTeamContainers.entries()) {
+        if(searchResults[index]) 
             teamContainer.domElement.hidden = false;
-        } else {
+        else
             teamContainer.domElement.hidden = true;
-        }
     }
 }
 
@@ -60,7 +52,11 @@ export namespace TeamListManager {
     }
 
     export function start() {
-        searchBar.addEventListener("input", applySearch);
+        // Create search bar
+        searchBar = new SearchBar();
+        pageHeaderContainer.parentElement.insertBefore(searchBar.containerElement, pageHeaderContainer.nextSibling);
+
+        searchBar.inputElement.addEventListener("input", applySearch);
         expandAllTeamsButton.addEventListener("click", () => teamContainers.forEach(container => container.toggle(true)));
         collapseAllTeamsButton.addEventListener("click", () => teamContainers.forEach(container => container.toggle(false)));
     }
