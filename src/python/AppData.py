@@ -154,7 +154,7 @@ class SuperScoutingData:
 
                 preexisting_match_notes = match_number in self.match_notes[team_number] and self.match_notes[team_number]
                 
-                if(not(preexisting_match_notes) or match_notes != preexisting_match_notes):
+                if(not(preexisting_match_notes) or (match_notes != preexisting_match_notes[match_number])):
                     changed_match_notes[match_number] = match_notes
 
             return team_number, changed_match_notes
