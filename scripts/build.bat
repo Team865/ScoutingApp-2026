@@ -1,6 +1,15 @@
 @echo off
 echo ===BEGINNING BUILD PROCESS===
 
+:: Check the .env file to see if the script is being ran in a development or production context
+set sourcemapFlag=--sourcemap
+
+for /f "tokens=1* delims==" %%A in (.env) do (
+    if "%%A=%%B" == "IS_PROD=1" (
+        set sourcemapFlag=
+    )
+)
+
 call scripts\clearBuild.bat
 echo Build folder cleared
 
@@ -10,7 +19,7 @@ call npx esbuild^
  src/typescript/analysis/main.ts^
  --bundle^
  --minify^
- --sourcemap^
+ %sourcemapFlag%^
  --outdir=static/build
 
 if %ERRORLEVEL% == 0 (
