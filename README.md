@@ -6,11 +6,10 @@ To host the app locally, please follow the following steps:
 > Prerequisite Requirements:<br>
 > - NodeJS (specifically npm and npx, which should come pre-packaged with NodeJS)<br>
 > - Python<br>
-> - [UV Python Package/Project Manager](https://docs.astral.sh/uv/)
-   
-> [!WARNING]
-> For all the following commands, please run them in a **terminal**, and stay within the root directory. **DON'T** `cd .\scripts`
+> - [UV Python Package/Project Manager](https://docs.astral.sh/uv/)<br>
+
 1. Run the following command after the initial download and any subsequent `git pull` just in case new packages have been added to the project:
+   * The command below and any subsequent command needs to be run in a terminal (emulator) such as `Command Prompt` or `Powershell`
 ```
 .\scripts\setup.bat
 ```
@@ -20,8 +19,10 @@ To host the app locally, please follow the following steps:
 TBA_API_KEY=KEY_STRING
 SHEETS_ID=ID_STRING
 EVENT_KEY=EVENT_KEY_STRING
+IS_PROD=BOOLEAN
 ```
 > [!NOTE]
+> **Don't add a space before or after the equal signs.**<br>
 > Don't wrap any of the STRING values in quotation marks. Just write the value as is (i.e. put `TBA_API_KEY=lris2903` instead of `TBA_API_KEY="lris2903"`)
 <table>
    <tr>
@@ -39,6 +40,10 @@ EVENT_KEY=EVENT_KEY_STRING
    <tr>
       <td>EVENT_KEY</td>
       <td>Your TheBlueAlliance event key. For example for Centennial 2025 (https://www.thebluealliance.com/event/2025onsca), the key would be 2025onsca. The key can be found in the url of the TBA link.</td>
+   </tr>
+   <tr>
+      <td>IS_PROD</td>
+      <td>A boolean (represented as a 0 or 1, write it as a number and not as false/true) which represents the current environment context. If the value is false (0), then scripts will run in a development context (which will add tools like source maps). If the value is true (1), then scripts will run in a production context (files will be build for distribution).</td>
    </tr>
 </table>
 
