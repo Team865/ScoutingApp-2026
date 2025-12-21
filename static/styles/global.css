@@ -49,6 +49,10 @@ button {
     border: var(--bg-light) solid 2px;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 button:hover {
     background-color: var(--bg-accented);
 }

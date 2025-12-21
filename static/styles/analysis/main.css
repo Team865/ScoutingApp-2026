@@ -1,5 +1,10 @@
+main {
+    padding: 2rem;
+}
+
 div#main-content {
     width: 100%;
     background-color: var(--bg-medium);
     border-radius: 10px;
+    transition: max-height 0.1 ease;
 }

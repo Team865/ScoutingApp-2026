@@ -5,6 +5,10 @@ div#team-cards-page-container {
     margin: 10px;
 }
 
+div#main-content:has(div#team-page:not([hidden])) > div#team-cards-page-container {
+    display: none;
+}
+
 div#team-cards-list {
     display: flex;
     flex-flow: column;
@@ -27,13 +31,26 @@ button.team-card {
     font-weight: bold;
 }
 
-button.team-card[hidden] {
-    display: none;
-}
-
 button.team-card > span {
     width: fit-content;
     background-color: var(--bg-accented);
     padding: 5px 10px;
     border-radius: 5px;
+}
+
+div#team-page {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+}
+
+button#exit-page {
+    position: absolute;
+    top: 15px;
+    left: 15px;
 }

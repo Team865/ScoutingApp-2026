@@ -16,37 +16,35 @@
 <body>
   <main>
     <h1>Scouting Data Analysis</h1>
-    <div id="filter-container">
-      <div id="filter-bar">
-        <div id="filter-bar-buttons">
-          <button id="filter-button">
-            <img alt="Filter" src="./static/deploy/filter.svg" />
-          </button>
-        </div>
-        <div id="sort-menu">
-          <label for="sorted-by">
-            Sort By:
-          </label>
-          <select id="sorted-by" name="sorted-by">
-            <option value="team-number">
-              Team Number
-            </option>
-          </select>
-          <button id="sort-order">
-          </button>
-        </div>
+    <div id="filter-bar">
+      <div id="filter-bar-buttons">
+        <button id="filter-button">
+          <img alt="Filter" src="./static/deploy/filter.svg" />
+        </button>
       </div>
-      <div class="accordion-body" id="filter-menu">
-        <div id="filter-menu-wrapper">
-          <h1>
-            FILTER
-          </h1>
-        </div>
+      <div id="sort-menu">
+        <label for="sorted-by">
+          Sort By:
+        </label>
+        <select id="sorted-by" name="sorted-by">
+          <option value="team-number">
+            Team Number
+          </option>
+        </select>
+        <button id="sort-order">
+        </button>
       </div>
-      <div id="main-content">
-        <div id="team-cards-page-container">
-          <div id="team-cards-list"></div>
-        </div>
+    </div>
+    <div class="accordion-body" id="filter-menu">
+      <div id="filter-menu-wrapper">
+        <h1>
+          FILTER
+        </h1>
+      </div>
+    </div>
+    <div id="main-content">
+      <div id="team-cards-page-container">
+        <div id="team-cards-list"></div>
       </div>
   </main>
   <script src="./static/build/analysis/main.js" type="module"></script>

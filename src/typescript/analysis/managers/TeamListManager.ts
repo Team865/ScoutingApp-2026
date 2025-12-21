@@ -1,11 +1,14 @@
 import SearchBar from "../../lib/components/SearchBar";
 import AppData from "../AppData";
 import TeamCard from "../components/TeamCard";
+import TeamPage from "../components/TeamPage";
 
+const mainContentContainer = document.querySelector("div#main-content") as HTMLDivElement;
 const teamCardsPageContainer = document.querySelector("div#team-cards-page-container") as HTMLDivElement;
 const teamCardsList = document.querySelector("div#team-cards-list") as HTMLDivElement;
 
 let searchBar: SearchBar;
+let teamPage: TeamPage;
 
 /** {teamNumber: TeamCard} */
 const teamCards: Map<number, TeamCard> = new Map();
@@ -29,15 +32,23 @@ export namespace TeamListManager {
             const teamCard = new TeamCard(teamData.number);
             teamCards.set(teamData.number, teamCard);
             teamCardsList.appendChild(teamCard.domElement);
+
+            teamCard.domElement.addEventListener("click", () => {
+                teamPage.open(teamData.number);
+            });
         }
     }
 
     export function start() {
         searchBar = new SearchBar();
+        teamPage = new TeamPage();
+
         teamCardsPageContainer.insertBefore(
             searchBar.containerElement,
             teamCardsList
         );
+
+        mainContentContainer.appendChild(teamPage.domElement);
 
         searchBar.inputElement.addEventListener("input", applySearch);
     }
