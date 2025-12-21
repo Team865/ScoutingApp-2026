@@ -1,4 +1,6 @@
 @echo off
+:: Change Directory to the project root
+cd %~dp0..\
 call scripts\build.bat
 
 :: Only run python app if the build was successful

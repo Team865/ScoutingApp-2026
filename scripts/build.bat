@@ -1,4 +1,6 @@
 @echo off
+:: Change Directory to the project root
+cd %~dp0..\
 echo ===BEGINNING BUILD PROCESS===
 
 :: Check the .env file to see if the script is being ran in a development or production context
