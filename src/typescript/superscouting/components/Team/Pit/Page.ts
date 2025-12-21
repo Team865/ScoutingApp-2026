@@ -1,6 +1,6 @@
 import AppData from "../../../AppData";
 import Page from "../Page";
-import PitScoutingFields, { FieldConfig, FieldType } from "../../../appConfig/PitScoutingFields";
+import PitScoutingFields, { FieldConfig, FieldType } from "../../../../appConfig/PitScoutingFields";
 import SingleChoiceField from "./Field/SingleChoice";
 import TextField from "./Field/Text";
 import FieldInterface from "./Field/FieldInterface";
