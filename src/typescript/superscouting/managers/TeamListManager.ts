@@ -9,11 +9,7 @@ const collapseAllTeamsButton: HTMLButtonElement = document.querySelector("button
 const pageHeaderContainer = document.getElementById("page-header");
 
 /** {teamNumber: TeamContainer} */
-let teamContainers: Map<number, TeamContainer> = new Map();
-
-function convertToOptionValue(value: string) {
-    return value.toLowerCase().split(" ").join("-");
-}
+const teamContainers: Map<number, TeamContainer> = new Map();
 
 function applySearch(){
     const orderedTeamContainers = Array.from(teamContainers.values());
