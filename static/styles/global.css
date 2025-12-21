@@ -1,5 +1,6 @@
 :root {
     --bg-dark: oklab(18% 1.75% -8%);
+    --bg-medium: oklab(21% 1.75% -8%);
     --bg: oklab(25% 1.75% -8%);
     --bg-accented: oklab(25% 1.75% -10%);
     --bg-light: oklab(38% 1.75% -8%);

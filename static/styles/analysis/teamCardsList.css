@@ -1,0 +1,39 @@
+div#team-cards-page-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin: 10px;
+}
+
+div#team-cards-list {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin: 10px auto;
+    gap: 10px;
+    width: 100%;
+}
+
+button.team-card {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: 10px;
+
+    min-width: 90%;
+    height: 4rem;
+    font-size: 1.5rem;
+    padding: 1rem;
+    font-weight: bold;
+}
+
+button.team-card[hidden] {
+    display: none;
+}
+
+button.team-card > span {
+    width: fit-content;
+    background-color: var(--bg-accented);
+    padding: 5px 10px;
+    border-radius: 5px;
+}

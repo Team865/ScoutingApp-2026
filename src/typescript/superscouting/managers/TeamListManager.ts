@@ -23,10 +23,7 @@ function applySearch(){
     );
 
     for(const [index, teamContainer] of orderedTeamContainers.entries()) {
-        if(searchResults[index]) 
-            teamContainer.domElement.hidden = false;
-        else
-            teamContainer.domElement.hidden = true;
+        teamContainer.domElement.hidden = !searchResults[index];
     }
 }
 

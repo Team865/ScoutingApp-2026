@@ -1,0 +1,5 @@
+div#main-content {
+    width: 100%;
+    background-color: var(--bg-medium);
+    border-radius: 10px;
+}
