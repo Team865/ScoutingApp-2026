@@ -4,7 +4,8 @@
         "moduleResolution": "nodenext",
         "allowJs": true,
         "target": "es2024",
-        "outDir": "./static/build"
+        "outDir": "./static/build",
+        "esModuleInterop": true
     },
     "include": ["./src/typescript/**/*", "webpack.config.js"]
 }
