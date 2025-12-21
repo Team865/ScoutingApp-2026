@@ -21,7 +21,7 @@ export default class SummaryPage implements Page {
     }
 
     public updateData() {
-        const teamData = AppData.fetchedTeamData.find((teamData) => teamData.number === this.teamNumber);
+        const teamData = AppData.fetched_team_data.find((teamData) => teamData.number === this.teamNumber);
         const epaDataExists = (teamData.normalized_epa || teamData.epa);
         const isNormalizedEpa = epaDataExists && (teamData.epa === null);
 

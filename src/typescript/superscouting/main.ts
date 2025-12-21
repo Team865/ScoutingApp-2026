@@ -13,10 +13,10 @@ async function refreshStatboticsData() {
 async function refreshTBAData() {
     const backendData = await fetchBackendData();
 
-    AppData.fetchedTeamData = backendData["fetched_team_data"];
+    AppData.fetched_team_data = backendData["fetched_team_data"];
     AppData.matches = backendData["match_data"];
-    AppData.matchNotes = backendData["match_notes"];
-    AppData.pitScoutingNotes = backendData["pit_scouting_notes"];
+    AppData.match_notes = backendData["match_notes"];
+    AppData.pit_scouting_notes = backendData["pit_scouting_notes"];
     const eventName = backendData["event_name"];
 
     setTitleHeading(eventName);

@@ -4,7 +4,7 @@ import { sendMatchNotesFromClient, sendPitScoutingNotesFromClient } from "../uti
 
 export namespace TeamNotesManager {
     export function setMatchNotesFromClient(teamNumber: number, matchNumber: number, notes: string) {
-        AppData.matchNotes[teamNumber][matchNumber] = notes;
+        AppData.match_notes[teamNumber][matchNumber] = notes;
         // Send data to server
         sendMatchNotesFromClient({
             team_number: teamNumber,
@@ -14,7 +14,7 @@ export namespace TeamNotesManager {
     }
 
     export function setPitScoutingFromClient(teamNumber: number, pitScoutingNotes: {[key: string]: any}) {
-        AppData.matchNotes[teamNumber] = pitScoutingNotes;
+        AppData.match_notes[teamNumber] = pitScoutingNotes;
 
         sendPitScoutingNotesFromClient({
             team_number: teamNumber,
@@ -24,21 +24,21 @@ export namespace TeamNotesManager {
 
     export function incomingMatchNotesFromServer(teamNumber: number, matchNumber: number, notes: string) {
         // Data from SSE
-        AppData.matchNotes[teamNumber][matchNumber] = notes;
+        AppData.match_notes[teamNumber][matchNumber] = notes;
         AppData.serverMatchNotesChanged.emit([teamNumber, matchNumber]);
     }
 
     export function getMatchNotes(teamNumber: number, matchNumber: number) {
-        return AppData.matchNotes[teamNumber][matchNumber];
+        return AppData.match_notes[teamNumber][matchNumber];
     }
 
     export function incomingPitScoutingNotesFromServer(teamNumber: number, notes: {[key: string]: any}) {
         // Data from SSE
-        AppData.pitScoutingNotes[teamNumber] = notes;
+        AppData.pit_scouting_notes[teamNumber] = notes;
         AppData.serverPitScoutingNotesChanged.emit(teamNumber);
     }
 
     export function getPitScoutingNotes(teamNumber) {
-        return AppData.pitScoutingNotes[teamNumber];
+        return AppData.pit_scouting_notes[teamNumber];
     }
 }

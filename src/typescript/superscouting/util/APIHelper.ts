@@ -13,7 +13,7 @@ export async function updateEPA() {
     const epaData: {[key: number]: {epa?: number, normalized_epa: number}} = await genericGetRequest(`${superscoutingAPIRoot}/epa`);
 
     for(const [teamNumber, {epa, normalized_epa}] of Object.entries(epaData)) {
-        const teamData = AppData.fetchedTeamData.find(team => team.number === Number.parseInt(teamNumber));
+        const teamData = AppData.fetched_team_data.find(team => team.number === Number.parseInt(teamNumber));
         teamData.epa = epa;
         teamData.normalized_epa = normalized_epa;
     }

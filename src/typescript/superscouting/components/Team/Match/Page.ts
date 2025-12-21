@@ -16,7 +16,7 @@ export default class MatchesPage implements Page {
 
     constructor(teamNumber: number) {
         this.teamNumber = teamNumber;
-        const teamData = AppData.fetchedTeamData.find((teamData) => teamData.number === teamNumber);
+        const teamData = AppData.fetched_team_data.find((teamData) => teamData.number === teamNumber);
 
         this.toolbar.classList.add("match-toolbar");
         this.matchList.classList.add("match-list");

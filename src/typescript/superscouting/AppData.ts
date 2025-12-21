@@ -21,8 +21,8 @@ export type MatchData = {
     }[]
 }
 
-const AppData: {
-    fetchedTeamData: FetchedTeamData[],
+export type SuperscoutingData = {
+    fetched_team_data: FetchedTeamData[],
     /* Match Notes format:
     {
         team_number: {
@@ -30,19 +30,24 @@ const AppData: {
         }
     }
     */
-    matchNotes: {[key: number]: {[key: number]: string}},
-    pitScoutingNotes: {
+    match_notes: {[key: number]: {[key: number]: string}},
+    pit_scouting_notes: {
         [key: number]: { // Team number
             [key: string]: any, // {field_name: field_value}
         }
     },
-    serverMatchNotesChanged: Signal<[number, number]>, // [team_number, match_number]
-    serverPitScoutingNotesChanged: Signal<number>, // team_number
     matches: MatchData[]
-} = {
-    fetchedTeamData: [],
-    matchNotes: {},
-    pitScoutingNotes: {},
+}
+
+type ClientAppData = SuperscoutingData & {
+    serverMatchNotesChanged: Signal<[number, number]>, // [team_number, match_number]
+    serverPitScoutingNotesChanged: Signal<number> // team_number
+}
+
+const AppData: ClientAppData = {
+    fetched_team_data: [],
+    match_notes: {},
+    pit_scouting_notes: {},
     serverMatchNotesChanged: new Signal(),
     serverPitScoutingNotesChanged: new Signal(),
     matches: []

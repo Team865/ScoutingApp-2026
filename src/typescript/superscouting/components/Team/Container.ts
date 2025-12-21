@@ -30,7 +30,7 @@ export default class TeamContainer {
     private active: boolean;
 
     constructor(teamNumber: number) {
-        const teamData = AppData.fetchedTeamData.find(
+        const teamData = AppData.fetched_team_data.find(
             (team) => team.number === teamNumber
         );
 

@@ -38,7 +38,7 @@ export namespace TeamListManager {
 
         teamContainers.clear();
 
-        for(const team of AppData.fetchedTeamData){
+        for(const team of AppData.fetched_team_data){
             const teamContainer = new TeamContainer(team.number);
             teamsList.appendChild(teamContainer.domElement);
             teamContainers.set(team.number, teamContainer);
