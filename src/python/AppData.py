@@ -82,7 +82,6 @@ class SuperScoutingData:
     pit_scouting_notes: dict[int, dict[str, Any]]
 
     match_data: list[MatchData]
-    event_name: str
 
     def __init__(self):
         self.fetched_team_data = []
@@ -232,8 +231,7 @@ class SuperScoutingData:
             "fetched_team_data": self.fetched_team_data,
             "match_notes": self.match_notes,
             "pit_scouting_notes": self.pit_scouting_notes,
-            "match_data": self.match_data,
-            "event_name": self.event_name
+            "match_data": self.match_data
         }
     
     @property
@@ -283,9 +281,8 @@ class AppData:
 
     def fetch_TBA_data(self):
         event_info = get_event_info(self.event_key)
-        self.superscouting_data.event_name = event_info.get("name", "No event found")
+        self.event_name = event_info.get("name", "No event found")
         
-        startTime = time()
         # Fetch team data first
         tbaTeams = get_teams(self.event_key)
         tbaTeams.sort(key=lambda team: team["team_number"])
@@ -333,3 +330,9 @@ class AppData:
                 "blue_score": match_json["alliances"]["blue"]["score"],
                 "teams": teams_in_match
             })
+
+    @property
+    def serialized(self):
+        return {
+            "superscouting": self.superscouting_data.serialized
+        }

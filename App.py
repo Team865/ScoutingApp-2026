@@ -120,7 +120,10 @@ def get_matches(competition_key):
 # App API Endpoints
 @app.route("/api/superscouting")
 def get_superscouting_data():
-    return jsonify(app_data.superscouting_data.serialized), 200
+    # Add event name to the json response as well
+    returnJson = dict(app_data.superscouting_data.serialized, event_name=app_data.event_name)
+
+    return jsonify(returnJson), 200
 
 @app.route("/api/superscouting/epa")
 def get_epa_data():
@@ -159,6 +162,15 @@ def pit_scouting_notes_from_client():
     spreadsheet_manager.set_row_col_values(BackendWorksheet.PIT_SCOUTING, app_data.superscouting_data.get_pit_scouting_notes_csv)
 
     return {"message": "SUCCESS"}, 200
+
+@app.route("/api/analysis")
+def get_analysis_data():
+    # Wait for EPA data
+    for app_team_data in app_data.superscouting_data.fetched_team_data:
+        while "normalized_epa" not in app_team_data:
+            pass
+
+    return app_data.serialized
 
 #SSE feed for Superscouting App data
 @app.route("/api/sse/superscouting")
