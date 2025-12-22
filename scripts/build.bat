@@ -20,7 +20,6 @@ call npx esbuild^
  src/typescript/superscouting/main.ts^
  src/typescript/analysis/main.ts^
  --bundle^
- --minify^
  %sourcemapFlag%^
  --outdir=static/build
 

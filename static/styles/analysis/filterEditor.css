@@ -118,6 +118,10 @@ div.block-container > input {
     padding: 0 0.5rem;
 }
 
+#filter-editor:has(#filter-blocks-menu[hidden]) > #filter-content-container {
+    grid-column: span 2;
+}
+
 /* Sizing */
 .block-container {
     min-width: max-content;

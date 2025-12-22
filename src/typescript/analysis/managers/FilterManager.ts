@@ -8,6 +8,7 @@ const filterMenuToggleButton = document.querySelector("button#filter-button") as
 const filterMenu = document.querySelector("div#filter-menu") as HTMLDivElement;
 
 const filterEditorContainer = document.querySelector("div#filter-editor") as HTMLDivElement;
+const filterBlockProducersMenu = document.querySelector("div#filter-blocks-menu") as HTMLDivElement;
 const deleteFilterBlockButton = document.querySelector("button#delete-filter-block") as HTMLButtonElement;
 const testFilterBlockButton = document.querySelector("button#test-filter-block") as HTMLButtonElement;
 
@@ -26,11 +27,12 @@ const setSelectedBlock: SetSelectedBlock = (newSelection) => {
     
     if(currentlySelectedBlock === newSelection) {
         currentlySelectedBlock = null;
-        return;
+    } else {
+        currentlySelectedBlock = newSelection;
+        newSelection.domElement.classList.toggle("selected", true);
     }
 
-    currentlySelectedBlock = newSelection;
-    newSelection.domElement.classList.toggle("selected", true);
+    filterBlockProducersMenu.hidden = topLevelBlock !== null && currentlySelectedBlock === null;
 }
 
 function initSortOptions() {
