@@ -6,6 +6,7 @@
     --bg-light: oklab(38% 1.75% -8%);
     --text: oklab(0.95 0% 0%);
     --text-muted: oklab(0.85 0% 0%);
+    --text-disabled: oklab(0.6 0% 0%);
     --accent: oklab(0.6 1.75% -50%);
     
     --blue-alliance: oklab(52% 0.02 -0.25);

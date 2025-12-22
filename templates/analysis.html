@@ -8,6 +8,7 @@
   <link href="./static/styles/customComponents.css" rel="stylesheet" />
   <link href="./static/styles/analysis/main.css" rel="stylesheet" />
   <link href="./static/styles/analysis/filterAndSort.css" rel="stylesheet" />
+  <link href="./static/styles/analysis/filterEditor.css" rel="stylesheet" />
   <link href="./static/styles/analysis/teamCardsList.css" rel="stylesheet" />
 
   <title>Analysis App</title>
@@ -37,6 +38,24 @@
         <h1>
           FILTER
         </h1>
+        <div id="filter-editor">
+          <div id="filter-blocks-menu">
+            <div id="filter-tab-buttons">
+              <button id="comparators-filter-tab-button">Comparators (Boolean)</button>
+              <button id="math-filter-tab-button">Math</button>
+              <button id="data-filter-tab-button">Data</button>
+              <button id="constants-filter-tab-button">Constants</button>
+            </div>
+            <div id="filter-blocks-page-wrapper"></div>
+          </div>
+          <div id="filter-content-container">
+            <div id="filter-content-toolbar">
+              <button id="delete-filter-block">DELETE</button>
+              <button id="test-filter-block">TEST</button>
+            </div>
+            <div id="filter-content-display"></div>
+          </div>
+        </div>
       </div>
     </div>
     <div id="main-content">
