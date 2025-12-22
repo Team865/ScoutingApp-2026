@@ -13,6 +13,8 @@ export default class TextBlock implements BlockInterface {
             setSelectedBlock(this);
         });
 
+        this.input.addEventListener("click", e => e.stopPropagation());
+
         this.mainContainer.classList.add("block-container", "horizontal");
 
         this.textLabel.innerText = "text:";

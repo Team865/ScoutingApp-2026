@@ -53,7 +53,6 @@ export namespace BlockProducer {
             if(target === null) return;
             
             const newBlock = createBlockFunction();
-            setSelectedBlock(newBlock);
 
             if(target instanceof HTMLElement) {
                 target.appendChild(newBlock.domElement);
@@ -67,6 +66,8 @@ export namespace BlockProducer {
             } else { // Has to be a block slot
                 (target as BlockSlot).addChildBlock(newBlock);
             }
+            
+            setSelectedBlock(null);
         });
 
         return producer;

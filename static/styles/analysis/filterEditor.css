@@ -3,9 +3,14 @@ div#filter-editor {
     grid-template-columns: 1fr 2fr;
 }
 
+div#filter-blocks-menu {
+    min-width: 0;
+    max-width: 100%;
+}
+
 div#filter-tab-buttons {
     display: flex;
-    flex-flow: row;
+    flex-flow: row wrap;
 }
 
 div#filter-tab-buttons >button {
@@ -161,4 +166,18 @@ div.block-container > input {
 .selected {
     border-color: var(--accent) !important;
     border-width: 3px !important;
+}
+
+@media only screen and (max-width: 700px) {
+    div#filter-editor {
+        grid-template-columns: 1fr;
+    }
+
+    #filter-content-container {
+        grid-column: 1;
+    }
+
+    #filter-editor:has(#filter-blocks-menu:not([hidden])) > #filter-content-container {
+        display: none;
+    }
 }

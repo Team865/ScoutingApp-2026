@@ -25,14 +25,14 @@ const setSelectedBlock: SetSelectedBlock = (newSelection) => {
     if(currentlySelectedBlock !== null)
         currentlySelectedBlock.domElement.classList.toggle("selected", false);
     
-    if(currentlySelectedBlock === newSelection) {
-        currentlySelectedBlock = null;
-    } else {
-        currentlySelectedBlock = newSelection;
-        newSelection.domElement.classList.toggle("selected", true);
-    }
+    
+    if(currentlySelectedBlock === newSelection) currentlySelectedBlock = null;
+    else currentlySelectedBlock = newSelection;
+    
+    if(currentlySelectedBlock !== null) newSelection.domElement.classList.toggle("selected", true);
 
     filterBlockProducersMenu.hidden = topLevelBlock !== null && currentlySelectedBlock === null;
+    console.log(currentlySelectedBlock);
 }
 
 function initSortOptions() {
