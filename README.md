@@ -43,7 +43,7 @@ IS_PROD=BOOLEAN
    </tr>
    <tr>
       <td>IS_PROD</td>
-      <td>A boolean (represented as a 0 or 1, write it as a number and not as false/true) which represents the current environment context. If the value is false (0), then scripts will run in a development context (which will add tools like source maps). If the value is true (1), then scripts will run in a production context (files will be build for distribution).</td>
+      <td>A boolean (represented as a 0 or 1, write it as a number and not as false/true) which represents the current environment context. If the value is false (0), then scripts will run in a development context (which will add tools like source maps). If the value is true (1), then scripts will run in a production context (files will be built for distribution).</td>
    </tr>
 </table>
 
@@ -56,7 +56,8 @@ IS_PROD=BOOLEAN
 .\scripts\build.bat
 ```
 > [!IMPORTANT]
-> If you make changes to the python files, you will need to rerun the `deploy.bat` file because python code doesn't hot reload.
+> You don't need to rebuild CSS files, they automatically update (just refresh the page)
+> If you make changes to python or HTML files, you will need to rerun the `deploy.bat` file because they don't get hot reloaded.
 
 6. Access the app via port 5000 **(or 5005 if TEST_MODE is on)** (i.e. type `localhost:5000` into your browser)
 > [!NOTE]
