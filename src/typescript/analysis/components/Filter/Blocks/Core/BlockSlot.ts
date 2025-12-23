@@ -33,8 +33,10 @@ export default class BlockSlot {
         this.child = child;
     }
 
-    public removeChildBlock(child: BlockInterface) {
-        child.domElement.remove();
+    public removeChildBlock() {
+        if(!this.child) return;
+
+        this.child.domElement.remove();
         this.child = null;
         this.domElement.appendChild(this.textElement);
     }

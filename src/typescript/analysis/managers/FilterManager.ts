@@ -3,6 +3,7 @@ import { bindAccordionBehavior } from "../../lib/components/Accordion";
 import { BlockInterface, SetSelectedBlock } from "../components/Filter/Blocks/Core/BlockCore";
 import { BlockProducer } from "../components/Filter/Blocks/Core/BlockProducer";
 import BlockSlot from "../components/Filter/Blocks/Core/BlockSlot";
+import { HistoryManager } from "./HistoryManager";
 
 const filterMenuToggleButton = document.querySelector("button#filter-button") as HTMLButtonElement;
 const filterMenu = document.querySelector("div#filter-menu") as HTMLDivElement;
@@ -29,24 +30,31 @@ const isMobileQuery = window.matchMedia("(width <= 700px)");
 let topLevelBlock: BlockInterface | null = null;
 let currentlySelectedBlock: BlockInterface | BlockSlot | null = null;
 let copiedBlock: BlockInterface = null;
+let historyManager: HistoryManager = null;
 
-const ModifyFilterBlocks = {
-    copyBlock(block: BlockInterface) {
+abstract class ModifyFilterBlocks {
+    public static copyBlock(block: BlockInterface) {
         copyFilterButton.classList.remove("selected");
         pasteFilterButton.classList.remove("disabled");
         // Store a clone of the block so future modifications 
         // to the reference block won't affect the copied block
         copiedBlock = block.clone();
-    },
-    pasteBlock(block: BlockInterface | BlockSlot) {
+    }
+    public static pasteBlock(block: BlockInterface | BlockSlot) {
         pasteFilterButton.classList.remove("selected");
         const target = block || BlockProducer.getTarget();
         if(target === null) return;
         BlockProducer.addBlock(copiedBlock.clone(), target);
-    },
-    deleteBlock(block: BlockInterface) {
+    }
+    public static deleteBlock(block: BlockInterface) {
+        historyManager.actionCommitted({
+            type: "remove",
+            blockRemoved: block,
+            parent: block.parentSlot
+        });
+
         if(block.parentSlot) {
-            block.parentSlot.removeChildBlock(block);
+            block.parentSlot.removeChildBlock();
         } else { // Top level block
             block.domElement.remove();
             topLevelBlock = null;
@@ -57,7 +65,6 @@ const ModifyFilterBlocks = {
         deleteFilterBlockButton.classList.remove("selected");
     }
 };
-
 
 function bufferButton(button: HTMLButtonElement, allowBlockSlot: boolean, onTrueFunction: (block: BlockInterface | BlockSlot) => void) {
     if(button.classList.contains("selected")) {
@@ -76,8 +83,6 @@ function bufferButton(button: HTMLButtonElement, allowBlockSlot: boolean, onTrue
     onTrueFunction(currentlySelectedBlock as BlockInterface);
     setSelectedBlock(null);
 }
-
-Object.freeze(ModifyFilterBlocks);
 
 const setSelectedBlock: SetSelectedBlock = (newSelection) => {
     const previousSelection = currentlySelectedBlock;
@@ -182,7 +187,10 @@ function initFilterEditor() {
         else
             return null;
     }
-    BlockProducer.setTopLevelBlock = (block) => topLevelBlock = block;
+    BlockProducer.setTopLevelBlock = (block: BlockInterface | null) => {
+        if(block) filterContentDisplay.appendChild(block.domElement);
+        topLevelBlock = block;
+    }
     BlockProducer.start();
 }
 
@@ -191,6 +199,23 @@ export namespace FilterManager {
         bindAccordionBehavior(filterMenu, filterMenu);
         initSortOptions();
         initFilterEditor();
+
+        historyManager = new HistoryManager(2 ** 16, setSelectedBlock);
+        BlockProducer.blockAdded.connect((blockAdded) => {
+            historyManager.actionCommitted({
+                type: "add",
+                blockAdded: blockAdded,
+                parent: blockAdded.parentSlot
+            });
+        });
+
+        BlockProducer.blockReplaced.connect(([originalBlock, newBlock]) => {
+            historyManager.actionCommitted({
+                type: "replace",
+                originalBlock: originalBlock,
+                newBlock: newBlock
+            });
+        });
 
         filterMenuToggleButton.addEventListener("click", () => {
             filterMenu.classList.toggle("active");
@@ -229,27 +254,42 @@ export namespace FilterManager {
         sortOrderButton.addEventListener("click", () => sortOrderButton.classList.toggle("descending"));
 
         window.addEventListener("keyup", (e) => {
-            if(!currentlySelectedBlock) return;
+            if(currentlySelectedBlock) {
+                if(e.key === "Backspace") {
+                    if(currentlySelectedBlock["type"] !== undefined) {
+                        e.preventDefault();
+                        ModifyFilterBlocks.deleteBlock(currentlySelectedBlock as BlockInterface);
+                        return;
+                    }
+                }
 
-            if(e.key === "Backspace") {
-                if(currentlySelectedBlock["type"] !== undefined) {
-                    e.preventDefault();
-                    ModifyFilterBlocks.deleteBlock(currentlySelectedBlock as BlockInterface);
-                    return;
+                if(e.ctrlKey) {
+                    switch(e.key) {
+                        case "c":
+                            if(currentlySelectedBlock["type"] === undefined) return;
+                            e.preventDefault();
+                            ModifyFilterBlocks.copyBlock(currentlySelectedBlock as BlockInterface);
+                            return;
+                        case "v":
+                            if(!copiedBlock) return;
+                            e.preventDefault();
+                            ModifyFilterBlocks.pasteBlock(currentlySelectedBlock);
+                            return;
+                    }
                 }
             }
-
+            
             if(e.ctrlKey) {
                 switch(e.key) {
-                    case "c":
-                        if(currentlySelectedBlock["type"] === undefined) break;
+                    case "z":
+                        if(historyManager.pastActions.length === 0) break;
                         e.preventDefault();
-                        ModifyFilterBlocks.copyBlock(currentlySelectedBlock as BlockInterface);
+                        historyManager.undo();
                         break;
-                    case "v":
-                        if(!copiedBlock) return;
+                    case "y":
+                        if(historyManager.futureActions.length === 0) break;
                         e.preventDefault();
-                        ModifyFilterBlocks.pasteBlock(currentlySelectedBlock);
+                        historyManager.redo();
                         break;
                 }
             }

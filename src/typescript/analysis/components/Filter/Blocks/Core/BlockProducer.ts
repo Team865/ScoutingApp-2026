@@ -25,6 +25,7 @@ import { BlockInterface, BlockType, SetSelectedBlock } from "./BlockCore";
 import AppData from "../../../../AppData";
 import PitScoutingFields, { FieldType } from "../../../../../appConfig/PitScoutingFields";
 import BlockSlot from "./BlockSlot";
+import Signal from "../../../../../lib/dataTypes/Signal";
 
 const comparatorsTabButton = document.querySelector("button#comparators-filter-tab-button") as HTMLButtonElement;
 const mathTabButton = document.querySelector("button#math-filter-tab-button") as HTMLButtonElement;
@@ -42,9 +43,13 @@ export namespace BlockProducer {
     export const dataPageElements: HTMLElement[] = [];
     export const constantsPageElement: HTMLElement[] = [];
 
-    export let setTopLevelBlock: (block: BlockInterface) => void;
+    export let setTopLevelBlock: (block?: BlockInterface) => void;
     export let setSelectedBlock: SetSelectedBlock;
     export let getTarget: () => HTMLElement | BlockInterface | BlockSlot;
+    export const blockAdded = new Signal<BlockInterface>();
+
+    /** [blockReplaced, newBlock] */
+    export const blockReplaced = new Signal<[BlockInterface, BlockInterface]>();
 
     function createProducerElement(producerLabelString: string, createBlockFunction: () => BlockInterface) {
         const producer = document.createElement("button");
@@ -169,25 +174,31 @@ export namespace BlockProducer {
 
     export function addBlock(newBlock: BlockInterface, target: HTMLElement | BlockInterface | BlockSlot) {
         if(target instanceof HTMLElement) {
-            target.appendChild(newBlock.domElement);
             setTopLevelBlock(newBlock);
+            blockAdded.emit(newBlock);
         } else if(target["type"] !== undefined) { // Only BlockInterface's have a type member
-            const blockToReplace = target as BlockInterface;
-            const parentSlot = blockToReplace.parentSlot;
-
-            if(!parentSlot) {
-                blockToReplace.domElement.parentElement.appendChild(newBlock.domElement);
-                blockToReplace.domElement.remove();
-                setTopLevelBlock(newBlock);
-            } else {
-                parentSlot.removeChildBlock(blockToReplace);
-                parentSlot.addChildBlock(newBlock);
-            }
+            replaceBlock(target as BlockInterface, newBlock);
         } else { // Has to be a block slot
             (target as BlockSlot).addChildBlock(newBlock);
+            blockAdded.emit(newBlock);
         }
 
         setSelectedBlock(null);
+    }
+
+    function replaceBlock(blockToReplace: BlockInterface, newBlock: BlockInterface) {
+        const parentSlot = blockToReplace.parentSlot;
+
+        if(!parentSlot) {
+            blockToReplace.domElement.parentElement.appendChild(newBlock.domElement);
+            blockToReplace.domElement.remove();
+            setTopLevelBlock(newBlock);
+        } else {
+            parentSlot.removeChildBlock();
+            parentSlot.addChildBlock(newBlock);
+        }
+
+        blockReplaced.emit([blockToReplace, newBlock]);
     }
 
     export function start() {
