@@ -1,11 +1,11 @@
-export default class Signal<EmitArgument> {
-    private connectedFunctions: ((EmitArgument) => void)[];
+export default class Signal<EmitMessage> {
+    private connectedFunctions: ((emittedMessage: EmitMessage) => void)[];
 
     constructor() {
         this.connectedFunctions = [];
     }
 
-    public connect(functionToConnect: (EmitArgument) => void) {
+    public connect(functionToConnect: (emittedMessage: EmitMessage) => void) {
         this.connectedFunctions.push(functionToConnect);
         return {
             disconnect: () => this.connectedFunctions.splice(
@@ -13,9 +13,9 @@ export default class Signal<EmitArgument> {
         };
     }
 
-    public emit(emittedArgument: EmitArgument) {
+    public emit(messageToEmit: EmitMessage) {
         for(const functionToCall of this.connectedFunctions) {
-            (async () => functionToCall(emittedArgument))();
+            (async () => functionToCall(messageToEmit))();
         }
     }
 }
