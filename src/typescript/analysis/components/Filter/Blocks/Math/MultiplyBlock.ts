@@ -1,4 +1,4 @@
-import { BlockType, SetSelectedBlock } from "../Core/BlockInterface";
+import { BlockType, SetSelectedBlock, setBlockHTMLClass } from "../Core/BlockCore";
 import BlockSlot from "../Core/BlockSlot";
 import OperatorBlock from "../Core/OperatorBlock";
 
@@ -7,15 +7,15 @@ export default class MultiplyBlock extends OperatorBlock {
 
     private readonly mainContainer = document.createElement("div");
     private readonly textLabel = document.createElement("span");
-    public readonly slots: [BlockSlot, BlockSlot];
 
-    public constructor(setSelectedBlock: SetSelectedBlock) {
-        super();
-
-        this.slots = [
-            new BlockSlot(this, "number", setSelectedBlock), 
-            new BlockSlot(this, "number", setSelectedBlock)
+    public constructor(setSelectedBlock: SetSelectedBlock, slots?: BlockSlot[]) {
+        slots = slots || [
+            new BlockSlot("number", setSelectedBlock), 
+            new BlockSlot("number", setSelectedBlock)
         ];
+
+        super(setSelectedBlock, slots);
+        setBlockHTMLClass(this)
 
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -44,5 +44,9 @@ export default class MultiplyBlock extends OperatorBlock {
         if(typeof value2 !== 'number') return null;
 
         return value1 * value2;
+    }
+
+    override clone(): MultiplyBlock {
+        return new MultiplyBlock(this.setSelectedBlock, this.cloneSlots());
     }
 }

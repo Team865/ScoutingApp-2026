@@ -1,4 +1,4 @@
-import { BlockType, SetSelectedBlock } from "../Core/BlockInterface";
+import { BlockType, SetSelectedBlock, setBlockHTMLClass } from "../Core/BlockCore";
 import BlockSlot from "../Core/BlockSlot";
 import OperatorBlock from "../Core/OperatorBlock";
 
@@ -7,15 +7,15 @@ export default class EqualsBlock extends OperatorBlock {
 
     private readonly mainContainer = document.createElement("div");
     private readonly textLabel = document.createElement("span");
-    public readonly slots: [BlockSlot, BlockSlot];
 
-    public constructor(setSelectedBlock: SetSelectedBlock) {
-        super();
-
-        this.slots = [
-            new BlockSlot(this, "any", setSelectedBlock), 
-            new BlockSlot(this, "any", setSelectedBlock)
+    public constructor(setSelectedBlock: SetSelectedBlock, slots?: BlockSlot[]) {
+        slots = slots || [
+            new BlockSlot("any", setSelectedBlock), 
+            new BlockSlot("any", setSelectedBlock)
         ];
+
+        super(setSelectedBlock, slots);
+        setBlockHTMLClass(this)
 
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -42,5 +42,9 @@ export default class EqualsBlock extends OperatorBlock {
         const value2 = this.slots[1].child.getValueForTeam(teamNumber);
 
         return value1 === value2;
+    }
+
+    override clone(): EqualsBlock {
+        return new EqualsBlock(this.setSelectedBlock, this.cloneSlots());
     }
 }

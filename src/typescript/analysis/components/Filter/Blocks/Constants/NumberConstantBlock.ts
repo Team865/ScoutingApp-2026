@@ -1,4 +1,4 @@
-import BlockInterface, { BlockType, SetSelectedBlock } from "../Core/BlockInterface";
+import { BlockInterface, BlockType, setBlockHTMLClass, SetSelectedBlock } from "../Core/BlockCore";
 
 export default class NumberBlock implements BlockInterface {
     public readonly type = BlockType.VALUE;
@@ -6,8 +6,11 @@ export default class NumberBlock implements BlockInterface {
     private readonly mainContainer = document.createElement("div");
     private readonly textLabel = document.createElement("span");
     private readonly input = document.createElement("input");
+    private readonly setSelectedBlock: SetSelectedBlock;
 
-    constructor(setSelectedBlock: SetSelectedBlock) {
+    constructor(setSelectedBlock: SetSelectedBlock, startingValue?: string) {
+        setBlockHTMLClass(this);
+        this.setSelectedBlock = setSelectedBlock;
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
             setSelectedBlock(this);
@@ -18,6 +21,7 @@ export default class NumberBlock implements BlockInterface {
         this.mainContainer.classList.add("block-container", "horizontal");
 
         this.input.type = "number";
+        this.input.value = startingValue || "";
         this.textLabel.innerText = "number:";
 
         this.mainContainer.append(
@@ -32,5 +36,9 @@ export default class NumberBlock implements BlockInterface {
 
     public get domElement() {
         return this.mainContainer;
+    }
+
+    public clone(): NumberBlock {
+        return new NumberBlock(this.setSelectedBlock, this.input.value);
     }
 }

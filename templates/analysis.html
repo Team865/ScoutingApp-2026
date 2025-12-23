@@ -46,12 +46,22 @@
               <button id="data-filter-tab-button">Data</button>
               <button id="constants-filter-tab-button">Constants</button>
             </div>
-            <div id="filter-blocks-page-wrapper"></div>
+            <div id="filter-blocks-page-wrapper">
+              <button id="close-block-producers-page">CLOSE</button>
+            </div>
           </div>
           <div id="filter-content-container">
             <div id="filter-content-toolbar">
-              <button id="delete-filter-block">DELETE</button>
-              <button id="test-filter-block">TEST</button>
+              <div>
+                <button id="enable-filter">ENABLE</button>
+                <button id="disable-filter">DISABLE</button>
+                <button id="test-filter-block">TEST</button>
+              </div>
+              <div>
+                <button id="delete-filter-block">DELETE</button>
+                <button id="copy-filter-block">COPY</button>
+                <button id="paste-filter-block" class="disabled">PASTE</button>
+              </div>
             </div>
             <div id="filter-content-display"></div>
           </div>

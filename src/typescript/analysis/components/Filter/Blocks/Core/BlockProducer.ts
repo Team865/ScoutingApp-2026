@@ -21,7 +21,7 @@ import NumberConstantBlock from "../Constants/NumberConstantBlock";
 import TrueBlock from "../Constants/TrueBlock";
 import FalseBlock from "../Constants/FalseBlock";
 
-import BlockInterface, { SetSelectedBlock } from "./BlockInterface";
+import { BlockInterface, BlockType, SetSelectedBlock } from "./BlockCore";
 import AppData from "../../../../AppData";
 import PitScoutingFields, { FieldType } from "../../../../../appConfig/PitScoutingFields";
 import BlockSlot from "./BlockSlot";
@@ -32,9 +32,11 @@ const dataTabButton = document.querySelector("button#data-filter-tab-button") as
 const constantsTabButton = document.querySelector("button#constants-filter-tab-button") as HTMLButtonElement;
 
 const filterBlockPageWrapper = document.querySelector("div#filter-blocks-page-wrapper") as HTMLDivElement;
-const filterContentDisplay = document.querySelector("div#filter-content-display") as HTMLDivElement;
+const closeBlockProducersButton = document.querySelector("button#close-block-producers-page") as HTMLButtonElement;
 
 export namespace BlockProducer {
+    let currentSelectedTabButton: HTMLButtonElement = comparatorsTabButton;
+
     export const comparatorsPageElements: HTMLElement[] = [];
     export const mathPageElements: HTMLElement[] = [];
     export const dataPageElements: HTMLElement[] = [];
@@ -51,33 +53,30 @@ export namespace BlockProducer {
             const target = getTarget();
 
             if(target === null) return;
-            
-            const newBlock = createBlockFunction();
 
-            if(target instanceof HTMLElement) {
-                target.appendChild(newBlock.domElement);
-                setTopLevelBlock(newBlock);
-            } else if(target["type"] !== undefined) { // Only BlockInterface's have a type member
-                const blockToReplace = target as BlockInterface;
-                const parentSlot = blockToReplace.parentSlot;
-
-                parentSlot.removeChildBlock(blockToReplace);
-                parentSlot.addChildBlock(newBlock);
-            } else { // Has to be a block slot
-                (target as BlockSlot).addChildBlock(newBlock);
-            }
-            
-            setSelectedBlock(null);
+            addBlock(createBlockFunction(), target);
         });
 
         return producer;
     }
 
-    export function setPage(pageElements: HTMLElement[]) {
-        filterBlockPageWrapper.replaceChildren(...pageElements);
+    function setPage(pageElements: HTMLElement[]) {
+        filterBlockPageWrapper.replaceChildren(
+            closeBlockProducersButton,
+            ...pageElements
+        );
     }
 
-    export function createComparatorBlockProducers() {
+    function bindTabButton(tabButton: HTMLButtonElement, pageElements: HTMLElement[]) {
+        tabButton.addEventListener("click", (e) => {
+            if(currentSelectedTabButton) currentSelectedTabButton.classList.remove("selected");
+            currentSelectedTabButton = tabButton;
+            tabButton.classList.add("selected");
+            setPage(pageElements);
+        });
+    }
+
+    function createComparatorBlockProducers() {
         comparatorsPageElements.push(
             createProducerElement("not X", () => new NotBlock(setSelectedBlock)),
             createProducerElement("X equals Y", () => new EqualsBlock(setSelectedBlock)),
@@ -85,14 +84,14 @@ export namespace BlockProducer {
             createProducerElement("X or Y", () => new OrBlock(setSelectedBlock)),
             createProducerElement("X < Y", () => new LessThanBlock(setSelectedBlock)),
             createProducerElement("X > Y", () => new GreaterThanBlock(setSelectedBlock)),
-            createProducerElement("X ≥ Y", () => new LEQBlock(setSelectedBlock)),
-            createProducerElement("X ≤ Y", () => new GEQBlock(setSelectedBlock))
+            createProducerElement("X ≤ Y", () => new LEQBlock(setSelectedBlock)),
+            createProducerElement("X ≥ Y", () => new GEQBlock(setSelectedBlock))
         );
 
-        comparatorsTabButton.addEventListener("click", _ => setPage(comparatorsPageElements));
+        bindTabButton(comparatorsTabButton, comparatorsPageElements);
     }
 
-    export function createMathBlockProducers() {
+    function createMathBlockProducers() {
         mathPageElements.push(
             createProducerElement("X + Y", () => new AddBlock(setSelectedBlock)),
             createProducerElement("X - Y", () => new SubtractBlock(setSelectedBlock)),
@@ -100,10 +99,10 @@ export namespace BlockProducer {
             createProducerElement("X ÷ Y", () => new DivideBlock(setSelectedBlock))
         );
 
-        mathTabButton.addEventListener("click", _ => setPage(mathPageElements));
+        bindTabButton(mathTabButton, mathPageElements);
     }
 
-    export function createDataBlockProducers() {
+    function createDataBlockProducers() {
         const metadataHeader = document.createElement("h1");
         metadataHeader.innerText = "Metadata";
         const scoutingHeader = document.createElement("h1");
@@ -154,10 +153,10 @@ export namespace BlockProducer {
             )));
         })
 
-        dataTabButton.addEventListener("click", _ => setPage(dataPageElements));
+        bindTabButton(dataTabButton, dataPageElements);
     }
 
-    export function createConstantBlockProducers() {
+    function createConstantBlockProducers() {
         constantsPageElement.push(
             createProducerElement("True", () => new TrueBlock(setSelectedBlock)),
             createProducerElement("False", () => new FalseBlock(setSelectedBlock)),
@@ -165,6 +164,39 @@ export namespace BlockProducer {
             createProducerElement("Number Constant", () => new NumberConstantBlock(setSelectedBlock)),
         );
 
-        constantsTabButton.addEventListener("click", _ => setPage(constantsPageElement));
+        bindTabButton(constantsTabButton, constantsPageElement);
+    }
+
+    export function addBlock(newBlock: BlockInterface, target: HTMLElement | BlockInterface | BlockSlot) {
+        if(target instanceof HTMLElement) {
+            target.appendChild(newBlock.domElement);
+            setTopLevelBlock(newBlock);
+        } else if(target["type"] !== undefined) { // Only BlockInterface's have a type member
+            const blockToReplace = target as BlockInterface;
+            const parentSlot = blockToReplace.parentSlot;
+
+            if(!parentSlot) {
+                blockToReplace.domElement.parentElement.appendChild(newBlock.domElement);
+                blockToReplace.domElement.remove();
+                setTopLevelBlock(newBlock);
+            } else {
+                parentSlot.removeChildBlock(blockToReplace);
+                parentSlot.addChildBlock(newBlock);
+            }
+        } else { // Has to be a block slot
+            (target as BlockSlot).addChildBlock(newBlock);
+        }
+
+        setSelectedBlock(null);
+    }
+
+    export function start() {
+        createComparatorBlockProducers();
+        createMathBlockProducers();
+        createDataBlockProducers();
+        createConstantBlockProducers();
+
+        if(currentSelectedTabButton) currentSelectedTabButton.classList.add("selected");
+        setPage(comparatorsPageElements);
     }
 }

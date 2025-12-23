@@ -1,4 +1,4 @@
-import { BlockType, SetSelectedBlock } from "../Core/BlockInterface";
+import { BlockType, SetSelectedBlock, setBlockHTMLClass } from "../Core/BlockCore";
 import BlockSlot from "../Core/BlockSlot";
 import OperatorBlock from "../Core/OperatorBlock";
 
@@ -7,15 +7,15 @@ export default class AndBlock extends OperatorBlock {
 
     private readonly mainContainer = document.createElement("div");
     private readonly textLabel = document.createElement("span");
-    public readonly slots: [BlockSlot, BlockSlot];
 
-    public constructor(setSelectedBlock: SetSelectedBlock) {
-        super();
-
-        this.slots = [
-            new BlockSlot(this, "boolean", setSelectedBlock), 
-            new BlockSlot(this, "boolean", setSelectedBlock)
+    public constructor(setSelectedBlock: SetSelectedBlock, slots?: BlockSlot[]) {
+        slots = slots || [
+            new BlockSlot("boolean", setSelectedBlock),
+            new BlockSlot("boolean", setSelectedBlock)
         ];
+
+        super(setSelectedBlock, slots);
+        setBlockHTMLClass(this)
 
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -42,5 +42,9 @@ export default class AndBlock extends OperatorBlock {
         const value2 = this.slots[1].child.getValueForTeam(teamNumber);
 
         return value1 && value2;
+    }
+
+    override clone(): AndBlock {
+        return new AndBlock(this.setSelectedBlock, this.cloneSlots());
     }
 }

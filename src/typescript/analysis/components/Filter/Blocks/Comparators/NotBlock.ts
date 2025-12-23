@@ -1,4 +1,4 @@
-import { BlockType, SetSelectedBlock } from "../Core/BlockInterface";
+import { BlockType, SetSelectedBlock, setBlockHTMLClass } from "../Core/BlockCore";
 import BlockSlot from "../Core/BlockSlot";
 import OperatorBlock from "../Core/OperatorBlock";
 
@@ -7,12 +7,12 @@ export default class NotBlock extends OperatorBlock {
 
     private readonly mainContainer = document.createElement("div");
     private readonly textLabel = document.createElement("span");
-    public readonly slot: BlockSlot;
 
-    public constructor(setSelectedBlock: SetSelectedBlock) {
-        super();
+    public constructor(setSelectedBlock: SetSelectedBlock, slot?: BlockSlot) {
+        slot = slot || new BlockSlot("boolean", setSelectedBlock);
 
-        this.slot = new BlockSlot(this, "boolean", setSelectedBlock);
+        super(setSelectedBlock, [slot]);
+        setBlockHTMLClass(this);
 
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -25,7 +25,7 @@ export default class NotBlock extends OperatorBlock {
 
         this.mainContainer.append(
             this.textLabel,
-            this.slot.domElement
+            this.slots[0].domElement
         );
     }
 
@@ -34,8 +34,12 @@ export default class NotBlock extends OperatorBlock {
     }
 
     override getValueForTeam(teamNumber: number) {
-        const value = this.slot.child.getValueForTeam(teamNumber);
+        const value = this.slots[0].child.getValueForTeam(teamNumber);
 
         return !value;
+    }
+
+    override clone() {
+        return new NotBlock(this.setSelectedBlock, this.slots[0].clone());
     }
 }

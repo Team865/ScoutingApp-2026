@@ -1,15 +1,20 @@
-import BlockInterface, { SetSelectedBlock } from "./BlockInterface";
+import { BlockInterface, SetSelectedBlock } from "./BlockCore";
 import OperatorBlock from "./OperatorBlock";
 
 type BlockSlotType = "text" | "number" | "boolean" | "array" | "any";
 
 export default class BlockSlot {
-    public readonly parent: OperatorBlock;
+    private readonly slotType: BlockSlotType;
+    private readonly setSelectedBlock: SetSelectedBlock;
+    public parent: OperatorBlock;
     public readonly domElement = document.createElement("div");
     private readonly textElement = document.createElement("span");
     public child: BlockInterface | null;
 
-    constructor(parent: OperatorBlock, slotType: BlockSlotType, setSelectedBlock: SetSelectedBlock) {
+    constructor(slotType: BlockSlotType, setSelectedBlock: SetSelectedBlock) {
+        this.slotType = slotType;
+        this.setSelectedBlock = setSelectedBlock;
+
         this.textElement.innerText = slotType;
         this.domElement.classList.add("block-input-slot");
         this.textElement.classList.add("type-text");
@@ -32,5 +37,13 @@ export default class BlockSlot {
         child.domElement.remove();
         this.child = null;
         this.domElement.appendChild(this.textElement);
+    }
+
+    public clone(): BlockSlot {
+        const clonedSlot = new BlockSlot(this.slotType, this.setSelectedBlock);
+
+        if(this.child) clonedSlot.addChildBlock(this.child.clone());
+
+        return clonedSlot;
     }
 }
