@@ -1,5 +1,6 @@
 from ..AppData import AppData
 
+from google.auth.exceptions import RefreshError
 from google.oauth2.service_account import Credentials
 from xlsxwriter.utility import xl_rowcol_to_cell_fast
 from enum import StrEnum
@@ -68,8 +69,15 @@ class GoogleSpreadsheet:
         gc = gspread.authorize(creds)
         try:
             self.spreadsheet = gc.open_by_key(self.sheets_id)
-        except:
+        except gspread.exceptions.SpreadsheetNotFound as notFoundE:
             print('WARNING: Google sheet not set. Have you set the id in .env?')
+            sys.exit(0)
+        except RefreshError as refreshError:
+            print(refreshError)
+            print("[91mSomething went wrong while trying to open the spreadsheet. Is your clock synced?[0m")
+            sys.exit(0)
+        except Exception as e:
+            print(e)
             sys.exit(0)
 
     def _fetch_backend_worksheets(self):
