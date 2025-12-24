@@ -2,7 +2,7 @@ import PitScoutingFields, { FieldType } from "../../appConfig/PitScoutingFields"
 import SearchBar from "../../lib/components/SearchBar";
 import AppData from "../AppData";
 import TeamCard from "../components/TeamCard";
-import TeamPage from "../components/TeamPage";
+import TeamPage from "../components/TeamPage/Container";
 import { FilterManager } from "./FilterManager";
 
 const mainContentContainer = document.querySelector("div#main-content") as HTMLDivElement;

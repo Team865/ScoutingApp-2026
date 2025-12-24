@@ -14,7 +14,7 @@ export type FieldConfig = {
     [key: string]: unknown
 }
 
-const Fields: FieldConfig[] = [
+const PitScoutingFields: FieldConfig[] = [
     {
         name: "Drivetrain",
         type: FieldType.SINGLE_CHOICE,
@@ -51,4 +51,4 @@ const Fields: FieldConfig[] = [
     }
 ]
 
-export default Fields;
+export default PitScoutingFields;

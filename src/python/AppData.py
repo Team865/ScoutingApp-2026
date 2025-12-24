@@ -23,7 +23,7 @@ _pit_scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
     "NUMBER": lambda value: float(value) if "." in value else int(value),
     "NUMBER_RANGE": lambda value: int(value),
     "SINGLE_CHOICE": lambda value: value,
-    "MULTIPLE_CHOICE": lambda value: value.split(", ")
+    "MULTIPLE_CHOICE": lambda value: (value.split(", ") if value else [])
 }
 
 class FetchedTeamData(TypedDict):
@@ -197,7 +197,7 @@ class SuperScoutingData:
                 if field_type_match is not None:
                     field_type = field_type_match.group().strip()
                     field_value_str = field_value_cell[field_type_match.end():]
-                    field_value = _pit_scouting_field_value_parser[field_type](field_value_str)
+                    field_value = _pit_scouting_field_value_parser[field_type](field_value_str) if field_value_str else None
                 else:
                     field_value = None
 

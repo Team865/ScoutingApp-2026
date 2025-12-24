@@ -4,7 +4,7 @@ from chompjs import chompjs
 import re
 
 _pit_scouting_fields_config_path = Path(__file__).parent.parent.parent.parent / Path("src/typescript/appConfig/PitScoutingFields.ts")
-_fields_list_regex = re.compile(r"(?<=const Fields: FieldConfig\[\] = )\[.*\]", re.RegexFlag.DOTALL)
+_fields_list_regex = re.compile(r"(?<=const PitScoutingFields: FieldConfig\[\] = )\[.*\]", re.RegexFlag.DOTALL)
 _field_type_stripper = re.compile(r"(?<=FieldType\.).*")
 
 def get_fields() -> list:

@@ -1,0 +1,7 @@
+div#team-page-subpage-container {
+    margin: 1rem;
+}
+
+div#subpage-tab-buttons-container > button.selected {
+    background-color: var(--bg-dark);
+}
