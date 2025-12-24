@@ -2,6 +2,7 @@
     --bg-comparator-block: oklab(40% -0.1 0.1);
     --bg-math-block: oklab(40% -0.01 -0.14);
     --bg-value-block: oklab(40% 0.05 0.12);
+    --bg-value-type: oklab(60% 0.05 0.12);
 }
 
 div#filter-editor, 
@@ -168,6 +169,18 @@ button#redo-action > img {
 
     text-align: center;
     margin: 0.5rem;
+}
+
+.block-container.value-block > span.data-type {
+    background-color: var(--bg-value-type);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.block-container.value-block:not(.horizontal) > span:not(.data-type) {
+    margin: 0.5rem 1rem 1rem;
 }
 
 div.block-container > input {

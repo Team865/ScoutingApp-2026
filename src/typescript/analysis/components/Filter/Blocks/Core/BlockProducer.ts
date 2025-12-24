@@ -125,13 +125,15 @@ export namespace BlockProducer {
         // Metadata
         dataPageElements.push(
             metadataHeader,
-            createProducerElement("Team Number (number)", () => new DataBlock(
-                "Team Number (number)",
+            createProducerElement("NUMBER: Team Number", () => new DataBlock(
+                "number",
+                "Team Number",
                 setSelectedBlock, 
                 (teamNumber) => teamNumber)
             ),
-            createProducerElement("EPA (number)", () => new DataBlock(
-                "EPA (number)",
+            createProducerElement("NUMBER: EPA", () => new DataBlock(
+                "number",
+                "EPA",
                 setSelectedBlock, 
                 (teamNumber) => {
                 const teamData = AppData.superscouting.fetched_team_data.find(teamData => teamData.number === teamNumber);
@@ -144,7 +146,7 @@ export namespace BlockProducer {
         // Superscouting/Pit Scouting
         dataPageElements.push(pitScoutingHeader);
         PitScoutingFields.forEach(fieldConfig => {
-            const blockLabel = `${fieldConfig.name} (${
+            const dataType = 
                 fieldConfig.type === FieldType.BOOLEAN ? 
                 "boolean" :
                 fieldConfig.type === FieldType.TEXT ||
@@ -155,11 +157,11 @@ export namespace BlockProducer {
                 "number" :
                 fieldConfig.type === FieldType.MULTIPLE_CHOICE ?
                 "array" :
-                "unknown"
-            })`;
+                "unknown";
 
-            dataPageElements.push(createProducerElement(blockLabel, () => new DataBlock(
-                blockLabel,
+            dataPageElements.push(createProducerElement(`${dataType.toUpperCase()}: ${fieldConfig.name}`, () => new DataBlock(
+                dataType,
+                fieldConfig.name,
                 setSelectedBlock, 
                 (teamNumber) => AppData.superscouting.pit_scouting_notes[teamNumber] && AppData.superscouting.pit_scouting_notes[teamNumber][fieldConfig.name]
             )));
