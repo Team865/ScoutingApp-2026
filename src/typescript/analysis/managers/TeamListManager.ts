@@ -103,6 +103,11 @@ function searchFilter(teams?: number[]) {
 }
 
 function customFilter(teams?: number[]) {
+    if(!FilterManager.getTopLevelBlock()) {
+        alert("No filter blocks detected. Open the FILTER menu to create a filter. Make sure to BUILD after you are done.");
+        return;
+    }
+
     teams = teams || Array.from(teamCards.keys());
 
     try {
@@ -149,8 +154,12 @@ export namespace TeamListManager {
 
         toggleFilterButton.addEventListener("click", () => {
             if(toggleFilterButton.classList.contains("disabled")) {
-                toggleFilterButton.innerText = "ENABLED";
-                toggleFilterButton.classList.remove("disabled");
+                if(filteredTeams !== null) {
+                    toggleFilterButton.innerText = "ENABLED";
+                    toggleFilterButton.classList.remove("disabled");
+                } else {
+                    alert("No filter detected. Make sure to BUILD the filter after it is designed.");
+                }
             } else {
                 toggleFilterButton.innerText = "DISABLED";
                 toggleFilterButton.classList.add("disabled");
@@ -161,8 +170,13 @@ export namespace TeamListManager {
 
         buildFilterButton.addEventListener("click", () => {
             buildFilterButton.innerText = "...";
-            filteredTeams = customFilter();
-            buildFilterButton.innerText = "REBUILD";
+            const newFilteredTeams = customFilter();
+            if(newFilteredTeams === undefined) {
+                buildFilterButton.innerText = "BUILD";
+            } else {
+                filteredTeams = newFilteredTeams;
+                buildFilterButton.innerText = "REBUILD";
+            }
             if(!toggleFilterButton.classList.contains("disabled")) toggleTeamVisibility();
         });
 

@@ -230,6 +230,10 @@ function initKeybinds() {
 }
 
 export namespace FilterManager {
+    export function getTopLevelBlock() {
+        return topLevelBlock;
+    }
+
     export function testTeam(teamNumber: number) {
         return topLevelBlock.getValueForTeam(teamNumber);
     }
