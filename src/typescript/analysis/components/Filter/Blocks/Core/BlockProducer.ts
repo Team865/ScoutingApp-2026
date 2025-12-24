@@ -8,6 +8,9 @@ import LessThanBlock from "../Comparators/LessThanBlock";
 import GreaterThanBlock from "../Comparators/GreaterThanBlock";
 import LEQBlock from "../Comparators/LEQBlock";
 import GEQBlock from "../Comparators/GEQBlock";
+import ExistsBlock from "../Comparators/ExistsBlock";
+import IfElseBlock from "../Comparators/IfElseBlock";
+import IncludesBlock from "../Comparators/IncludesBlock";
 
 import AddBlock from "../Math/AddBlock";
 import SubtractBlock from "../Math/SubtractBlock";
@@ -53,6 +56,7 @@ export namespace BlockProducer {
 
     function createProducerElement(producerLabelString: string, createBlockFunction: () => BlockInterface) {
         const producer = document.createElement("button");
+        producer.dir = "ltr";
         producer.innerText = producerLabelString;
         producer.addEventListener("click", () => {
             const target = getTarget();
@@ -85,12 +89,15 @@ export namespace BlockProducer {
         comparatorsPageElements.push(
             createProducerElement("not X", () => new NotBlock(setSelectedBlock)),
             createProducerElement("X equals Y", () => new EqualsBlock(setSelectedBlock)),
+            createProducerElement("does X exist?", () => new ExistsBlock(setSelectedBlock)),
             createProducerElement("X and Y", () => new AndBlock(setSelectedBlock)),
             createProducerElement("X or Y", () => new OrBlock(setSelectedBlock)),
             createProducerElement("X < Y", () => new LessThanBlock(setSelectedBlock)),
             createProducerElement("X > Y", () => new GreaterThanBlock(setSelectedBlock)),
             createProducerElement("X ≤ Y", () => new LEQBlock(setSelectedBlock)),
-            createProducerElement("X ≥ Y", () => new GEQBlock(setSelectedBlock))
+            createProducerElement("X ≥ Y", () => new GEQBlock(setSelectedBlock)),
+            createProducerElement("if A then use X, else use Y", () => new IfElseBlock(setSelectedBlock)),
+            createProducerElement("does list X includes item Y?", () => new IncludesBlock(setSelectedBlock))
         );
 
         bindTabButton(comparatorsTabButton, comparatorsPageElements);
@@ -154,7 +161,7 @@ export namespace BlockProducer {
             dataPageElements.push(createProducerElement(blockLabel, () => new DataBlock(
                 blockLabel,
                 setSelectedBlock, 
-                (teamNumber) => AppData.superscouting.pit_scouting_notes[teamNumber][fieldConfig.name]
+                (teamNumber) => AppData.superscouting.pit_scouting_notes[teamNumber] && AppData.superscouting.pit_scouting_notes[teamNumber][fieldConfig.name]
             )));
         })
 

@@ -1,7 +1,7 @@
 import { BlockInterface, SetSelectedBlock } from "./BlockCore";
 import OperatorBlock from "./OperatorBlock";
 
-type BlockSlotType = "text" | "number" | "boolean" | "array" | "any";
+type BlockSlotType = "text" | "number" | "boolean" | "list" | "any";
 
 export default class BlockSlot {
     private readonly slotType: BlockSlotType;
