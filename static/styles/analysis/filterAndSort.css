@@ -22,16 +22,29 @@ button#filter-button {
     padding: 5px;
 }
 
+button#toggle-filter {
+    font-weight: bold;
+}
+
+button#toggle-filter.disabled {
+    background-color: var(--red-alliance);
+}
+button#toggle-filter.disabled:hover {
+    background-color: var(--red-alliance-light);
+}
+
+button#toggle-filter {
+    background-color: var(--bg-complete);
+}
+button#toggle-filter:hover {
+    background-color: var(--bg-complete-light);
+}
+
 button#filter-button > img {
     display: block;
     height: max(2dvh, 30px);
     aspect-ratio: 1;
     margin: auto;
-}
-
-div#filter-menu {
-    display: flex;
-    flex-flow: column;
 }
 
 div#sort-menu {
@@ -75,6 +88,8 @@ button#sort-order.descending {
 }
 
 div#filter-menu {
+    display: flex;
+    flex-flow: column;
     width: 100%;
     background-color: var(--bg-dark);
     border-radius: 20px;

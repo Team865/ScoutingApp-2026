@@ -246,16 +246,16 @@ button#paste-filter-block.selected {
     background-color: var(--accent);
 }
 
-button.disabled {
+#filter-menu button.disabled {
     background-color: var(--bg);
     color: var(--text-disabled);
 }
 
-button.disabled > img {
+#filter-menu button.disabled > img {
     filter: brightness(30%);
 }
 
-button.disabled:hover {
+#filter-menu button.disabled:hover {
     background-color: var(--bg);
 } 
 

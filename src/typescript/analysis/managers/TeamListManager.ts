@@ -3,10 +3,14 @@ import SearchBar from "../../lib/components/SearchBar";
 import AppData from "../AppData";
 import TeamCard from "../components/TeamCard";
 import TeamPage from "../components/TeamPage";
+import { FilterManager } from "./FilterManager";
 
 const mainContentContainer = document.querySelector("div#main-content") as HTMLDivElement;
 const teamCardsPageContainer = document.querySelector("div#team-cards-page-container") as HTMLDivElement;
 const teamCardsList = document.querySelector("div#team-cards-list") as HTMLDivElement;
+
+const buildFilterButton = document.querySelector("button#build-filter") as HTMLButtonElement;
+const toggleFilterButton = document.querySelector("button#toggle-filter") as HTMLButtonElement;
 
 const sortOrderButton = document.querySelector("button#sort-order") as HTMLButtonElement;
 const sortBySelection = document.querySelector("select#sorted-by") as HTMLSelectElement;
@@ -19,6 +23,8 @@ const teamCards: Map<number, TeamCard> = new Map();
 
 /** {optionValue: SortFunction which returns the sorted teams} */
 const sortFunctions: Map<string, (isDescending: boolean) => number[]> = new Map();
+
+let filteredTeams: number[] = null;
 
 function populateSortFunctions() {
     // Metadata options
@@ -85,16 +91,33 @@ function sortTeams() {
     }
 }
 
-function applySearch() {
-    const orderedTeamCards = Array.from(teamCards.values());
+function searchFilter(teams?: number[]) {
+    teams = teams || Array.from(teamCards.keys());
 
     const searchResults = searchBar.batchSearchTest(
-        orderedTeamCards
-            .map(teamCard => teamCard.teamString)
+        teams
+            .map(teamNumber => teamCards.get(teamNumber).teamString)
     );
 
-    for (const [index, teamCard] of orderedTeamCards.entries()) {
-        teamCard.domElement.hidden = !searchResults[index];
+    return teams.filter((_, index) => searchResults[index]);
+}
+
+function customFilter(teams?: number[]) {
+    teams = teams || Array.from(teamCards.keys());
+
+    try {
+        return teams.filter((teamNumber) => FilterManager.testTeam(teamNumber));
+    } catch (e) {
+        if(!(e instanceof Error)) e = new Error(e)
+        alert(`Something went wrong: ${e.message}`);
+    }
+}
+
+function toggleTeamVisibility() {
+    const passingTeams = searchFilter(!toggleFilterButton.classList.contains("disabled") && filteredTeams);
+
+    for(const [teamNumber, teamCard] of teamCards.entries()) {
+        teamCard.domElement.hidden = !passingTeams.includes(teamNumber);
     }
 }
 
@@ -124,7 +147,26 @@ export namespace TeamListManager {
 
         mainContentContainer.appendChild(teamPage.domElement);
 
-        searchBar.inputElement.addEventListener("input", applySearch);
+        toggleFilterButton.addEventListener("click", () => {
+            if(toggleFilterButton.classList.contains("disabled")) {
+                toggleFilterButton.innerText = "ENABLED";
+                toggleFilterButton.classList.remove("disabled");
+            } else {
+                toggleFilterButton.innerText = "DISABLED";
+                toggleFilterButton.classList.add("disabled");
+            }
+            toggleTeamVisibility();
+        });
+        searchBar.inputElement.addEventListener("input", toggleTeamVisibility);
+
+        buildFilterButton.addEventListener("click", () => {
+            buildFilterButton.innerText = "...";
+            filteredTeams = customFilter();
+            buildFilterButton.innerText = "REBUILD";
+            if(!toggleFilterButton.classList.contains("disabled")) toggleTeamVisibility();
+        });
+
+        toggleFilterButton.addEventListener("click", toggleTeamVisibility);
         sortOrderButton.addEventListener("click", sortTeams);
         sortBySelection.addEventListener("input", sortTeams);
     }

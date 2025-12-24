@@ -190,8 +190,6 @@ export namespace BlockProducer {
         const parentSlot = blockToReplace.parentSlot;
 
         if(!parentSlot) {
-            blockToReplace.domElement.parentElement.appendChild(newBlock.domElement);
-            blockToReplace.domElement.remove();
             setTopLevelBlock(newBlock);
         } else {
             parentSlot.removeChildBlock();

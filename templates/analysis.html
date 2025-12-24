@@ -22,6 +22,8 @@
         <button id="filter-button">
           <img alt="Filter" src="./static/deploy/filter.svg" />
         </button>
+        <button id="build-filter">BUILD</button>
+        <button id="toggle-filter" class="disabled">DISABLED</button>
       </div>
       <div id="sort-menu">
         <label for="sorted-by">
@@ -53,13 +55,11 @@
           <div id="filter-content-container">
             <div id="filter-content-toolbar">
               <div>
-                <button id="enable-filter">ENABLE</button>
-                <button id="disable-filter">DISABLE</button>
-                <button id="test-filter-block">TEST</button>
-              </div>
-              <div>
                 <button id="undo-action" class="disabled"><img src="./static/deploy/arrowLoopingLeft.svg" alt="Undo"></button>
                 <button id="redo-action" class="disabled"><img src="./static/deploy/arrowLoopingLeft.svg" alt="Redo"></button>
+                <button id="test-filter-block" class="disabled"><img src="./static/deploy/verifyIcon.svg" alt="Test"></button>
+              </div>
+              <div>
                 <button id="delete-filter-block"><img src="./static/deploy/trashCan.svg" alt="Delete"></button>
                 <button id="copy-filter-block"><img src="./static/deploy/copyIcon.svg" alt="Copy"></button>
                 <button id="paste-filter-block" class="disabled"><img src="./static/deploy/pasteIcon.svg" alt="Paste"></button>

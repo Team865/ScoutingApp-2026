@@ -12,8 +12,6 @@ const filterEditorContainer = document.querySelector("div#filter-editor") as HTM
 const filterBlockProducersMenu = document.querySelector("div#filter-blocks-menu") as HTMLDivElement;
 const closeBlockProducersButton = document.querySelector("button#close-block-producers-page") as HTMLButtonElement;
 
-const enableFilterButton = document.querySelector("button#enable-filter") as HTMLButtonElement;
-const disableFilterButton = document.querySelector("button#disable-filter") as HTMLButtonElement;
 const testFilterBlockButton = document.querySelector("button#test-filter-block") as HTMLButtonElement;
 
 const undoButton = document.querySelector("button#undo-action") as HTMLButtonElement;
@@ -59,9 +57,7 @@ abstract class ModifyFilterBlocks {
         if(block.parentSlot) {
             block.parentSlot.removeChildBlock();
         } else { // Top level block
-            block.domElement.remove();
-            topLevelBlock = null;
-            filterBlockProducersMenu.hidden = false;
+            BlockProducer.setTopLevelBlock(null);
         }
 
         currentlySelectedBlock = null;
@@ -191,13 +187,53 @@ function initFilterEditor() {
             return null;
     }
     BlockProducer.setTopLevelBlock = (block: BlockInterface | null) => {
-        if(block) filterContentDisplay.appendChild(block.domElement);
+        if(topLevelBlock) topLevelBlock.domElement.remove();
+        
+        if(block) {
+            filterContentDisplay.appendChild(block.domElement);
+            testFilterBlockButton.classList.remove("disabled");
+        } else {
+            testFilterBlockButton.classList.add("disabled");
+        }
+
         topLevelBlock = block;
     }
     BlockProducer.start();
 }
 
+function initKeybinds() {
+    window.addEventListener("keyup", (e) => {
+        if(!currentlySelectedBlock) return;
+        if(e.key === "Backspace") {
+            if(currentlySelectedBlock["type"] !== undefined) {
+                e.preventDefault();
+                ModifyFilterBlocks.deleteBlock(currentlySelectedBlock as BlockInterface);
+                return;
+            }
+        }
+
+        if(e.ctrlKey) {
+            switch(e.key) {
+                case "c":
+                    if(currentlySelectedBlock["type"] === undefined) return;
+                    e.preventDefault();
+                    ModifyFilterBlocks.copyBlock(currentlySelectedBlock as BlockInterface);
+                    return;
+                case "v":
+                    if(!copiedBlock) return;
+                    e.preventDefault();
+                    ModifyFilterBlocks.pasteBlock(currentlySelectedBlock);
+                    return;
+            }
+        }
+    });
+}
+
 export namespace FilterManager {
+    export function testTeam(teamNumber: number) {
+        return topLevelBlock.getValueForTeam(teamNumber);
+    }
+
     export function start() {
         bindAccordionBehavior(filterMenu, filterMenu);
         initSortOptions();
@@ -237,14 +273,12 @@ export namespace FilterManager {
         });
         
         testFilterBlockButton.addEventListener("click", () => {
-            if(topLevelBlock === null) return;
+            if(testFilterBlockButton.classList.contains("disabled")) return;
 
             const teamNumber = Number.parseInt(prompt("Enter Team Number:"));
-            alert(topLevelBlock.getValueForTeam(teamNumber));
+            
+            alert(testTeam(teamNumber));
         });
-
-        enableFilterButton;
-        disableFilterButton;
 
         deleteFilterBlockButton.addEventListener("click", () => {
             bufferButton(deleteFilterBlockButton, false, ModifyFilterBlocks.deleteBlock);
@@ -261,30 +295,6 @@ export namespace FilterManager {
 
         sortOrderButton.addEventListener("click", () => sortOrderButton.classList.toggle("descending"));
 
-        window.addEventListener("keyup", (e) => {
-            if(!currentlySelectedBlock) return;
-            if(e.key === "Backspace") {
-                if(currentlySelectedBlock["type"] !== undefined) {
-                    e.preventDefault();
-                    ModifyFilterBlocks.deleteBlock(currentlySelectedBlock as BlockInterface);
-                    return;
-                }
-            }
-
-            if(e.ctrlKey) {
-                switch(e.key) {
-                    case "c":
-                        if(currentlySelectedBlock["type"] === undefined) return;
-                        e.preventDefault();
-                        ModifyFilterBlocks.copyBlock(currentlySelectedBlock as BlockInterface);
-                        return;
-                    case "v":
-                        if(!copiedBlock) return;
-                        e.preventDefault();
-                        ModifyFilterBlocks.pasteBlock(currentlySelectedBlock);
-                        return;
-                }
-            }
-        });
+        initKeybinds();
     }
 }
