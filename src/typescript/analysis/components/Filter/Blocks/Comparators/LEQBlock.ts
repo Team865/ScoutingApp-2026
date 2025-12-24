@@ -47,6 +47,6 @@ export default class LEQBlock extends OperatorBlock {
     }
 
     override clone(): LEQBlock {
-        return new LEQBlock(this.setSelectedBlock, this.slots);
+        return new LEQBlock(this.setSelectedBlock, this.cloneSlots());
     }
 }

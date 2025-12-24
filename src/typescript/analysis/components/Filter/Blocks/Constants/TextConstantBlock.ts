@@ -1,4 +1,4 @@
-import { BlockInterface, BlockType, SetSelectedBlock } from "../Core/BlockCore";
+import { BlockInterface, BlockType, setBlockHTMLClass, SetSelectedBlock } from "../Core/BlockCore";
 
 export default class TextBlock implements BlockInterface {
     public readonly type = BlockType.VALUE;
@@ -9,7 +9,7 @@ export default class TextBlock implements BlockInterface {
     private readonly setSelectedBlock: SetSelectedBlock;
 
     constructor(setSelectedBlock: SetSelectedBlock, startingValue?: string) {
-        setSelectedBlock(this);
+        setBlockHTMLClass(this);
         this.setSelectedBlock = setSelectedBlock;
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
