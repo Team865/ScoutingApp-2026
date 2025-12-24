@@ -124,6 +124,10 @@ button#close-block-producers-page:hover {
     background-color: var(--accent);
 }
 
+button#redo-action > img {
+    transform: scaleX(-1);
+}
+
 /* Box Sizing constraints */
 .block-container, 
 .block-container * {
@@ -216,6 +220,16 @@ div.block-container > input {
     field-sizing: content;
 }
 
+div#filter-content-toolbar button:has(img) {
+    display: flex;
+    padding: 0.2rem;
+}
+
+div#filter-content-toolbar img {
+    width: 2rem;
+    height: 2rem;
+}
+
 /* Selected Object */
 div#filter-tab-buttons .selected {
     background-color: var(--bg);
@@ -235,7 +249,11 @@ button#paste-filter-block.selected {
 button.disabled {
     background-color: var(--bg);
     color: var(--text-disabled);
-} 
+}
+
+button.disabled > img {
+    filter: brightness(30%);
+}
 
 button.disabled:hover {
     background-color: var(--bg);

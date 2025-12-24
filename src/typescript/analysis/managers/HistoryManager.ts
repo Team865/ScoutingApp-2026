@@ -19,6 +19,8 @@ type Action = {
 export class HistoryManager {
     private readonly maximumHistoryLength: number;
     private setSelectedBlock: SetSelectedBlock;
+    private readonly undoButton: HTMLButtonElement;
+    private readonly redoButton: HTMLButtonElement;
 
     // History(s) have to be private because they are mutable.
     // The history(s) are mutable because it is faster to just replace the
@@ -31,12 +33,50 @@ export class HistoryManager {
      * `maximumHistoryLength` is how many actions can be
      *  recorded before the past starts getting truncated. 
     */
-    constructor(maximumHistoryLength: number, setSelectedBlock: SetSelectedBlock) {
+    constructor(
+        maximumHistoryLength: number, 
+        setSelectedBlock: SetSelectedBlock, 
+        undoButton: HTMLButtonElement, 
+        redoButton: HTMLButtonElement
+    ) {
+        this.undoButton = undoButton;
+        this.redoButton = redoButton;
+
         this.maximumHistoryLength = maximumHistoryLength;
         this.setSelectedBlock = setSelectedBlock;
+
+        
+        undoButton.addEventListener("click", () => {
+            if(undoButton.classList.contains("disabled")) return;
+            this.undo();
+        });
+
+        redoButton.addEventListener("click", () => {
+            if(redoButton.classList.contains("disabled")) return;
+            this.redo();
+        });
+        
+        window.addEventListener("keyup", (e) => {
+            if(e.ctrlKey) {
+                switch(e.key) {
+                    case "z":
+                        if(this.pastActions.length === 0) break;
+                        e.preventDefault();
+                        this.undo();
+                        break;
+                    case "y":
+                        if(this.futureActions.length === 0) break;
+                        e.preventDefault();
+                        this.redo();
+                        break;
+                }
+            }
+        });
     }
 
     public actionCommitted(action: Action) {
+        this.undoButton.classList.remove("disabled");
+
         // Theoretically previousHistory should never exceed maximumHistoryLength
         // but this will just use greater or equal to anyway just in case
         if(this.internalPastActions.length >= this.maximumHistoryLength) {
@@ -52,6 +92,9 @@ export class HistoryManager {
     public undo() {
         const action = this.internalPastActions.pop();
         this.internalFutureActions.push(action);
+
+        this.redoButton.classList.remove("disabled");
+        if(this.internalPastActions.length === 0) this.undoButton.classList.add("disabled");
 
         switch(action.type) {
             case "add":
@@ -93,6 +136,9 @@ export class HistoryManager {
     public redo() {
         const action = this.internalFutureActions.pop();
         this.internalPastActions.push(action);
+        
+        this.undoButton.classList.remove("disabled");
+        if(this.internalFutureActions.length === 0) this.redoButton.classList.add("disabled");
 
         switch(action.type) {
             case "add":

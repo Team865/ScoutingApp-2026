@@ -16,6 +16,9 @@ const enableFilterButton = document.querySelector("button#enable-filter") as HTM
 const disableFilterButton = document.querySelector("button#disable-filter") as HTMLButtonElement;
 const testFilterBlockButton = document.querySelector("button#test-filter-block") as HTMLButtonElement;
 
+const undoButton = document.querySelector("button#undo-action") as HTMLButtonElement;
+const redoButton = document.querySelector("button#redo-action") as HTMLButtonElement;
+
 const deleteFilterBlockButton = document.querySelector("button#delete-filter-block") as HTMLButtonElement;
 const copyFilterButton = document.querySelector("button#copy-filter-block") as HTMLButtonElement;
 const pasteFilterButton = document.querySelector("button#paste-filter-block") as HTMLButtonElement;
@@ -23,14 +26,14 @@ const pasteFilterButton = document.querySelector("button#paste-filter-block") as
 const filterContentContainer = document.querySelector("div#filter-content-container") as HTMLDivElement;
 const filterContentDisplay =  document.querySelector("div#filter-content-display") as HTMLDivElement;
 
-const sortOrderButton = document.querySelector("button#sort-order") as HTMLButtonElement;
-const sortBySelection = document.querySelector("select#sorted-by") as HTMLSelectElement;
-
 const isMobileQuery = window.matchMedia("(width <= 700px)");
 let topLevelBlock: BlockInterface | null = null;
 let currentlySelectedBlock: BlockInterface | BlockSlot | null = null;
 let copiedBlock: BlockInterface = null;
 let historyManager: HistoryManager = null;
+
+const sortOrderButton = document.querySelector("button#sort-order") as HTMLButtonElement;
+const sortBySelection = document.querySelector("select#sorted-by") as HTMLSelectElement;
 
 abstract class ModifyFilterBlocks {
     public static copyBlock(block: BlockInterface) {
@@ -200,7 +203,12 @@ export namespace FilterManager {
         initSortOptions();
         initFilterEditor();
 
-        historyManager = new HistoryManager(2 ** 16, setSelectedBlock);
+        historyManager = new HistoryManager(
+            2 ** 16,
+            setSelectedBlock,
+            undoButton,
+            redoButton
+        );
         BlockProducer.blockAdded.connect((blockAdded) => {
             historyManager.actionCommitted({
                 type: "add",
@@ -254,43 +262,27 @@ export namespace FilterManager {
         sortOrderButton.addEventListener("click", () => sortOrderButton.classList.toggle("descending"));
 
         window.addEventListener("keyup", (e) => {
-            if(currentlySelectedBlock) {
-                if(e.key === "Backspace") {
-                    if(currentlySelectedBlock["type"] !== undefined) {
-                        e.preventDefault();
-                        ModifyFilterBlocks.deleteBlock(currentlySelectedBlock as BlockInterface);
-                        return;
-                    }
-                }
-
-                if(e.ctrlKey) {
-                    switch(e.key) {
-                        case "c":
-                            if(currentlySelectedBlock["type"] === undefined) return;
-                            e.preventDefault();
-                            ModifyFilterBlocks.copyBlock(currentlySelectedBlock as BlockInterface);
-                            return;
-                        case "v":
-                            if(!copiedBlock) return;
-                            e.preventDefault();
-                            ModifyFilterBlocks.pasteBlock(currentlySelectedBlock);
-                            return;
-                    }
+            if(!currentlySelectedBlock) return;
+            if(e.key === "Backspace") {
+                if(currentlySelectedBlock["type"] !== undefined) {
+                    e.preventDefault();
+                    ModifyFilterBlocks.deleteBlock(currentlySelectedBlock as BlockInterface);
+                    return;
                 }
             }
-            
+
             if(e.ctrlKey) {
                 switch(e.key) {
-                    case "z":
-                        if(historyManager.pastActions.length === 0) break;
+                    case "c":
+                        if(currentlySelectedBlock["type"] === undefined) return;
                         e.preventDefault();
-                        historyManager.undo();
-                        break;
-                    case "y":
-                        if(historyManager.futureActions.length === 0) break;
+                        ModifyFilterBlocks.copyBlock(currentlySelectedBlock as BlockInterface);
+                        return;
+                    case "v":
+                        if(!copiedBlock) return;
                         e.preventDefault();
-                        historyManager.redo();
-                        break;
+                        ModifyFilterBlocks.pasteBlock(currentlySelectedBlock);
+                        return;
                 }
             }
         });
