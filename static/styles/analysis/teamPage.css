@@ -1,5 +1,10 @@
 div#team-page-subpage-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     margin: 1rem;
+    align-self: stretch;
 }
 
 div#subpage-tab-buttons-container > button.selected {

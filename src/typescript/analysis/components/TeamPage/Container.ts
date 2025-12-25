@@ -3,6 +3,7 @@ import MatchDataSubpage from "./Subpages/MatchData";
 import MatchNotesSubpage from "./Subpages/MatchNotes";
 import PitScoutingSubpage from "./Subpages/PitScoutingNotes";
 import SubpageInterface from "./Subpages/SubpageInterface";
+import VisualizerSubpage from "./Subpages/Visualizer";
 
 export default class TeamPageContainer {
     private readonly pageContainer = document.createElement("div");
@@ -17,7 +18,7 @@ export default class TeamPageContainer {
 
     /** subpageName: [tabButton, subpageObject] */
     private readonly subpages = new Map<string, [HTMLButtonElement, SubpageInterface]>([
-        ["Visualizer", [document.createElement("button"), null]],
+        ["Visualizer", [document.createElement("button"), new VisualizerSubpage()]],
         ["Match Data", [document.createElement("button"), new MatchDataSubpage()]],
         ["Match Notes", [document.createElement("button"), new MatchNotesSubpage()]],
         ["Pit Scouting Notes", [document.createElement("button"), new PitScoutingSubpage()]]
@@ -46,7 +47,7 @@ export default class TeamPageContainer {
             this.tabsContainer.appendChild(tabButton);
         }
 
-        this.setPage("Match Notes");
+        this.setPage("Visualizer");
 
         this.pageContainer.append(
             this.exitButton,
