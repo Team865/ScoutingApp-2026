@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, TypedDict
 from pathlib import Path
 from chompjs import chompjs
 import re
@@ -7,7 +7,11 @@ _pit_scouting_fields_config_path = Path(__file__).parent.parent.parent.parent / 
 _fields_list_regex = re.compile(r"(?<=const PitScoutingFields: FieldConfig\[\] = )\[.*\]", re.RegexFlag.DOTALL)
 _field_type_stripper = re.compile(r"(?<=FieldType\.).*")
 
-def get_fields() -> list:
+class _FieldConfig(TypedDict):
+    name: str
+    type: str
+
+def get_fields() -> list[_FieldConfig]:
     with _pit_scouting_fields_config_path.open("r") as file:
         text_data = file.read()
         fields_list_str = _fields_list_regex.search(text_data).group().replace("\n", "").replace("\t", "")

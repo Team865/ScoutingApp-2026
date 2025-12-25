@@ -8,8 +8,8 @@ import geoip2.database
 import re
 from werkzeug.middleware.proxy_fix import ProxyFix
 from waitress import serve
+from src.python.util.ConfigParser import parse_config
 from src.python.AppData import AppData, MatchNotesChunkJSon, PitScoutingNotesChunkJSon
-from pprint import pprint
 from queue import Queue
 from src.python.sse.SuperScoutingEndpoint import sse_manager as SuperScoutingSSEManager
 import src.python.sse.TBAPoller as TBAPoller
@@ -20,7 +20,6 @@ import threading
 import json
 from typing import TypedDict, Any
 from pathlib import Path
-from src.python.ConfigParser import parse_config
 from src.python.debug.DebugMenu import DebugMenu
 load_dotenv()
 
@@ -30,15 +29,12 @@ app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 trusted_proxy_headers = "x-forwarded-for x-forwarded-host x-forwarded-proto x-forwarded-port"
 
-API_KEY = os.getenv("TBA_API_KEY")
-EVENT_KEY = os.getenv("EVENT_KEY")
 TBA_ROOT_URL = "https://www.thebluealliance.com/api/v3"
 LOCAL_HOST_REGEX = re.compile(r"127\.\d+\.\d+\.\d+")
 LAN_REGEX = re.compile(r"192\.\d+\.\d+\.\d+")
-SHEETS_ID =os.getenv("SHEETS_ID")
 
 print("Authorizing spreadsheet...")
-spreadsheet_manager = GoogleSpreadsheet(SHEETS_ID)
+spreadsheet_manager = GoogleSpreadsheet(config["SHEETS_ID"])
 # spreadsheet_manager.clear_backend_worksheets() # FOR NOW, CLEAR THE WORKSHEET EVERY TIME THE APP STARTS UP
 print("Spreadsheet Authorized!")
 
@@ -102,19 +98,19 @@ def analysis():
 @app.route("/api/tba/event/<competition_key>/info")
 def get_event_info(competition_key):
     resp = requests.get(f"{TBA_ROOT_URL}/event/{competition_key}",
-                        headers={"X-TBA-Auth-Key": API_KEY})
+                        headers={"X-TBA-Auth-Key": config["API_KEY"]})
     return jsonify(resp.json()), resp.status_code
 
 @app.route("/api/tba/event/<competition_key>/teams")
 def get_teams(competition_key):
     resp = requests.get(f"{TBA_ROOT_URL}/event/{competition_key}/teams/simple",
-                        headers={"X-TBA-Auth-Key": API_KEY})
+                        headers={"X-TBA-Auth-Key": config["API_KEY"]})
     return jsonify(resp.json()), resp.status_code
 
 @app.route("/api/tba/event/<competition_key>/matches")
 def get_matches(competition_key):
     resp = requests.get(f"{TBA_ROOT_URL}/event/{competition_key}/matches/simple",
-                        headers={"X-TBA-Auth-Key": API_KEY})
+                        headers={"X-TBA-Auth-Key": config["API_KEY"]})
     return jsonify(resp.json()), resp.status_code
 
 # App API Endpoints
@@ -181,7 +177,7 @@ def match_updates():
 
 ##NOT A PRODUCTION FUNCTION, will remove  later for cleanliness
 def send_test_messages():
-    match_key = f"{EVENT_KEY}_qm10"
+    match_key = f"{config['EVENT_KEY']}_qm10"
 
     while True:
         time.sleep(2)
@@ -225,10 +221,10 @@ if __name__ == "__main__":
     port = 5005 if is_test_mode else 5000
 
     print("Creating App Data...")
-    app_data = AppData(EVENT_KEY)
+    app_data = AppData(config["EVENT_KEY"])
     print("App Data initialized!")
 
-    threading.Thread(target=TBAPoller.poll_tba_matches, args=(app_data, EVENT_KEY), daemon=True).start()
+    threading.Thread(target=TBAPoller.poll_tba_matches, args=(app_data, config["EVENT_KEY"]), daemon=True).start()
     threading.Thread(target=spreadsheet_manager.poll_sheets_data, args=(app_data, 5), daemon=True).start()
 
     #Put anything  that needs  to run only for testing here
