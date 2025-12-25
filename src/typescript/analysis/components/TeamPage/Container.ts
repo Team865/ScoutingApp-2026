@@ -1,4 +1,5 @@
 import AppData from "../../AppData";
+import MatchDataSubpage from "./Subpages/MatchData";
 import MatchNotesSubpage from "./Subpages/MatchNotes";
 import PitScoutingSubpage from "./Subpages/PitScoutingNotes";
 import SubpageInterface from "./Subpages/SubpageInterface";
@@ -17,7 +18,7 @@ export default class TeamPageContainer {
     /** subpageName: [tabButton, subpageObject] */
     private readonly subpages = new Map<string, [HTMLButtonElement, SubpageInterface]>([
         ["Visualizer", [document.createElement("button"), null]],
-        ["Match Data", [document.createElement("button"), null]],
+        ["Match Data", [document.createElement("button"), new MatchDataSubpage()]],
         ["Match Notes", [document.createElement("button"), new MatchNotesSubpage()]],
         ["Pit Scouting Notes", [document.createElement("button"), new PitScoutingSubpage()]]
     ]);

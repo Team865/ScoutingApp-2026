@@ -13,10 +13,14 @@ export default class MatchNotesSubpage implements SubpageInterface {
 
     public setTeam(teamNumber: number) {
         const matchNotesOfTeam = AppData.superscouting.match_notes[teamNumber];
+        if(Object.keys(matchNotesOfTeam).length === 0) {
+            this.tempContainer.innerHTML = "<h1>NO DATA FOUND</h1>";
+            return;
+        }
 
         const matchNoteStrings = Object.entries(matchNotesOfTeam).map(([matchNumberString, notes]) => `Q${matchNumberString}:\n${notes}\n`);
 
-        this.tempContainer.innerText = matchNoteStrings.join("\n");
+        this.tempContainer.innerHTML = matchNoteStrings.join("\n");
     }
 
     public get domElement() {
