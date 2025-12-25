@@ -59,7 +59,7 @@ export default class PitScoutingSubpage implements SubpageInterface {
         for(const [fieldName, fieldValue] of Object.entries(pitScoutingNotes)) {
             const [_, fieldValueContainer, fieldType] = this.fieldElements.get(fieldName);
 
-            fieldValueContainer.innerHTML = fieldValue ? this.getFieldValueAsHTML(fieldValue, fieldType) : "None";
+            fieldValueContainer.innerHTML = (fieldValue !== null && fieldValue !== undefined) ? this.getFieldValueAsHTML(fieldValue, fieldType) : "None";
         }
 
         this.noDataFoundIndicator.remove();

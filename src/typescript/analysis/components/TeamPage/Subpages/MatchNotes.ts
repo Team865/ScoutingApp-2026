@@ -20,7 +20,8 @@ export default class MatchNotesSubpage implements SubpageInterface {
 
         const matchNoteStrings = Object.entries(matchNotesOfTeam).map(([matchNumberString, notes]) => `Q${matchNumberString}:\n${notes}\n`);
 
-        this.tempContainer.innerHTML = matchNoteStrings.join("\n");
+        this.tempContainer.innerHTML = null;
+        this.tempContainer.innerText = matchNoteStrings.join("\n");
     }
 
     public get domElement() {
