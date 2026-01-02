@@ -1,2 +1,0 @@
-#Comments start with # like python
-TEST_MODE = 1

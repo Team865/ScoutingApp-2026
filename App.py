@@ -24,7 +24,7 @@ from src.python.debug.DebugMenu import DebugMenu
 load_dotenv()
 
 APP_DIR = Path(__file__).resolve().parent
-config = parse_config(APP_DIR / "config.txt")
+config = parse_config()
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 trusted_proxy_headers = "x-forwarded-for x-forwarded-host x-forwarded-proto x-forwarded-port"
@@ -175,31 +175,6 @@ def match_updates():
 
     return Response(stream(), mimetype="text/event-stream")
 
-##NOT A PRODUCTION FUNCTION, will remove  later for cleanliness
-def send_test_messages():
-    match_key = f"{config['EVENT_KEY']}_qm10"
-
-    while True:
-        time.sleep(2)
-        payload = {
-            "key": match_key,
-            "red_score": 67,   
-            "blue_score": 41,  
-            "teams": [
-                {"team_number": 9589, "alliance": "red"},
-                {"team_number": 6865, "alliance": "red"},
-                {"team_number": 7476, "alliance": "red"},
-                {"team_number": 7757, "alliance": "blue"},
-                {"team_number": 865, "alliance": "blue"},
-                {"team_number": 244, "alliance": "blue"}
-            ]
-        }
-
-        TBAPoller.sse_manager.add_payload({
-            "event_name": "match-updates",
-            "match_updates": payload
-        })
-
 def debug_menu_behavior():
     DEBUG_MENU = DebugMenu()
 
@@ -217,8 +192,8 @@ def debug_menu_behavior():
                 print("Message received:", message)
 
 if __name__ == "__main__":
-    is_test_mode = int(config["TEST_MODE"]) > 0
-    port = 5005 if is_test_mode else 5000
+    is_prod = config["IS_PROD"]
+    port = 5000 if is_prod else 5005
 
     print("Creating App Data...")
     app_data = AppData(config["EVENT_KEY"])
@@ -226,10 +201,6 @@ if __name__ == "__main__":
 
     threading.Thread(target=TBAPoller.poll_tba_matches, args=(app_data, config["EVENT_KEY"]), daemon=True).start()
     threading.Thread(target=spreadsheet_manager.poll_sheets_data, args=(app_data, 5), daemon=True).start()
-
-    #Put anything  that needs  to run only for testing here
-    if is_test_mode:
-        threading.Thread(target=send_test_messages, daemon=True).start()
 
     print(f"\n===STARTING SERVER ON PORT {port}===\nAccess it locally at http://localhost:{port}")
     serve(app, host="0.0.0.0", port=port, threads=16, trusted_proxy="127.0.0.1", trusted_proxy_headers=trusted_proxy_headers)

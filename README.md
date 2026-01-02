@@ -59,9 +59,7 @@ IS_PROD=BOOLEAN
 > You don't need to rebuild CSS files, they automatically update (just refresh the page)
 > If you make changes to python or HTML files, you will need to rerun the `deploy.bat` file because they don't get hot reloaded.
 
-6. Access the app via port 5000 **(or 5005 if TEST_MODE is on)** (i.e. type `localhost:5000` into your browser)
-> [!NOTE]
-> TEST_MODE and certain other config settings can be edited via the `config.txt` file
+6. Access the app via port 5000 **(or 5005 if IS_PROD is 0)** (i.e. type `localhost:5000` into your browser)
 7. Page routes:
    * Scouting: `localhost:5000`
    * Superscouting/Pit Scouting: `localhost:5000/superscouting`
