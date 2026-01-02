@@ -18,12 +18,12 @@ _match_notes_csv_match_number_regex = re.compile(r"[\d]+\n")
 _pit_scouting_csv_field_type_regex = re.compile(r"(?<=Type: ).+\n")
 
 _pit_scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
-    "BOOLEAN": lambda value: value.lower() != "false",
-    "TEXT": lambda value: value,
-    "NUMBER": lambda value: float(value) if "." in value else int(value),
-    "NUMBER_RANGE": lambda value: int(value),
-    "SINGLE_CHOICE": lambda value: value,
-    "MULTIPLE_CHOICE": lambda value: (value.split(", ") if value else [])
+    "BOOLEAN": lambda value: value.lower() != "false" if value is not None else False,
+    "TEXT": lambda value: value if value is not None else None,
+    "NUMBER": lambda value: (float(value) if "." in value else int(value)) if value is not None else None,
+    "NUMBER_RANGE": lambda value: int(value) if value is not None else None,
+    "SINGLE_CHOICE": lambda value: value if value is not None else None,
+    "MULTIPLE_CHOICE": lambda value: (value.split(", ") if value is not None else [])
 }
 
 class FetchedTeamData(TypedDict):
@@ -197,7 +197,7 @@ class SuperScoutingData:
                 if field_type_match is not None:
                     field_type = field_type_match.group().strip()
                     field_value_str = field_value_cell[field_type_match.end():]
-                    field_value = _pit_scouting_field_value_parser[field_type](field_value_str) if field_value_str else None
+                    field_value = _pit_scouting_field_value_parser[field_type](field_value_str)
                 else:
                     field_value = None
 
