@@ -1,19 +1,18 @@
-import { BlockInterface, BlockType, setBlockHTMLClass, SetSelectedBlock } from "../Core/BlockCore";
+import { BlockCore, BlockType, setBlockHTMLClass } from "../Core/BlockCore";
 
-export default class NumberBlock implements BlockInterface {
-    public readonly type = BlockType.VALUE;
+export default class NumberBlock extends BlockCore {
+    public override readonly type = BlockType.VALUE;
     
     private readonly mainContainer = document.createElement("div");
     private readonly textLabel = document.createElement("span");
     private readonly input = document.createElement("input");
-    private readonly setSelectedBlock: SetSelectedBlock;
 
-    constructor(setSelectedBlock: SetSelectedBlock, startingValue?: string) {
+    constructor(startingValue?: string) {
+        super();
         setBlockHTMLClass(this);
-        this.setSelectedBlock = setSelectedBlock;
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
-            setSelectedBlock(this);
+            this.clicked.emit(this);
         });
 
         this.input.addEventListener("click", e => e.stopPropagation());
@@ -30,15 +29,15 @@ export default class NumberBlock implements BlockInterface {
         );
     }
 
-    public getValueForTeam(teamNumber: number) {
+    public override getValueForTeam(_: number) {
         return Number.parseFloat(this.input.value);
     }
 
-    public get domElement() {
+    public override get domElement() {
         return this.mainContainer;
     }
 
-    public clone(): NumberBlock {
-        return new NumberBlock(this.setSelectedBlock, this.input.value);
+    public override clone(): NumberBlock {
+        return new NumberBlock(this.input.value);
     }
 }

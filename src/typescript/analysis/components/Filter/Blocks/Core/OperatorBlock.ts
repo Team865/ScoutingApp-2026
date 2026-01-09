@@ -1,24 +1,20 @@
-import { BlockInterface, BlockType, BlockValueGetter, setBlockHTMLClass, SetSelectedBlock } from "./BlockCore";
+import { BlockCore } from "./BlockCore";
 import BlockSlot from "./BlockSlot";
 
-export default abstract class OperatorBlock implements BlockInterface {
-    public abstract readonly type: BlockType;
-    public readonly parentSlot?: BlockSlot;
-    protected readonly setSelectedBlock: SetSelectedBlock;
+export default abstract class OperatorBlock extends BlockCore {
     protected readonly slots: BlockSlot[];
 
-    public constructor(setSelectedBlock: SetSelectedBlock, slots: BlockSlot[]) {
-        this.setSelectedBlock = setSelectedBlock;
+    public constructor(slots: BlockSlot[]) {
+        super();
         
         this.slots = slots;
-        slots.forEach(slot => slot.parent = this);
+        slots.forEach(slot => {
+            slot.parent = this;
+            slot.clicked.connect(this.clicked);
+        });
     }
 
     protected cloneSlots() {
         return this.slots.map(slot => slot.clone());
     }
-
-    public abstract clone(): OperatorBlock;
-    public abstract get domElement(): HTMLElement;
-    public abstract getValueForTeam(teamNumber: number): ReturnType<BlockValueGetter>;
 }

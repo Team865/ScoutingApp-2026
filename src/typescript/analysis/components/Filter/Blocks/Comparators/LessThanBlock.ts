@@ -1,4 +1,4 @@
-import { BlockType, SetSelectedBlock, setBlockHTMLClass } from "../Core/BlockCore";
+import { BlockType, setBlockHTMLClass } from "../Core/BlockCore";
 import BlockSlot from "../Core/BlockSlot";
 import OperatorBlock from "../Core/OperatorBlock";
 
@@ -8,18 +8,18 @@ export default class LessThanBlock extends OperatorBlock {
     private readonly mainContainer = document.createElement("div");
     private readonly textLabel = document.createElement("span");
 
-    public constructor(setSelectedBlock: SetSelectedBlock, slots?: BlockSlot[]) {
+    public constructor(slots?: BlockSlot[]) {
         slots = slots || [
-            new BlockSlot("number", setSelectedBlock), 
-            new BlockSlot("number", setSelectedBlock)
+            new BlockSlot("number"), 
+            new BlockSlot("number")
         ];
 
-        super(setSelectedBlock, slots);
+        super(slots);
         setBlockHTMLClass(this)
 
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
-            setSelectedBlock(this);
+            this.clicked.emit(this);
         });
 
         this.mainContainer.classList.add("block-container", "horizontal");
@@ -47,6 +47,6 @@ export default class LessThanBlock extends OperatorBlock {
     }
 
     override clone(): LessThanBlock {
-        return new LessThanBlock(this.setSelectedBlock, this.cloneSlots());
+        return new LessThanBlock(this.cloneSlots());
     }
 }

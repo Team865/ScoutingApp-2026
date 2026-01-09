@@ -1,4 +1,4 @@
-import { BlockType, SetSelectedBlock, setBlockHTMLClass } from "../Core/BlockCore";
+import { BlockType, setBlockHTMLClass } from "../Core/BlockCore";
 import BlockSlot from "../Core/BlockSlot";
 import OperatorBlock from "../Core/OperatorBlock";
 
@@ -10,19 +10,19 @@ export default class IfElseBlock extends OperatorBlock {
     private readonly thenLabel = document.createElement("span");
     private readonly elseLabel = document.createElement("span");
 
-    public constructor(setSelectedBlock: SetSelectedBlock, slots?: BlockSlot[]) {
+    public constructor(slots?: BlockSlot[]) {
         slots = slots || [
-            new BlockSlot("boolean", setSelectedBlock),
-            new BlockSlot("any", setSelectedBlock),
-            new BlockSlot("any", setSelectedBlock)
+            new BlockSlot("boolean"),
+            new BlockSlot("any"),
+            new BlockSlot("any")
         ];
 
-        super(setSelectedBlock, slots);
+        super(slots);
         setBlockHTMLClass(this)
 
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
-            setSelectedBlock(this);
+            this.clicked.emit(this);
         });
 
         this.mainContainer.classList.add("block-container");
@@ -41,11 +41,11 @@ export default class IfElseBlock extends OperatorBlock {
         );
     }
 
-    override get domElement() {
+    public override get domElement() {
         return this.mainContainer;
     }
 
-    override getValueForTeam(teamNumber: number) {
+    public override getValueForTeam(teamNumber: number) {
         const conditionPassed = this.slots[0].child.getValueForTeam(teamNumber);
 
         return conditionPassed ? 
@@ -53,7 +53,7 @@ export default class IfElseBlock extends OperatorBlock {
             this.slots[2].child.getValueForTeam(teamNumber);
     }
 
-    override clone(): IfElseBlock {
-        return new IfElseBlock(this.setSelectedBlock, this.cloneSlots());
+    public override clone(): IfElseBlock {
+        return new IfElseBlock(this.cloneSlots());
     }
 }

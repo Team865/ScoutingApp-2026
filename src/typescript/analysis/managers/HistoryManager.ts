@@ -1,19 +1,19 @@
-import { BlockInterface, SetSelectedBlock } from "../components/Filter/Blocks/Core/BlockCore";
+import { BlockCore, SetSelectedBlock } from "../components/Filter/Blocks/Core/BlockCore";
 import { BlockProducer } from "../components/Filter/Blocks/Core/BlockProducer";
 import BlockSlot from "../components/Filter/Blocks/Core/BlockSlot";
 
 type Action = {
     type: "add",
-    blockAdded: BlockInterface,
+    blockAdded: BlockCore,
     parent: BlockSlot | null
 } | {
     type: "remove",
-    blockRemoved: BlockInterface,
+    blockRemoved: BlockCore,
     parent: BlockSlot | null
 } | {
     type: "replace",
-    originalBlock: BlockInterface,
-    newBlock: BlockInterface
+    originalBlock: BlockCore,
+    newBlock: BlockCore
 }
 
 export class HistoryManager {

@@ -1,6 +1,6 @@
 import PitScoutingFields, { FieldType } from "../../appConfig/PitScoutingFields";
 import { bindAccordionBehavior } from "../../lib/components/Accordion";
-import { BlockInterface, SetSelectedBlock } from "../components/Filter/Blocks/Core/BlockCore";
+import { BlockCore, SetSelectedBlock } from "../components/Filter/Blocks/Core/BlockCore";
 import { BlockProducer } from "../components/Filter/Blocks/Core/BlockProducer";
 import BlockSlot from "../components/Filter/Blocks/Core/BlockSlot";
 import { HistoryManager } from "./HistoryManager";
@@ -25,29 +25,30 @@ const filterContentContainer = document.querySelector("div#filter-content-contai
 const filterContentDisplay =  document.querySelector("div#filter-content-display") as HTMLDivElement;
 
 const isMobileQuery = window.matchMedia("(width <= 700px)");
-let topLevelBlock: BlockInterface | null = null;
-let currentlySelectedBlock: BlockInterface | BlockSlot | null = null;
-let copiedBlock: BlockInterface = null;
+let topLevelBlock: BlockCore | null = null;
+let disconnectTopLevelBlockClickConnection: (() => void) | null = null
+let currentlySelectedBlock: BlockCore | BlockSlot | null = null;
+let copiedBlock: BlockCore = null;
 let historyManager: HistoryManager = null;
 
 const sortOrderButton = document.querySelector("button#sort-order") as HTMLButtonElement;
 const sortBySelection = document.querySelector("select#sorted-by") as HTMLSelectElement;
 
 abstract class ModifyFilterBlocks {
-    public static copyBlock(block: BlockInterface) {
+    public static copyBlock(block: BlockCore) {
         copyFilterButton.classList.remove("selected");
         pasteFilterButton.classList.remove("disabled");
         // Store a clone of the block so future modifications 
         // to the reference block won't affect the copied block
         copiedBlock = block.clone();
     }
-    public static pasteBlock(block: BlockInterface | BlockSlot) {
+    public static pasteBlock(block: BlockCore | BlockSlot) {
         pasteFilterButton.classList.remove("selected");
         const target = block || BlockProducer.getTarget();
         if(target === null) return;
         BlockProducer.addBlock(copiedBlock.clone(), target);
     }
-    public static deleteBlock(block: BlockInterface) {
+    public static deleteBlock(block: BlockCore) {
         historyManager.actionCommitted({
             type: "remove",
             blockRemoved: block,
@@ -65,7 +66,7 @@ abstract class ModifyFilterBlocks {
     }
 };
 
-function bufferButton(button: HTMLButtonElement, allowBlockSlot: boolean, onTrueFunction: (block: BlockInterface | BlockSlot) => void) {
+function bufferButton(button: HTMLButtonElement, allowBlockSlot: boolean, onTrueFunction: (block: BlockCore | BlockSlot) => void) {
     if(button.classList.contains("selected")) {
         button.classList.remove("selected");
         return;
@@ -79,7 +80,7 @@ function bufferButton(button: HTMLButtonElement, allowBlockSlot: boolean, onTrue
         return;
     }
 
-    onTrueFunction(currentlySelectedBlock as BlockInterface);
+    onTrueFunction(currentlySelectedBlock as BlockCore);
     setSelectedBlock(null);
 }
 
@@ -102,7 +103,7 @@ const setSelectedBlock: SetSelectedBlock = (newSelection) => {
             deleteFilterBlockButton.classList.contains("selected") // Delete button buffered
         ) {
             if(!isBlockSlot) { // Not targetting a block slot)
-                ModifyFilterBlocks.deleteBlock(target as BlockInterface);
+                ModifyFilterBlocks.deleteBlock(target as BlockCore);
                 newSelection = null;
             } else {
                 deleteFilterBlockButton.classList.remove("selected");
@@ -113,7 +114,7 @@ const setSelectedBlock: SetSelectedBlock = (newSelection) => {
             copyFilterButton.classList.contains("selected") && // Copy button buffered
             !isBlockSlot // Not targetting a block slot
         ) {
-            ModifyFilterBlocks.copyBlock(target as BlockInterface);
+            ModifyFilterBlocks.copyBlock(target as BlockCore);
             newSelection = null;
         } else if( // The target block wasn't copied
             pasteFilterButton.classList.contains("selected") && // Paste button buffered
@@ -186,8 +187,11 @@ function initFilterEditor() {
         else
             return null;
     }
-    BlockProducer.setTopLevelBlock = (block: BlockInterface | null) => {
-        if(topLevelBlock) topLevelBlock.domElement.remove();
+    BlockProducer.setTopLevelBlock = (block: BlockCore | null) => {
+        if(topLevelBlock) {
+            topLevelBlock.domElement.remove();
+            disconnectTopLevelBlockClickConnection();
+        }
         
         if(block) {
             filterContentDisplay.appendChild(block.domElement);
@@ -197,6 +201,7 @@ function initFilterEditor() {
         }
 
         topLevelBlock = block;
+        disconnectTopLevelBlockClickConnection = topLevelBlock.clicked.connect(setSelectedBlock);
     }
     BlockProducer.start();
 }
@@ -207,7 +212,7 @@ function initKeybinds() {
         if(e.key === "Backspace") {
             if(currentlySelectedBlock["type"] !== undefined) {
                 e.preventDefault();
-                ModifyFilterBlocks.deleteBlock(currentlySelectedBlock as BlockInterface);
+                ModifyFilterBlocks.deleteBlock(currentlySelectedBlock as BlockCore);
                 return;
             }
         }
@@ -217,7 +222,7 @@ function initKeybinds() {
                 case "c":
                     if(currentlySelectedBlock["type"] === undefined) return;
                     e.preventDefault();
-                    ModifyFilterBlocks.copyBlock(currentlySelectedBlock as BlockInterface);
+                    ModifyFilterBlocks.copyBlock(currentlySelectedBlock as BlockCore);
                     return;
                 case "v":
                     if(!copiedBlock) return;

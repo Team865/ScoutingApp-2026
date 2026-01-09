@@ -1,32 +1,31 @@
 import { setBlockHTMLClass } from "../Core/BlockCore";
-import { BlockInterface, BlockType, SetSelectedBlock } from "../Core/BlockCore";
+import { BlockCore, BlockType } from "../Core/BlockCore";
 
-export default class TrueBlock implements BlockInterface {
-    public readonly type = BlockType.VALUE;
-    
+export default class TrueBlock extends BlockCore {
+    public override readonly type: BlockType = BlockType.VALUE;
+
     public readonly mainContainer = document.createElement("span");
-    private readonly setSelectedBlock: SetSelectedBlock;
 
-    constructor(setSelectedBlock: SetSelectedBlock) {
+    constructor() {
+        super();
         setBlockHTMLClass(this);
-        this.setSelectedBlock = setSelectedBlock;
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
-            setSelectedBlock(this);
+            this.clicked.emit(this);
         });
 
         this.mainContainer.innerText = "True";
     }
 
-    public getValueForTeam(teamNumber: number) {
+    public override getValueForTeam(_: number) {
         return true;
     }
 
-    public get domElement() {
+    public override get domElement() {
         return this.mainContainer;
     }
 
-    public clone(): TrueBlock {
-        return new TrueBlock(this.setSelectedBlock);
+    public override clone(): TrueBlock {
+        return new TrueBlock();
     }
 }

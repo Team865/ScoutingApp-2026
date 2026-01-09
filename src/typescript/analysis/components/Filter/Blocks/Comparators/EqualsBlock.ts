@@ -1,4 +1,4 @@
-import { BlockType, SetSelectedBlock, setBlockHTMLClass } from "../Core/BlockCore";
+import { BlockType, setBlockHTMLClass } from "../Core/BlockCore";
 import BlockSlot from "../Core/BlockSlot";
 import OperatorBlock from "../Core/OperatorBlock";
 
@@ -8,18 +8,18 @@ export default class EqualsBlock extends OperatorBlock {
     private readonly mainContainer = document.createElement("div");
     private readonly textLabel = document.createElement("span");
 
-    public constructor(setSelectedBlock: SetSelectedBlock, slots?: BlockSlot[]) {
+    public constructor(slots?: BlockSlot[]) {
         slots = slots || [
-            new BlockSlot("any", setSelectedBlock), 
-            new BlockSlot("any", setSelectedBlock)
+            new BlockSlot("any"), 
+            new BlockSlot("any")
         ];
 
-        super(setSelectedBlock, slots);
+        super(slots);
         setBlockHTMLClass(this)
 
         this.domElement.addEventListener("click", (e) => {
             e.stopPropagation();
-            setSelectedBlock(this);
+            this.clicked.emit(this);
         });
 
         this.mainContainer.classList.add("block-container", "horizontal");
@@ -33,18 +33,18 @@ export default class EqualsBlock extends OperatorBlock {
         );
     }
 
-    override get domElement() {
+    public override get domElement() {
         return this.mainContainer;
     }
 
-    override getValueForTeam(teamNumber: number) {
+    public override getValueForTeam(teamNumber: number) {
         const value1 = this.slots[0].child.getValueForTeam(teamNumber);
         const value2 = this.slots[1].child.getValueForTeam(teamNumber);
 
         return value1 === value2;
     }
 
-    override clone(): EqualsBlock {
-        return new EqualsBlock(this.setSelectedBlock, this.cloneSlots());
+    public override clone(): EqualsBlock {
+        return new EqualsBlock(this.cloneSlots());
     }
 }

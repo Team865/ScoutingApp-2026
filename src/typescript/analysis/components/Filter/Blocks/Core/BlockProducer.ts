@@ -24,7 +24,7 @@ import NumberConstantBlock from "../Constants/NumberConstantBlock";
 import TrueBlock from "../Constants/TrueBlock";
 import FalseBlock from "../Constants/FalseBlock";
 
-import { BlockInterface, BlockType, SetSelectedBlock } from "./BlockCore";
+import { BlockCore, BlockType, SetSelectedBlock } from "./BlockCore";
 import AppData from "../../../../AppData";
 import PitScoutingFields, { FieldType } from "../../../../../appConfig/PitScoutingFields";
 import BlockSlot from "./BlockSlot";
@@ -46,15 +46,15 @@ export namespace BlockProducer {
     export const dataPageElements: HTMLElement[] = [];
     export const constantsPageElement: HTMLElement[] = [];
 
-    export let setTopLevelBlock: (block?: BlockInterface) => void;
+    export let setTopLevelBlock: (block?: BlockCore) => void;
     export let setSelectedBlock: SetSelectedBlock;
-    export let getTarget: () => HTMLElement | BlockInterface | BlockSlot;
-    export const blockAdded = new Signal<BlockInterface>();
+    export let getTarget: () => HTMLElement | BlockCore | BlockSlot;
+    export const blockAdded = new Signal<BlockCore>();
 
     /** [blockReplaced, newBlock] */
-    export const blockReplaced = new Signal<[BlockInterface, BlockInterface]>();
+    export const blockReplaced = new Signal<[BlockCore, BlockCore]>();
 
-    function createProducerElement(producerLabelString: string, createBlockFunction: () => BlockInterface) {
+    function createProducerElement(producerLabelString: string, createBlockFunction: () => BlockCore) {
         const producer = document.createElement("button");
         producer.dir = "ltr";
         producer.innerText = producerLabelString;
@@ -87,17 +87,17 @@ export namespace BlockProducer {
 
     function createComparatorBlockProducers() {
         comparatorsPageElements.push(
-            createProducerElement("not X", () => new NotBlock(setSelectedBlock)),
-            createProducerElement("X equals Y", () => new EqualsBlock(setSelectedBlock)),
-            createProducerElement("does X exist?", () => new ExistsBlock(setSelectedBlock)),
-            createProducerElement("X and Y", () => new AndBlock(setSelectedBlock)),
-            createProducerElement("X or Y", () => new OrBlock(setSelectedBlock)),
-            createProducerElement("X < Y", () => new LessThanBlock(setSelectedBlock)),
-            createProducerElement("X > Y", () => new GreaterThanBlock(setSelectedBlock)),
-            createProducerElement("X ≤ Y", () => new LEQBlock(setSelectedBlock)),
-            createProducerElement("X ≥ Y", () => new GEQBlock(setSelectedBlock)),
-            createProducerElement("if A then use X, else use Y", () => new IfElseBlock(setSelectedBlock)),
-            createProducerElement("does list X includes item Y?", () => new IncludesBlock(setSelectedBlock))
+            createProducerElement("not X", () => new NotBlock()),
+            createProducerElement("X equals Y", () => new EqualsBlock()),
+            createProducerElement("does X exist?", () => new ExistsBlock()),
+            createProducerElement("X and Y", () => new AndBlock()),
+            createProducerElement("X or Y", () => new OrBlock()),
+            createProducerElement("X < Y", () => new LessThanBlock()),
+            createProducerElement("X > Y", () => new GreaterThanBlock()),
+            createProducerElement("X ≤ Y", () => new LEQBlock()),
+            createProducerElement("X ≥ Y", () => new GEQBlock()),
+            createProducerElement("if A then use X, else use Y", () => new IfElseBlock()),
+            createProducerElement("does list X includes item Y?", () => new IncludesBlock())
         );
 
         bindTabButton(comparatorsTabButton, comparatorsPageElements);
@@ -105,10 +105,10 @@ export namespace BlockProducer {
 
     function createMathBlockProducers() {
         mathPageElements.push(
-            createProducerElement("X + Y", () => new AddBlock(setSelectedBlock)),
-            createProducerElement("X - Y", () => new SubtractBlock(setSelectedBlock)),
-            createProducerElement("X × Y", () => new MultiplyBlock(setSelectedBlock)),
-            createProducerElement("X ÷ Y", () => new DivideBlock(setSelectedBlock))
+            createProducerElement("X + Y", () => new AddBlock()),
+            createProducerElement("X - Y", () => new SubtractBlock()),
+            createProducerElement("X × Y", () => new MultiplyBlock()),
+            createProducerElement("X ÷ Y", () => new DivideBlock())
         );
 
         bindTabButton(mathTabButton, mathPageElements);
@@ -128,18 +128,17 @@ export namespace BlockProducer {
             createProducerElement("NUMBER: Team Number", () => new DataBlock(
                 "number",
                 "Team Number",
-                setSelectedBlock, 
                 (teamNumber) => teamNumber)
             ),
             createProducerElement("NUMBER: EPA", () => new DataBlock(
                 "number",
                 "EPA",
-                setSelectedBlock, 
                 (teamNumber) => {
-                const teamData = AppData.superscouting.fetched_team_data.find(teamData => teamData.number === teamNumber);
+                    const teamData = AppData.superscouting.fetched_team_data.find(teamData => teamData.number === teamNumber);
 
-                return teamData.epa || teamData.normalized_epa;
-            }))
+                    return teamData.epa || teamData.normalized_epa;
+                }
+            ))
         );
 
         // Scouting (WIP)
@@ -162,7 +161,6 @@ export namespace BlockProducer {
             dataPageElements.push(createProducerElement(`${dataType.toUpperCase()}: ${fieldConfig.name}`, () => new DataBlock(
                 dataType,
                 fieldConfig.name,
-                setSelectedBlock, 
                 (teamNumber) => AppData.superscouting.pit_scouting_notes[teamNumber] && AppData.superscouting.pit_scouting_notes[teamNumber][fieldConfig.name]
             )));
         })
@@ -172,21 +170,21 @@ export namespace BlockProducer {
 
     function createConstantBlockProducers() {
         constantsPageElement.push(
-            createProducerElement("True", () => new TrueBlock(setSelectedBlock)),
-            createProducerElement("False", () => new FalseBlock(setSelectedBlock)),
-            createProducerElement("Text Constant", () => new TextConstantBlock(setSelectedBlock)),
-            createProducerElement("Number Constant", () => new NumberConstantBlock(setSelectedBlock)),
+            createProducerElement("True", () => new TrueBlock()),
+            createProducerElement("False", () => new FalseBlock()),
+            createProducerElement("Text Constant", () => new TextConstantBlock()),
+            createProducerElement("Number Constant", () => new NumberConstantBlock()),
         );
 
         bindTabButton(constantsTabButton, constantsPageElement);
     }
 
-    export function addBlock(newBlock: BlockInterface, target: HTMLElement | BlockInterface | BlockSlot) {
+    export function addBlock(newBlock: BlockCore, target: HTMLElement | BlockCore | BlockSlot) {
         if(target instanceof HTMLElement) {
             setTopLevelBlock(newBlock);
             blockAdded.emit(newBlock);
         } else if(target["type"] !== undefined) { // Only BlockInterface's have a type member
-            replaceBlock(target as BlockInterface, newBlock);
+            replaceBlock(target as BlockCore, newBlock);
         } else { // Has to be a block slot
             (target as BlockSlot).addChildBlock(newBlock);
             blockAdded.emit(newBlock);
@@ -195,7 +193,7 @@ export namespace BlockProducer {
         setSelectedBlock(null);
     }
 
-    function replaceBlock(blockToReplace: BlockInterface, newBlock: BlockInterface) {
+    function replaceBlock(blockToReplace: BlockCore, newBlock: BlockCore) {
         const parentSlot = blockToReplace.parentSlot;
 
         if(!parentSlot) {
