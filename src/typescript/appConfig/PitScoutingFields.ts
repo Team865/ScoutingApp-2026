@@ -1,18 +1,4 @@
-export enum FieldType {
-    BOOLEAN,
-    TEXT,
-    NUMBER,
-    NUMBER_RANGE,
-    SINGLE_CHOICE,
-    MULTIPLE_CHOICE
-}
-
-export type FieldConfig = {
-    name: string,
-    type: FieldType,
-    isOptional?: boolean,
-    [key: string]: unknown
-}
+import { FieldConfig, FieldType } from "./Field";
 
 const PitScoutingFields: FieldConfig[] = [
     {

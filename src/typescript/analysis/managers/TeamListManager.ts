@@ -1,4 +1,5 @@
-import PitScoutingFields, { FieldType } from "../../appConfig/PitScoutingFields";
+import PitScoutingFields from "../../appConfig/PitScoutingFields";
+import { FieldType } from "../../appConfig/Field";
 import SearchBar from "../../lib/components/SearchBar";
 import AppData from "../AppData";
 import TeamCard from "../components/TeamCard";

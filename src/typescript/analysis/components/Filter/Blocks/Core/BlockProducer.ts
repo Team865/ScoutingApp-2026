@@ -26,7 +26,8 @@ import FalseBlock from "../Constants/FalseBlock";
 
 import { BlockCore, BlockType, SetSelectedBlock } from "./BlockCore";
 import AppData from "../../../../AppData";
-import PitScoutingFields, { FieldType } from "../../../../../appConfig/PitScoutingFields";
+import PitScoutingFields from "../../../../../appConfig/PitScoutingFields";
+import { FieldType } from "../../../../../appConfig/Field";
 import BlockSlot from "./BlockSlot";
 import Signal from "../../../../../lib/dataTypes/Signal";
 

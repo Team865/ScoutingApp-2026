@@ -1,4 +1,5 @@
-import PitScoutingFields, { FieldType } from "../../../../appConfig/PitScoutingFields";
+import PitScoutingFields from "../../../../appConfig/PitScoutingFields";
+import { FieldType } from "../../../../appConfig/Field";
 import AppData from "../../../AppData";
 import SubpageInterface from "./SubpageInterface";
 
