@@ -12,9 +12,8 @@ from threading import Thread
 
 sys.path.append("..")
 
-from src.python.typehinting.ScoutingFields import FieldConfig, PitScoutingFields
+from src.python.ScoutingFields import FieldConfig, PitScoutingFields
 from src.python.AppData import AppData
-from src.python.util import ScoutingFieldParser
 from src.python.api_helpers.GoogleSheetsAPI import GoogleSpreadsheet, BackendWorksheet
 from src.python.util.ConfigParser import parse_config
 from typing import Any, Callable

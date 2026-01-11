@@ -1,10 +1,9 @@
 from typing import Literal, Optional, TypedDict, Any, Callable
 
-from src.python.typehinting.ScoutingFields import PitScoutingFields, QuantitativeScoutingFields
+from src.python.ScoutingFields import PitScoutingFields, QuantitativeScoutingFields
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
 from .api_helpers.StatboticsAPI import update_epa
-from .util import ScoutingFieldParser
 from time import time
 from threading import Thread
 import re
@@ -26,6 +25,14 @@ _scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
     "SINGLE_CHOICE": lambda value: value if value is not None else None,
     "MULTIPLE_CHOICE": lambda value: (value.split(", ") if value is not None else [])
 }
+
+def get_field_value_as_str(field_value):
+    if(isinstance(field_value, list)):
+        return ", ".join(field_value)
+    elif(field_value is None):
+        return ""
+    else:
+        return str(field_value)
 
 class FetchedTeamData(TypedDict):
     name: str
@@ -261,7 +268,7 @@ class SuperScoutingData:
                 [team_number]+
                 [
                     f"Type: {PitScoutingFields[field_index]["type"]}\n" + \
-                        ScoutingFieldParser.get_field_value_as_str(field_value) 
+                        get_field_value_as_str(field_value) 
                     for field_index, field_value in enumerate(team_pit_scouting_notes.values())
                 ] 
                 for team_number, team_pit_scouting_notes in self.pit_scouting_notes.items()
