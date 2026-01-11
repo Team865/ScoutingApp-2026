@@ -12,17 +12,17 @@ from threading import Thread
 
 sys.path.append("..")
 
+from src.python.typehinting.ScoutingFields import FieldConfig, PitScoutingFields
 from src.python.AppData import AppData
-from src.python.util import PitScoutingFieldsParser
+from src.python.util import ScoutingFieldParser
 from src.python.api_helpers.GoogleSheetsAPI import GoogleSpreadsheet, BackendWorksheet
 from src.python.util.ConfigParser import parse_config
 from typing import Any, Callable
 
 chdir("..")
 
-config = parse_config("config.txt")
+config = parse_config()
 spreadsheet_manager = GoogleSpreadsheet(config["SHEETS_ID"])
-pit_scouting_fields = PitScoutingFieldsParser.get_fields()
 
 match_number_regex = re.compile(r"\d+$")
 
@@ -30,14 +30,20 @@ test_app_data = AppData(config["EVENT_KEY"])
 
 teams = [team_data["number"] for team_data in test_app_data.superscouting_data.fetched_team_data]
 
-_pit_scouting_field_generator: dict[str, Callable[[PitScoutingFieldsParser._FieldConfig], Any]] = {
-    "BOOLEAN": lambda _: True if random.random() > 0.5 else False,
-    "TEXT": lambda _: "".join(random.choices(string.ascii_letters + string.digits, k=20)),
-    "NUMBER": lambda _: random.random() * 100,
-    "NUMBER_RANGE": lambda field_config: int(random.random() * (field_config["max"] - field_config["min"] + 1) + field_config["min"]),
-    "SINGLE_CHOICE": lambda field_config: random.choice(field_config["choices"]),
-    "MULTIPLE_CHOICE": lambda field_config: [choice for choice in field_config["choices"] if random.random() > 0.5]
-}
+def generate_field_value(field_config: FieldConfig):
+    match field_config["type"]:
+        case "BOOLEAN": 
+            return True if random.random() > 0.5 else False
+        case "TEXT": 
+            return "".join(random.choices(string.ascii_letters + string.digits, k=20)),
+        case "NUMBER": 
+            return random.random() * 100,
+        case "NUMBER_RANGE": 
+            return int(random.random() * (field_config["max"] - field_config["min"] + 1) + field_config["min"]),
+        case "SINGLE_CHOICE": 
+            return random.choice(field_config["choices"]),
+        case "MULTIPLE_CHOICE": 
+            return [choice for choice in field_config["choices"] if random.random() > 0.5]
 
 def generate_scouting_data():
     pass
@@ -66,16 +72,15 @@ def generate_pit_scouting_data():
         def generate_data(team_number):
             notes = {}
 
-            for fieldConfig in pit_scouting_fields:
-                notes[fieldConfig["name"]] = _pit_scouting_field_generator[fieldConfig["type"]](fieldConfig)
+            for fieldConfig in PitScoutingFields:
+                notes[fieldConfig["name"]] = generate_field_value(fieldConfig)
                 test_app_data.superscouting_data.pit_scouting_notes[team_number] = notes
 
         thread = Thread(target=generate_data, args=[team_number], daemon=True)
         thread.start()
         generator_threads.append(thread)
 
-    for thread in generator_threads: thread.join()
-            
+    for thread in generator_threads: thread.join()   
 
 def main():
     generate_scouting_data()

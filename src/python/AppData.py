@@ -1,8 +1,10 @@
 from typing import Literal, Optional, TypedDict, Any, Callable
+
+from src.python.typehinting.ScoutingFields import PitScoutingFields, QuantitativeScoutingFields
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
 from .api_helpers.StatboticsAPI import update_epa
-from .util import PitScoutingFieldsParser
+from .util import ScoutingFieldParser
 from time import time
 from threading import Thread
 import re
@@ -13,11 +15,10 @@ This python class will act as a container for all of the App Data used by the ba
 
 __all__ = ["AppData"]
 
-_pit_scouting_fields = PitScoutingFieldsParser.get_fields()
 _match_notes_csv_match_number_regex = re.compile(r"[\d]+\n")
-_pit_scouting_csv_field_type_regex = re.compile(r"(?<=Type: ).+\n")
+_scouting_csv_field_type_regex = re.compile(r"(?<=Type: ).+\n")
 
-_pit_scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
+_scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
     "BOOLEAN": lambda value: value.lower() != "false" if value is not None else False,
     "TEXT": lambda value: value if value is not None else None,
     "NUMBER": lambda value: (float(value) if "." in value else int(value)) if value is not None else None,
@@ -34,13 +35,11 @@ class FetchedTeamData(TypedDict):
     epa: Optional[int]
     normalized_epa: Optional[int]
 
-
 class MatchData_Team(TypedDict):
     team_number: int
     alliance: Literal["red", "blue"]
 
-class MatchData(TypedDict):
-
+class TBAMatchData(TypedDict):
     key: str
     number: int
     comp_level: str
@@ -56,6 +55,12 @@ class MatchNotesChunkJSon(TypedDict):
 class PitScoutingNotesChunkJSon(TypedDict):
     team_number: int
     data: dict[str, Any]
+
+class QuantitativeScoutingData:
+    match_data: dict[int, dict[int, TBAMatchData]]
+
+    def __init__(self) -> None:
+        print(QuantitativeScoutingFields)
 
 class SuperScoutingData:
     data_received_timestamps: dict[str, float] = {}
@@ -83,7 +88,7 @@ class SuperScoutingData:
     # }
     pit_scouting_notes: dict[int, dict[str, Any]]
 
-    match_data: list[MatchData]
+    match_data: list[TBAMatchData]
 
     def __init__(self):
         self.fetched_team_data = []
@@ -192,14 +197,14 @@ class SuperScoutingData:
             team_notes: dict[str, Any] = {}
 
             for field_index, field_value_cell in enumerate(fields):
-                field_type_match = _pit_scouting_csv_field_type_regex.search(field_value_cell)
-                field_name = _pit_scouting_fields[field_index]["name"]
+                field_type_match = _scouting_csv_field_type_regex.search(field_value_cell)
+                field_name = PitScoutingFields[field_index]["name"]
                 field_value: Any
 
                 if field_type_match is not None:
                     field_type = field_type_match.group().strip()
                     field_value_str = field_value_cell[field_type_match.end():]
-                    field_value = _pit_scouting_field_value_parser[field_type](field_value_str)
+                    field_value = _scouting_field_value_parser[field_type](field_value_str)
                 else:
                     field_value = None
 
@@ -249,14 +254,14 @@ class SuperScoutingData:
     
     @property
     def get_pit_scouting_notes_csv(self):
-        field_names = [field["name"] for field in _pit_scouting_fields]
+        field_names = [field["name"] for field in PitScoutingFields]
 
         return [["Team Number"] + [field_name for field_name in field_names]] + \
             [
                 [team_number]+
                 [
-                    f"Type: {_pit_scouting_fields[field_index]["type"]}\n" + \
-                        PitScoutingFieldsParser.get_field_value_as_str(field_value) 
+                    f"Type: {PitScoutingFields[field_index]["type"]}\n" + \
+                        ScoutingFieldParser.get_field_value_as_str(field_value) 
                     for field_index, field_value in enumerate(team_pit_scouting_notes.values())
                 ] 
                 for team_number, team_pit_scouting_notes in self.pit_scouting_notes.items()
@@ -265,10 +270,12 @@ class SuperScoutingData:
 class AppData:
     event_key: str
     superscouting_data: SuperScoutingData
+    quantitative_scouting_data: QuantitativeScoutingData
 
     def __init__(self, event_key: str):
         self.event_key = event_key
         self.superscouting_data = SuperScoutingData()
+        self.quantitative_scouting_data = QuantitativeScoutingData()
         self.fetch_TBA_data()
 
         # Create match notes dictionaries

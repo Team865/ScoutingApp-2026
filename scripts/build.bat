@@ -26,5 +26,11 @@ call npx esbuild^
 
 if %ERRORLEVEL% == 0 (
     echo TypeScript Transpiled and Bundled with esbuild
+)
+
+call uv run .\scripts\build_app_config_typehints_python.py
+
+if %ERRORLEVEL% == 0 (
+    echo Transpiled TypeScript appConfig to python for typehinting
     echo ===BUILD COMPLETE===
 )
