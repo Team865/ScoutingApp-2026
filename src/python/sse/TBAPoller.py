@@ -1,7 +1,8 @@
 import time
+from typing import cast
 from ..api_helpers.TBAApi import get_matches
 from .SuperScoutingEndpoint import sse_manager
-from ..AppData import AppData
+from ..AppData import AppData, TBAMatchData
 
 MATCH_POLL_INTERVAL = 5
 completed_matches = set()
@@ -41,7 +42,7 @@ def poll_tba_matches(app_data: AppData, event_key: str):
                 completed_matches.add(key)
 
                 teams_in_match = []
-                for alliance in ["red", "blue"]:
+                for alliance in ("red", "blue"):
                     for team_key in match_json["alliances"][alliance]["team_keys"]:
                         team_data = next(
                             t for t in app_data.superscouting_data.fetched_team_data
@@ -54,15 +55,17 @@ def poll_tba_matches(app_data: AppData, event_key: str):
                             "team_number": team_data["number"],
                             "alliance": alliance
                         })
-
-                app_data.superscouting_data.match_data.append({
+                    
+                app_data.superscouting_data.match_data.append(cast(TBAMatchData,
+                    {
                     "key": key,
                     "number": match_json["match_number"],
                     "comp_level": match_json["comp_level"],
                     "red_score": match_json["alliances"]["red"]["score"],
                     "blue_score": match_json["alliances"]["blue"]["score"],
                     "teams": teams_in_match
-                })
+                    }
+                ))
 
                 broadcast_match_update(app_data, key)
 

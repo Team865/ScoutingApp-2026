@@ -1,6 +1,6 @@
-from typing import Iterable, Literal, Optional, TypedDict, Any, Callable
+from typing import Literal, Optional, TypedDict, Any, Callable
 
-from src.python.ScoutingFields import PitScoutingFields, QuantitativeScoutingFields, QuantitativeScoutingFields_t
+from src.python.ScoutingFields import PitScoutingFields, QuantitativeScoutingFields_t
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
 from .api_helpers.StatboticsAPI import update_epa
@@ -15,7 +15,6 @@ This python class will act as a container for all of the App Data used by the ba
 __all__ = ["AppData"]
 
 _match_notes_csv_match_number_regex = re.compile(r"[\d]+\n")
-_scouting_csv_field_type_regex = re.compile(r"(?<=Type: ).+\n")
 
 _scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
     "BOOLEAN": lambda value: value.lower() != "false" if value is not None else False,
@@ -203,8 +202,8 @@ class SuperScoutingData:
     def set_match_notes_from_csv(self, csv: list[list[str]]):
         if(len(csv) < 2): return # No match notes
 
-        def parse_team_match_notes(row: list[str]) -> tuple[int, list[int]] | None:
-            if(len(row) < 2): return # No match notes
+        def parse_team_match_notes(row: list[str]) -> Optional[tuple[int, list[int]]]:
+            if(len(row) < 2): return None # No match notes
 
             team_number = int(row[0])
             match_note_cells = row[1:]
@@ -218,7 +217,7 @@ class SuperScoutingData:
 
                 match_number = int(match_number_match.group())
 
-                if(self._is_client_data_lockedout(f"match_notes/{team_number}/{match_number}")): return
+                if(self._is_client_data_lockedout(f"match_notes/{team_number}/{match_number}")): return None
 
                 match_notes = match_note_cell[match_number_match.end():]
 
@@ -249,10 +248,10 @@ class SuperScoutingData:
     def set_pit_scouting_from_csv(self, csv: list[list[str]]):
         if(len(csv) < 2): return # No pit scouting data
         
-        def parse_team_row(row: list[str]) -> int | None:
+        def parse_team_row(row: list[str]) -> Optional[int]:
             team_number = int(row[0])
             
-            if(self._is_client_data_lockedout(f"pit_scouting_notes/{team_number}")): return
+            if(self._is_client_data_lockedout(f"pit_scouting_notes/{team_number}")): return None
 
             fields = row[1:]
 

@@ -12,6 +12,14 @@ class _Config(TypedDict):
 
 _config: Optional[_Config] = None
 
+def get_required_config_var(var_name: str):
+    var_value = getenv(var_name)
+
+    if(var_value is None):
+        raise LookupError(f"Missing field {var_name} in .env")
+    
+    return var_value
+
 def parse_config() -> _Config:
     global _config
 
@@ -19,24 +27,11 @@ def parse_config() -> _Config:
 
     load_dotenv()
 
-    loaded_config = {
-        "API_KEY": getenv("TBA_API_KEY"),
-        "EVENT_KEY": getenv("EVENT_KEY"),
-        "SHEETS_ID": getenv("SHEETS_ID"),
-        "IS_PROD": getenv("IS_PROD")
+    _config = {
+        "API_KEY": get_required_config_var("TBA_API_KEY"),
+        "EVENT_KEY": get_required_config_var("EVENT_KEY"),
+        "SHEETS_ID": get_required_config_var("SHEETS_ID"),
+        "IS_PROD": int(get_required_config_var("IS_PROD")) > 0
     }
-
-    missing_fields = []
-
-    for field_name, field_value in loaded_config.items():
-        if(field_value is None): missing_fields.append(field_name)
-
-    if(len(missing_fields) > 0): raise LookupError(f"Required fields missing: {", ".join(missing_fields)}")
-
-    loaded_config = cast(_Config, loaded_config)
-    loaded_config["IS_PROD"] = int(loaded_config["IS_PROD"]) > 0
-
-    # .env
-    _config = loaded_config
 
     return _config

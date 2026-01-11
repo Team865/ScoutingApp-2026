@@ -36,7 +36,7 @@ app_data: AppData
 reader = geoip2.database.Reader("geo/GeoLite2-City.mmdb")
 ALLOWED_COUNTRIES = {"US", "CA"}
 
-last_log_time = {}
+last_log_time: dict[str, float] = {}
 DEBOUNCE_SECONDS = 5
 
 def get_country_iso(ip):

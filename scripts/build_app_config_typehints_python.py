@@ -67,7 +67,7 @@ def typehint_fields(fields_name: str, fields: list[dict[str, Any]]):
 
 with _python_typehint_file_path.open("wt+") as python_typehint_file:
     python_typehint_file.write("""
-__all__ = ["QuantitativeScoutingFields", "PitScoutingFields"]
+__all__ = ["QuantitativeScoutingFields", "QuantitativeScoutingFields_t", "PitScoutingFields", "PitScoutingFields_t"]
 
 from typing import TypedDict, Literal, NotRequired, Union
     """.strip())
