@@ -9,7 +9,6 @@ from waitress import serve
 from src.python.util.ConfigParser import parse_config
 from src.python.AppData import AppData, MatchNotesChunkJSon, PitScoutingNotesChunkJSon
 import src.python.sse.TBAPoller as TBAPoller
-import src.python.sse.MatchNotes as MatchNotesManager
 from src.python.api_helpers.GoogleSheetsAPI import GoogleSpreadsheet, BackendWorksheet
 import threading
 from typing import TypedDict
