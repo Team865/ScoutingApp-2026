@@ -1,6 +1,6 @@
-from typing import Literal, Optional, TypedDict, Any, Callable
+from typing import Iterable, Literal, Optional, TypedDict, Any, Callable
 
-from src.python.ScoutingFields import PitScoutingFields, QuantitativeScoutingFields
+from src.python.ScoutingFields import PitScoutingFields, QuantitativeScoutingFields, QuantitativeScoutingFields_t
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
 from .api_helpers.StatboticsAPI import update_epa
@@ -27,7 +27,7 @@ _scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
 }
 
 def get_field_value_as_str(field_value):
-    if(isinstance(field_value, list)):
+    if(isinstance(field_value, list | tuple)):
         return ", ".join(field_value)
     elif(field_value is None):
         return ""
@@ -64,10 +64,67 @@ class PitScoutingNotesChunkJSon(TypedDict):
     data: dict[str, Any]
 
 class QuantitativeScoutingData:
-    match_data: dict[int, dict[int, TBAMatchData]]
+    data: dict[int, dict[int, QuantitativeScoutingFields_t]]
 
     def __init__(self) -> None:
-        print(QuantitativeScoutingFields)
+        self.data = {}
+
+    # def set_data_from_csv(self, csv: list[list[str]]):
+    #     if(len(csv) < 2): return # No pit scouting data
+        
+    #     def parse_team_row(row: list[str]) -> int | None:
+    #         team_number = int(row[0])
+
+    #         fields = row[1:]
+
+    #         preexisting_notes = team_number in self.pit_scouting_notes and self.pit_scouting_notes[team_number]
+    #         has_changed = False
+    #         team_notes: dict[str, Any] = {}
+
+    #         for field_index, field_value_cell in enumerate(fields):
+    #             field_type_match = _scouting_csv_field_type_regex.search(field_value_cell)
+    #             field_name = PitScoutingFields[field_index]["name"]
+    #             field_value: Any
+
+    #             if field_type_match is not None:
+    #                 field_type = field_type_match.group().strip()
+    #                 field_value_str = field_value_cell[field_type_match.end():]
+    #                 field_value = _scouting_field_value_parser[field_type](field_value_str)
+    #             else:
+    #                 field_value = None
+
+    #             if(not has_changed):
+    #                 if(not preexisting_notes):
+    #                     has_changed = True
+    #                 elif(field_value != preexisting_notes[field_name]):
+    #                     has_changed = True
+
+    #             team_notes[field_name] = field_value
+
+    #         if(has_changed): 
+    #             self.pit_scouting_notes[team_number] = team_notes
+    #             return team_number
+
+    #     team_rows = csv[1:]
+
+    #     for team_row in team_rows:
+    #         team_number = parse_team_row(team_row)
+
+    #         if(team_number is None): continue # Notes didn't change
+            
+    #         PitScoutingSSE.broadcast_pit_scouting_notes({
+    #             "team_number": team_number,
+    #             "data": self.pit_scouting_notes[team_number]
+    #         })
+
+    # @property
+    # def serialized(self):
+    #     return {
+    #         "fetched_team_data": self.fetched_team_data,
+    #         "match_notes": self.match_notes,
+    #         "pit_scouting_notes": self.pit_scouting_notes,
+    #         "match_data": self.match_data
+    #     }
 
 class SuperScoutingData:
     data_received_timestamps: dict[str, float] = {}
@@ -203,17 +260,12 @@ class SuperScoutingData:
             has_changed = False
             team_notes: dict[str, Any] = {}
 
-            for field_index, field_value_cell in enumerate(fields):
-                field_type_match = _scouting_csv_field_type_regex.search(field_value_cell)
+            for field_index, field_value_str in enumerate(fields):
                 field_name = PitScoutingFields[field_index]["name"]
                 field_value: Any
 
-                if field_type_match is not None:
-                    field_type = field_type_match.group().strip()
-                    field_value_str = field_value_cell[field_type_match.end():]
-                    field_value = _scouting_field_value_parser[field_type](field_value_str)
-                else:
-                    field_value = None
+                field_type = PitScoutingFields[field_index]["type"]
+                field_value = _scouting_field_value_parser[field_type](field_value_str)
 
                 if(not has_changed):
                     if(not preexisting_notes):
@@ -267,9 +319,8 @@ class SuperScoutingData:
             [
                 [team_number]+
                 [
-                    f"Type: {PitScoutingFields[field_index]["type"]}\n" + \
-                        get_field_value_as_str(field_value) 
-                    for field_index, field_value in enumerate(team_pit_scouting_notes.values())
+                    get_field_value_as_str(field_value) 
+                    for field_value in team_pit_scouting_notes.values()
                 ] 
                 for team_number, team_pit_scouting_notes in self.pit_scouting_notes.items()
             ]

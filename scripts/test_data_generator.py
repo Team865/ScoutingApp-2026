@@ -34,13 +34,13 @@ def generate_field_value(field_config: FieldConfig):
         case "BOOLEAN": 
             return True if random.random() > 0.5 else False
         case "TEXT": 
-            return "".join(random.choices(string.ascii_letters + string.digits, k=20)),
+            return "".join(random.choices(string.ascii_letters + string.digits, k=20))
         case "NUMBER": 
-            return random.random() * 100,
+            return random.random() * 100
         case "NUMBER_RANGE": 
-            return int(random.random() * (field_config["max"] - field_config["min"] + 1) + field_config["min"]),
+            return int(random.random() * (field_config["max"] - field_config["min"] + 1) + field_config["min"])
         case "SINGLE_CHOICE": 
-            return random.choice(field_config["choices"]),
+            return random.choice(field_config["choices"])
         case "MULTIPLE_CHOICE": 
             return [choice for choice in field_config["choices"] if random.random() > 0.5]
 
