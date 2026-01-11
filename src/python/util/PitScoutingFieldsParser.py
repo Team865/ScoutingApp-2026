@@ -14,12 +14,19 @@ class _FieldConfig(TypedDict):
 def get_fields() -> list[_FieldConfig]:
     with _pit_scouting_fields_config_path.open("r") as file:
         text_data = file.read()
-        fields_list_str = _fields_list_regex.search(text_data).group().replace("\n", "").replace("\t", "")
+        fields_list_match = _fields_list_regex.search(text_data)
+        if(fields_list_match is None):
+            raise RuntimeError("Failed to parse pit scouting fields")
+        
+        fields_list_str = fields_list_match.group().replace("\n", "").replace("\t", "")
         fields = chompjs.parse_js_object(fields_list_str)
         
         for field in fields:
-            field["type"] = _field_type_stripper.search(field["type"]).group()
+            field_type = _field_type_stripper.search(field["type"])
 
+            if(field_type):
+                field["type"] = field_type.group()
+        
         return fields
     
 def get_field_value_as_str(field_value: Any) -> str:

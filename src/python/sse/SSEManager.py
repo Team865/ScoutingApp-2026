@@ -1,5 +1,5 @@
 from queue import Queue, Empty
-from typing import Generator, Any, NoReturn
+from typing import Callable, Generator, Any, Literal, NoReturn, Optional
 import json
 
 """
@@ -11,7 +11,7 @@ class SSEManager:
     def __init__(self):
         self.sse_clients = []
     
-    def register_client(self, client_queue: Queue = None) -> Generator[Any, Any, NoReturn]:
+    def register_client(self, client_queue: Optional[Queue] = None) -> Callable[[], Generator[Any | Literal[": keep-alive\n\n"], Any, NoReturn]]:
         """
         Registers a client queue to the manager. Returns a generator function for the stream
         
@@ -30,6 +30,7 @@ class SSEManager:
                 while True:
                     try:
                         data = client_queue.get(timeout=15)
+
                         yield data
                     except Empty:
                         yield ": keep-alive\n\n"

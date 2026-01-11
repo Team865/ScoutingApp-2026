@@ -4,15 +4,9 @@ from ..typehinting.StatboticsData import StatboticsTeamEventData, StatboticsTeam
 from requests import get
 from threading import Thread
 
-_statboticsObj = Statbotics()
 _STATBOTICS_ROOT = "https://api.statbotics.io/v3"
 
-__all__ = ["get_epa"]
-
-class EPAData(TypedDict):
-    team_number: int
-    epa: float
-    normalized_epa: int
+__all__ = ["_statbotics_request"]
 
 def _statbotics_request(path: str):
     resp = get(f"{_STATBOTICS_ROOT}/{path}")
@@ -22,7 +16,7 @@ def _statbotics_request(path: str):
     
     return resp.json()
 
-def update_epa(app_data, event_key: str) -> EPAData:
+def update_epa(app_data, event_key: str):
     # Get event data first
     team_event_data: list[StatboticsTeamEventData] = _statbotics_request(f"team_events?event={event_key}")
 

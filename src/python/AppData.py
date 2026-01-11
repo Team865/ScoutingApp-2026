@@ -1,4 +1,4 @@
-from typing import Literal, TypedDict, Any, Callable
+from typing import Literal, Optional, TypedDict, Any, Callable
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
 from .api_helpers.StatboticsAPI import update_epa
@@ -31,20 +31,22 @@ class FetchedTeamData(TypedDict):
     number: int
     key: str
     match_keys: list[str]
-    epa: int | None
-    normalized_epa: int | None
+    epa: Optional[int]
+    normalized_epa: Optional[int]
+
+
+class MatchData_Team(TypedDict):
+    team_number: int
+    alliance: Literal["red", "blue"]
 
 class MatchData(TypedDict):
-    class Team(TypedDict):
-        team_number: int
-        alliance: Literal["red", "blue"]
 
     key: str
     number: int
     comp_level: str
     red_score: int
     blue_score: int
-    teams: list[Team]
+    teams: list[MatchData_Team]
 
 class MatchNotesChunkJSon(TypedDict):
     team_number: int
@@ -132,7 +134,7 @@ class SuperScoutingData:
     def set_match_notes_from_csv(self, csv: list[list[str]]):
         if(len(csv) < 2): return # No match notes
 
-        def parse_team_match_notes(row: list[str]) -> tuple[int, dict[int, str]] | None:
+        def parse_team_match_notes(row: list[str]) -> tuple[int, list[int]] | None:
             if(len(row) < 2): return # No match notes
 
             team_number = int(row[0])
@@ -178,7 +180,7 @@ class SuperScoutingData:
     def set_pit_scouting_from_csv(self, csv: list[list[str]]):
         if(len(csv) < 2): return # No pit scouting data
         
-        def parse_team_row(row: list[str]) -> tuple[int, dict[str, Any]] | None:
+        def parse_team_row(row: list[str]) -> int | None:
             team_number = int(row[0])
             
             if(self._is_client_data_lockedout(f"pit_scouting_notes/{team_number}")): return
@@ -292,7 +294,9 @@ class AppData:
                 "name": teamJSon["nickname"],
                 "number": teamJSon["team_number"],
                 "key": teamJSon["key"],
-                "match_keys": []
+                "match_keys": [],
+                "epa": None,
+                "normalized_epa": None
             })
 
         # Fetch matches data
@@ -302,7 +306,7 @@ class AppData:
 
         for match_json in tbaMatches:
             match_key = match_json["key"]
-            teams_in_match: list[MatchData.Team] = []
+            teams_in_match: list[MatchData_Team] = []
 
             # Loop through red alliance
             for team_key in match_json["alliances"]["red"]["team_keys"]:

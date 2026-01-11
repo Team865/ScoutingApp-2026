@@ -12,7 +12,7 @@ _TBA_API_ROOT = "https://www.thebluealliance.com/api/v3"
 
 __all__ = ["get_teams"]
 
-def _tba_get_request(path: str) -> dict | list:
+def _tba_get_request(path: str):
     resp = get(f"{_TBA_API_ROOT}/{path}",
                         headers=_TBA_HEADER)
     

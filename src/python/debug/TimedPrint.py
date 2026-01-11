@@ -1,6 +1,6 @@
 from time import time
 from math import floor, ceil, copysign
-from typing import Callable
+from typing import Callable, Optional
 import functools
 
 __all__ = ["start", "end", "timed"]
@@ -25,7 +25,7 @@ def start(label: str = "default"):
     """
     _time_starts[label] = time()
 
-def end(label: str = "default", num_decimals: int = None):
+def end(label: str = "default", num_decimals: Optional[int] = None):
     """
     Ends a timer. Raises a `KeyError` if the timer doesn't exist.
     
@@ -47,7 +47,7 @@ def end(label: str = "default", num_decimals: int = None):
     
     print(f"Time taken{f" for timer {label}" if label != "default" else ""}: {time_taken} seconds")
 
-def timed(print_msg: str | Callable[[float], str] = None, num_decimals: int = None):
+def timed(print_msg: Optional[str | Callable[[float], str]] = None, num_decimals: Optional[int] = None):
     """
     Makes a function print the time it takes to complete in seconds.
     

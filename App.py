@@ -1,7 +1,5 @@
 import time
 from flask import Flask, jsonify, render_template, request, Response
-import os
-import sys
 import requests
 from dotenv import load_dotenv
 import geoip2.database
@@ -10,17 +8,12 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from waitress import serve
 from src.python.util.ConfigParser import parse_config
 from src.python.AppData import AppData, MatchNotesChunkJSon, PitScoutingNotesChunkJSon
-from queue import Queue
-from src.python.sse.SuperScoutingEndpoint import sse_manager as SuperScoutingSSEManager
 import src.python.sse.TBAPoller as TBAPoller
 import src.python.sse.MatchNotes as MatchNotesManager
-import src.python.sse.PitScoutingNotes as PitScoutingManager
 from src.python.api_helpers.GoogleSheetsAPI import GoogleSpreadsheet, BackendWorksheet
 import threading
-import json
-from typing import TypedDict, Any
+from typing import TypedDict
 from pathlib import Path
-from src.python.debug.DebugMenu import DebugMenu
 load_dotenv()
 
 APP_DIR = Path(__file__).resolve().parent
@@ -66,6 +59,10 @@ def get_location_details(ip):
 @app.before_request
 def restrict_countries():
     ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    
+    if(ip is None):
+        return "No IP could be found"
+
     isLocal = LOCAL_HOST_REGEX.match(ip) or LAN_REGEX.match(ip)
 
     if not isLocal:
@@ -131,7 +128,7 @@ def get_epa_data():
     epaJSon: dict[int, EPAGroup] = {}
 
     for app_team_data in app_data.superscouting_data.fetched_team_data:
-        while "normalized_epa" not in app_team_data:
+        while app_team_data["normalized_epa"] is None:
             pass
 
         epaJSon[app_team_data["number"]] = {
@@ -174,22 +171,6 @@ def match_updates():
     stream = TBAPoller.sse_manager.register_client()
 
     return Response(stream(), mimetype="text/event-stream")
-
-def debug_menu_behavior():
-    DEBUG_MENU = DebugMenu()
-
-    def stream():
-        while True:
-            yield DEBUG_MENU.message_queue.get()
-
-    for message in stream():
-        match message:
-            case "print_tba_clients":
-                print(len(TBAPoller.sse_manager.sse_clients), "match update clients")
-            case "print_match_notes_clients":
-                print(len(MatchNotesManager.sse_manager.sse_clients), "match note clients")
-            case _:
-                print("Message received:", message)
 
 if __name__ == "__main__":
     is_prod = config["IS_PROD"]
