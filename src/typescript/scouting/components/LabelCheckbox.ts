@@ -8,7 +8,9 @@ export default class LabelCheckbox {
         this.mainContainer.classList.add("label-checkbox");
 
         this.label.innerText = labelText;
+        this.label.htmlFor = "checkbox";
         this.checkBox.type = "checkbox";
+        this.checkBox.id = "checkbox";
 
         this.mainContainer.append(
             this.label,
