@@ -14,3 +14,17 @@ export function setTitleHeading(title: string) {
         titleElement.textContent = title;
     }
 }
+
+function validateIntegerInput(startInput: string, newInput: string): string {
+    if(Number.isNaN(Number.parseFloat(newInput))) return startInput;
+    if(Number.isInteger(newInput)) return newInput;
+
+    return Math.trunc(Number.parseFloat(newInput)).toString();
+}
+
+export function makeInputIntegerOnly(input: HTMLInputElement, min?: number, max?: number) {
+    let previousInput: string = input.value;
+
+    input.addEventListener("focusin", () => previousInput = input.value);
+    input.addEventListener("focusout", () => input.value = validateIntegerInput(previousInput, input.value));
+}

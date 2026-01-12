@@ -1,3 +1,5 @@
+import { makeInputIntegerOnly } from "../../lib/DOMHelper";
+
 export default class FuelCounter {
     private fuelScoredCount: number = 0;
     private readonly mainContainer = document.createElement("div");
@@ -16,6 +18,10 @@ export default class FuelCounter {
         this.incrementButton.innerText = "+";
         this.batchButton.innerText = "Add Batch";
         this.textInput.value = "0";
+        makeInputIntegerOnly(this.textInput);
+
+        this.decrementButton.addEventListener("click", _ => this.textInput.value = Math.max(Number.parseInt(this.textInput.value) - 1, 0).toString());
+        this.incrementButton.addEventListener("click", _ => this.textInput.value = (Number.parseInt(this.textInput.value) + 1).toString());
 
         this.mainContainer.append(
             this.header,
