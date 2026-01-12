@@ -43,3 +43,17 @@ div.fuel-counter > button:nth-of-type(3) {
     grid-row: 3;
     font-size: 2rem;
 }
+
+div.label-checkbox {
+    display: flex;
+    gap: 0.5rem;
+}
+
+div.label-checkbox > label {
+    font-size: 2rem;
+}
+
+div.label-checkbox > input[type="checkbox"] {
+    width: 2rem;
+    height: 2rem;
+}
