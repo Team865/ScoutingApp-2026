@@ -1,6 +1,7 @@
 import CheckboxGroup from "../components/CheckboxGroup";
 import FuelCounter from "../components/FuelCounter";
 import LabeledCheckbox from "../components/LabeledCheckbox";
+import LabeledInput from "../components/LabeledInput";
 import RadioGroup from "../components/RadioGroup";
 import Page from "./Page";
 
@@ -10,6 +11,7 @@ export default class EndgameClimbPage extends Page {
 
     private readonly climbChoices = new RadioGroup("CLIMB", ["No Attempt", "Level 1", "Level 2", "Level 3"]);
     private readonly failedClimb = new LabeledCheckbox("Failed Climb?");
+    private readonly climbTime = new LabeledInput("Time remaining at start of attempt (seconds)");
 
     private readonly commentInput = document.createElement("textarea");
 
@@ -20,6 +22,8 @@ export default class EndgameClimbPage extends Page {
         const commentHeader = document.createElement("h1");
 
         commentContainer.classList.add("comments-container");
+        this.climbTime.domElement.classList.add("climb-time-container");
+        this.climbTime.inputElement.type = "number";
 
         this.backButton.textContent = "BACK";
         commentHeader.textContent = "COMMENTS";
@@ -38,6 +42,7 @@ export default class EndgameClimbPage extends Page {
         this.domElement.append(
             this.climbChoices.domElement,
             this.failedClimb.domElement,
+            this.climbTime.domElement,
             commentContainer,
             this.submitButton
         );

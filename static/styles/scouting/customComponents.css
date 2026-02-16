@@ -156,6 +156,21 @@ div.radio-group > div > input[type="radio"] {
     width: 1rem;
 }
 
+div.climb-time-container {
+    align-items: stretch;
+    gap: 2rem;
+}
+
+div.climb-time-container > label {
+    width: min-content;
+}
+
+div.climb-time-container > input {
+    min-width: 0;
+    width: 8rem;
+    text-align: center;
+}
+
 div.comments-container {
     display: flex;
     flex-flow: column;
