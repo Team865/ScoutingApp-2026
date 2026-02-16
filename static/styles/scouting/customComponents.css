@@ -57,3 +57,49 @@ div.label-checkbox > input[type="checkbox"] {
     width: 2rem;
     height: 2rem;
 }
+
+div.batch-score-container {
+    display: flex;
+    flex-flow: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+div.batch-score-container > div {
+    display: flex;
+    flex-flow: column;
+    background-color: var(--bg);
+    padding: 2rem;
+    border-radius: 1rem;
+    font-size: 1rem;
+}
+
+div.batch-score-container > div > div {
+    display: grid;
+    grid-template-columns: fit-content auto;
+    grid-template-rows: repeat(auto, 3);
+    gap: 0.5rem;
+}
+
+div.batch-score-container > div > div > label {
+    grid-column: 1;
+}
+
+div.batch-score-container > div > div > input {
+    grid-column: 2;
+}
+
+div.batch-score-container > div > div > button:first-child {
+    grid-column: 1;
+}
+
+div.batch-score-container > div > div > button:last-child {
+    grid-column: 2;
+}
