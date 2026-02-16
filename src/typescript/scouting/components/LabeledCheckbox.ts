@@ -1,3 +1,5 @@
+import { getRandomUUID } from "../../lib/Randomizer";
+
 export default class LabeledCheckbox {
     private readonly mainContainer = document.createElement("div");
 
@@ -7,7 +9,7 @@ export default class LabeledCheckbox {
     constructor(labelText) {
         this.mainContainer.classList.add("label-checkbox");
 
-        const uniqueHash = crypto.randomUUID();
+        const uniqueHash = getRandomUUID();
 
         this.label.innerText = labelText;
         this.label.htmlFor = labelText + uniqueHash;
