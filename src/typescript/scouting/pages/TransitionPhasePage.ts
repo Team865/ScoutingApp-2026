@@ -20,6 +20,17 @@ export default class TransitionPhasePage extends Page {
         this.onAllianceButton.textContent = "ON ALLIANCE";
         this.offAllianceButton.textContent = "OFF ALLIANCE";
 
+        this.bottomBar.domElement.style.display = "grid";
+
+        this.backButton.style.gridRow = "1";
+        this.backButton.style.gridColumn = "span 2";
+
+        this.onAllianceButton.style.gridRow = "2";
+        this.onAllianceButton.style.gridColumn = "1";
+        
+        this.offAllianceButton.style.gridRow = "2";
+        this.offAllianceButton.style.gridColumn = "2";
+
         this.bottomBar.domElement.append(this.backButton, this.onAllianceButton, this.offAllianceButton);
 
         this.domElement.append(

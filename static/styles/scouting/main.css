@@ -1,3 +1,7 @@
 main {
     min-height: 100dvh;
 }
+
+button {
+    touch-action: manipulation;
+}

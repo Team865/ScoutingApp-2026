@@ -113,3 +113,7 @@ div.checkbox-group {
     flex-flow: column;
     align-items: center;
 }
+
+div.checkbox-group > h1 {
+    margin: 0.5rem;
+}
