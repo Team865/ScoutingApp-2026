@@ -20,7 +20,8 @@ class BatchCounter {
         const endScoreLabel = document.createElement("label");
         const scorePercentLabel = document.createElement("label");
 
-        this.inputBlocker.classList.add("batch-score-container");
+        this.inputBlocker.classList.add("popup-input-blocker");
+        this.popupContainer.classList.add("batch-score-container");
 
         this.header.textContent = "BATCH SCORER";
 

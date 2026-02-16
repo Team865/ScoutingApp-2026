@@ -16,7 +16,7 @@ export default class CheckboxGroup {
         for(const optionName of options) {
             const labeledCheckbox = new LabeledCheckbox(optionName);
 
-            this.checkboxes.set(optionName, labeledCheckbox.checkbox);
+            this.checkboxes.set(optionName, labeledCheckbox.inputElement);
             this.mainContainer.appendChild(labeledCheckbox.domElement);
         }
     }

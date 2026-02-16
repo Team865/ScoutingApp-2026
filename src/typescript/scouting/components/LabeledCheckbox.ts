@@ -1,36 +1,13 @@
-import { getRandomUUID } from "../../lib/Randomizer";
+import LabeledInput from "./LabeledInput";
 
-export default class LabeledCheckbox {
-    private readonly mainContainer = document.createElement("div");
+export default class LabeledCheckbox extends LabeledInput {
+    constructor(labelText: string, inputFirst?: boolean) {
+        super(labelText, inputFirst);
 
-    private readonly label = document.createElement("label");
-    private readonly checkBox = document.createElement("input");
-
-    constructor(labelText) {
-        this.mainContainer.classList.add("label-checkbox");
-
-        const uniqueHash = getRandomUUID();
-
-        this.label.innerText = labelText;
-        this.label.htmlFor = labelText + uniqueHash;
-        this.checkBox.type = "checkbox";
-        this.checkBox.id = labelText + uniqueHash;
-
-        this.mainContainer.append(
-            this.label,
-            this.checkBox
-        );
-    }
-
-    public get checkbox() {
-        return this.checkBox;
-    }
-
-    public get domElement() {
-        return this.mainContainer;
+        this.input.type = "checkbox";
     }
 
     public get isChecked() {
-        return this.checkBox.checked;
+        return this.input.checked;
     }
 }

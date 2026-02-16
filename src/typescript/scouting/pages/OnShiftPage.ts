@@ -3,7 +3,7 @@ import FuelCounter from "../components/FuelCounter";
 import LabeledCheckbox from "../components/LabeledCheckbox";
 import Page from "./Page";
 
-export default class TransitionPhasePage extends Page {
+export default class OnShiftPage extends Page {
     public readonly backButton = document.createElement("button");
     public readonly nextButton = document.createElement("button");
 
@@ -13,8 +13,7 @@ export default class TransitionPhasePage extends Page {
     private readonly defenseChoice = new LabeledCheckbox("Defense?");
 
     constructor() {
-        super("TRANSTION PHASE");
-
+        super("ACTIVE HUB PERIOD");
         this.backButton.textContent = "BACK";
         this.nextButton.textContent = "NEXT";
 

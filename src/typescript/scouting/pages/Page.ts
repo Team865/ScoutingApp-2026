@@ -7,6 +7,7 @@ export default abstract class Page {
 
     constructor(title: string) {
         this.domElement.classList.add("page");
+        this.domElement.appendChild(this.header);
         this.header.textContent = title;
     }
 }
