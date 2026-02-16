@@ -1,17 +1,8 @@
-div#top-bar {
-    display: flex;
-    width: 100dvw;
-    background-color: var(--bg-medium);
-    align-items: center;
-    justify-content: center;
-}
-
-button#previous-page-button {
-    position: absolute;
-    left: 1rem;
-    margin: auto 0;
-}
-
 h1#page-title {
     text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--bg-medium);
+    margin: 0;
+    padding: 1rem;
 }

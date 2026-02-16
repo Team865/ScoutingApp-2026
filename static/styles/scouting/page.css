@@ -1,0 +1,32 @@
+div.page {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+    flex-grow: 1;
+}
+
+div.page > h1 {
+    font-size: 2rem;
+    text-align: center;
+    font-weight: 900;
+}
+
+.sticky-bottom {
+    display: flex;
+    flex-flow: row;
+    gap: 5px;
+    position: sticky;
+    box-sizing: border-box;
+    padding: 10px;
+    background-color: var(--bg-medium);
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 1rem;
+}
+
+.sticky-bottom > button {
+    flex-grow: 1;
+    font-size: 2rem;
+}
