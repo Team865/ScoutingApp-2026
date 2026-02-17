@@ -119,7 +119,7 @@ button.accordion-toggle > p {
 
 button.view-match-data {
     grid-column: 2;
-    background-image: url(../../deploy/magnifyingGlass.svg);
+    background-image: url(../../deploy/icons/magnifyingGlass.svg);
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -132,6 +132,13 @@ button.view-match-data {
 div.team-match > button.accordion-toggle::after, div.team-container > button::after {
     content: "+";
     margin: auto 0 auto auto;
+}
+
+div.team-match > button.accordion-toggle::after {
+    grid-column: 3;
+}
+
+div.team-container > button::after {
     grid-column: 4;
 }
 

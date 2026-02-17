@@ -71,7 +71,7 @@ export default class PreMatchPage extends Page {
         const button = document.createElement("button");
         const pointerImage = document.createElement("img");
 
-        pointerImage.src = "./static/deploy/pointer.svg";
+        pointerImage.src = "./static/deploy/icons/pointer.svg";
         button.appendChild(pointerImage);
 
         absolutePosition(button, position, anchorPoint);

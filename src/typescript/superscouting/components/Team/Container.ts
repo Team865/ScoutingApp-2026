@@ -64,7 +64,7 @@ export default class TeamContainer {
         this.teamHeader.innerText = this.teamString;
         this.teamImage.addEventListener(
             "error", 
-            () => this.teamImage.src = "static/deploy/FIRSTLogo.svg", 
+            () => this.teamImage.src = "static/deploy/teamLogos/FIRSTLogo.svg", 
             {once: true}
         );
         this.teamImage.src = `https://www.thebluealliance.com/avatar/2025/frc${teamNumber}.png`;

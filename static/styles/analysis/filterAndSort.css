@@ -74,7 +74,7 @@ select#sorted-by:hover {
 }
 
 button#sort-order {
-    background-image: url(../../deploy/ascendingArrow.svg);
+    background-image: url(../../deploy/icons/ascendingArrow.svg);
     background-size: contain;
     background-repeat: no-repeat;
     height: 40px;
@@ -84,7 +84,7 @@ button#sort-order {
 }
 
 button#sort-order.descending {
-    background-image: url(../../deploy/descendingArrow.svg);
+    background-image: url(../../deploy/icons/descendingArrow.svg);
 }
 
 div#filter-menu {
