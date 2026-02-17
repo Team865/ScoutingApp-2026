@@ -12,7 +12,7 @@ export default class TeamContainer {
     private readonly toggleButton = document.createElement("button");
     private readonly teamImage = document.createElement("img");
     private readonly teamHeader = document.createElement("h1");
-    // private readonly tagsDisplay = document.createElement("div");
+    private readonly pitScoutingCompletionSpan = document.createElement("span");
     private readonly contentsDiv = document.createElement("div");
 
     private readonly tabsContainer = document.createElement("div");
@@ -35,6 +35,7 @@ export default class TeamContainer {
         );
 
         this.teamName = teamData.name;
+        this.pitScoutingCompletionSpan.textContent = "PIT SCOUTING INCOMPLETE";
 
         this.pageContainer = document.createElement("div");
 
@@ -89,7 +90,7 @@ export default class TeamContainer {
 
             // Check for preexisting notes
             if(TeamNotesManager.getPitScoutingNotes(this.teamNumber)) {
-                this.enableSubmittedAppearance(pitScoutingPageInfo);
+                this.pitScoutingSubmitted(pitScoutingPageInfo);
                 pitScoutingPage.serverNotesReceived(teamNumber);
             }
 
@@ -97,7 +98,7 @@ export default class TeamContainer {
             AppData.serverPitScoutingNotesChanged.connect((teamNumber) => {
                 if(teamNumber !== this.teamNumber) return;
 
-                this.enableSubmittedAppearance(pitScoutingPageInfo);
+                this.pitScoutingSubmitted(pitScoutingPageInfo);
                 pitScoutingPage.serverNotesReceived(teamNumber);
             });
         }
@@ -108,7 +109,7 @@ export default class TeamContainer {
         this.toggleButton.append(
             this.teamImage,
             this.teamHeader,
-            // this.tagsDisplay
+            this.pitScoutingCompletionSpan
         );
 
         this.containerDiv.appendChild(this.toggleButton);
@@ -134,7 +135,10 @@ export default class TeamContainer {
         (this.pages.get("Summary").page as SummaryPage).updateData()
     }
 
-    private enableSubmittedAppearance(pitScoutingPageInfo: {tabButton?: HTMLButtonElement, page: Page}) {
+    private pitScoutingSubmitted(pitScoutingPageInfo: {tabButton?: HTMLButtonElement, page: Page}) {
+        this.pitScoutingCompletionSpan.textContent = "PIT SCOUTING COMPLETED";
+        this.pitScoutingCompletionSpan.classList.add("complete");
+
         pitScoutingPageInfo.tabButton.classList.add("complete");
         (pitScoutingPageInfo.page as PitScoutingPage).submitPitScoutingButton.innerText = "Resubmit";
     }
@@ -151,7 +155,7 @@ export default class TeamContainer {
             return;
         }
 
-        this.enableSubmittedAppearance(pitScoutingPageInfo);
+        this.pitScoutingSubmitted(pitScoutingPageInfo);
 
         TeamNotesManager.setPitScoutingFromClient(this.teamNumber, scoutingData.data);
 

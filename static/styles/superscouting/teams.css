@@ -25,17 +25,9 @@ div.team-container > button, div.team-container > div {
 div.team-container > button {
     padding: 20px;
     display: grid;
-    grid-template-columns: auto 1fr min-content;
-    /* flex-flow: row;
-    align-items: center; */
+    grid-template-columns: auto 1fr auto min-content;
     gap: 10px;
     transition: background-color 0.1s ease-in-out;
-}
-
-div.team-container > button  > h1, div.team-tag {
-    text-align: left;
-    font-size: 1.5rem;
-    font-weight: bold;
 }
 
 div.team-container > button > img {
@@ -47,6 +39,23 @@ div.team-container > button > img {
 
 div.team-container > button > h1 {
     grid-column: 2;
+    text-align: left;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+div.team-container > button > span {
+    grid-column: 3;
+    display: flex;
+    align-items: center;
+    background-color: var(--red-alliance);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+}
+
+div.team-container > button > span.complete {
+    background-color: var(--bg-complete);
 }
 
 div.team-container.active > button {
@@ -80,35 +89,6 @@ span.epa-number {
     background-color: var(--bg);
     padding: 10px;
     border-radius: 1rem;
-}
-
-button.edit-team-tags-button {
-    background-color: #4b65c4;
-    margin-left: 10px;
-    font-weight: 500;
-}
-
-button.edit-team-tags-button:hover {
-    background-color: #3851ac;
-}
-
-div.tags-display {
-    display: inline-block;
-}
-
-div.team-tags-display {
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-    grid-column: 2;
-    gap: 10px;
-    max-width: 100%;
-}
-
-div.team-tag {
-    width: fit-content;
-    padding: 5px;
-    border-radius: 5px;
 }
 
 div.match-list {
@@ -152,7 +132,7 @@ button.view-match-data {
 div.team-match > button.accordion-toggle::after, div.team-container > button::after {
     content: "+";
     margin: auto 0 auto auto;
-    grid-column: 3;
+    grid-column: 4;
 }
 
 div.team-match.active > button.accordion-toggle::after, div.team-container.active > button::after {
@@ -201,4 +181,19 @@ div.match-toolbar > button {
 
 div.match-toolbar > button:hover {
     background-color: var(--bg-accented);
+}
+
+@media only screen and (max-width: 700px) {
+    div.team-container > button {
+        grid-template-columns: auto 1fr min-content;
+    }
+
+    div.team-container > button > span {
+        grid-column: span 3;
+        grid-row: 2;
+    }
+
+    div.team-container > button::after {
+        grid-column: 3
+    }
 }
