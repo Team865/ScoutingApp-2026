@@ -1,7 +1,7 @@
 import AutoPage from "../pages/AutoPage";
 import EndgameClimbPage from "../pages/EndgameClimb";
 import EndgamePreClimbPage from "../pages/EndgamePreClimbPage";
-import ShiftsPage from "../pages/ShiftsPage";
+import TeleopShiftsPage from "../pages/TeleopShiftsPage";
 import Page from "../pages/Page";
 import TransitionPhasePage from "../pages/TransitionPhasePage";
 
@@ -9,7 +9,7 @@ const mainElement: HTMLElement = document.querySelector("main");
 
 const autoPage = new AutoPage();
 const transitionPhasePage = new TransitionPhasePage();
-const shiftsPage = new ShiftsPage();
+const teleopShiftsPage = new TeleopShiftsPage();
 const endgamePreClimbPage = new EndgamePreClimbPage();
 const endgameClimbPage = new EndgameClimbPage();
 
@@ -20,12 +20,12 @@ export namespace PageManager {
         autoPage.nextButton.addEventListener("click", _ => changePage(transitionPhasePage));
 
         transitionPhasePage.backButton.addEventListener("click", _ => changePage(autoPage));
-        transitionPhasePage.nextButton.addEventListener("click", _ => changePage(shiftsPage));
+        transitionPhasePage.nextButton.addEventListener("click", _ => changePage(teleopShiftsPage));
 
-        shiftsPage.backButton.addEventListener("click", _ => changePage(transitionPhasePage));
-        shiftsPage.nextButton.addEventListener("click", _ => changePage(endgamePreClimbPage));
+        teleopShiftsPage.backButton.addEventListener("click", _ => changePage(transitionPhasePage));
+        teleopShiftsPage.nextButton.addEventListener("click", _ => changePage(endgamePreClimbPage));
 
-        endgamePreClimbPage.backButton.addEventListener("click", _ => changePage(shiftsPage));
+        endgamePreClimbPage.backButton.addEventListener("click", _ => changePage(teleopShiftsPage));
         endgamePreClimbPage.nextButton.addEventListener("click", _ => changePage(endgameClimbPage));
 
         endgameClimbPage.backButton.addEventListener("click", _ => changePage(endgamePreClimbPage));

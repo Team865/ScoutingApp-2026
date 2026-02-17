@@ -3,7 +3,7 @@ import FuelCounter from "../components/FuelCounter";
 import LabeledCheckbox from "../components/LabeledCheckbox";
 import Page from "./Page";
 
-export default class ShiftsPage extends Page {
+export default class TeleopShiftsPage extends Page {
     public readonly backButton = document.createElement("button");
     public readonly nextButton = document.createElement("button");
 
