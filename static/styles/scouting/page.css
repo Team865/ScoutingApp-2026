@@ -12,6 +12,10 @@ div.page > h1 {
     font-weight: 900;
 }
 
+.sticky-bottom:empty {
+    padding: 0;
+}
+
 .sticky-bottom {
     display: flex;
     flex-flow: row;

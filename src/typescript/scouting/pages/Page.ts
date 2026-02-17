@@ -1,7 +1,7 @@
 import BottomBar from "../components/BottomBar";
 
 export default abstract class Page {
-    private readonly header = document.createElement("h1");
+    public readonly header = document.createElement("h1");
     public readonly domElement = document.createElement("div");
     public readonly bottomBar = new BottomBar();
 

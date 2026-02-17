@@ -4,9 +4,13 @@ import EndgamePreClimbPage from "../pages/EndgamePreClimbPage";
 import TeleopShiftsPage from "../pages/TeleopShiftsPage";
 import Page from "../pages/Page";
 import TransitionPhasePage from "../pages/TransitionPhasePage";
+import PreMatchPage from "../pages/PreMatchPage";
+import AppData from '../AppData';
 
 const mainElement: HTMLElement = document.querySelector("main");
+const titleElement: HTMLHeadingElement = document.querySelector("h1#page-title");
 
+const preMatchPage = new PreMatchPage();
 const autoPage = new AutoPage();
 const transitionPhasePage = new TransitionPhasePage();
 const teleopShiftsPage = new TeleopShiftsPage();
@@ -17,6 +21,9 @@ let currentPage: Page = autoPage;
 
 export namespace PageManager {
     export function begin() {
+        preMatchPage.goToNextPage.connect(() => changePage(autoPage));
+
+        autoPage.backButton.addEventListener("click", _ => changePage(preMatchPage));
         autoPage.nextButton.addEventListener("click", _ => changePage(transitionPhasePage));
 
         transitionPhasePage.backButton.addEventListener("click", _ => changePage(autoPage));
@@ -30,7 +37,7 @@ export namespace PageManager {
 
         endgameClimbPage.backButton.addEventListener("click", _ => changePage(endgamePreClimbPage));
 
-        changePage(autoPage);
+        changePage(preMatchPage);
     }
 
     function changePage(targetPage: Page) {
@@ -41,5 +48,7 @@ export namespace PageManager {
 
         mainElement.appendChild(targetPage.domElement);
         mainElement.appendChild(targetPage.bottomBar.domElement);
+
+        titleElement.scrollIntoView();
     }
 }

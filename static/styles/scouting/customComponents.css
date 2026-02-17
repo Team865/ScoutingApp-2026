@@ -1,3 +1,21 @@
+div.field-diagram-container {
+    position: relative;
+    max-width: 80dvw;
+}
+
+div.field-diagram-container > img {
+    width: 100%;
+}
+
+div.field-diagram-container > button {
+    width: 25%;
+}
+
+div.field-diagram-container > button > img {
+    width: 100%;
+    margin: auto;
+}
+
 div.fuel-counter {
     display: grid;
     grid-template-columns: min-content 1fr min-content;

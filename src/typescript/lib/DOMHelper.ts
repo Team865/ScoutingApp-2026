@@ -1,3 +1,5 @@
+import Vector2 from "./dataTypes/Vector2";
+
 export function positionWithinDOMRect(positionX: number, positionY: number, domRect: DOMRect) {
     return (domRect.left <= positionX && positionX <= domRect.right) &&
         (domRect.top <= positionY && positionY <= domRect.bottom)
@@ -27,4 +29,20 @@ export function makeInputIntegerOnly(input: HTMLInputElement, min?: number, max?
 
     input.addEventListener("focusin", () => previousInput = input.value);
     input.addEventListener("focusout", () => input.value = validateIntegerInput(previousInput, input.value));
+}
+
+/** Positions an HTML element proportionally to its parent container.
+ * @param element the HTML element
+ * @param position the position, where (0, 0) would be the top-left of the parent container and (1, 1) would be the bottom right
+ * @param anchorPoint the anchorPoint, where (0, 0) would place the anchor point in the top-left of the element and (1, 1) would be bottom-right
+ */
+export function absolutePosition(element: HTMLElement, position: Vector2, anchorPoint?: Vector2) {
+    element.style.position = "absolute";
+
+    if(anchorPoint) {
+        element.style.transform = `translate(-${anchorPoint.x * 100}%, -${anchorPoint.y * 100}%)`;
+    }
+
+    element.style.left = `${position.x * 100}%`;
+    element.style.top = `${position.y * 100}%`;
 }
