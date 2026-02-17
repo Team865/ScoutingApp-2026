@@ -8,7 +8,7 @@ export default class TransitionPhasePage extends Page {
     public readonly nextButton = document.createElement("button");
 
     private readonly fuelCounter = new FuelCounter();
-    private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost", "Opponent Alliance"]);
+    private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost", "Home Alliance", "Opponent Alliance"]);
     private readonly passerChoice = new LabeledCheckbox("Passer/Feeder?");
     private readonly defenseChoice = new LabeledCheckbox("Defense?");
 

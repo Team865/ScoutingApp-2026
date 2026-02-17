@@ -8,7 +8,7 @@ export default class TeleopShiftsPage extends Page {
     public readonly nextButton = document.createElement("button");
 
     private readonly fuelCounter = new FuelCounter();
-    private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost", "Opponent Alliance"]);
+    private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost", "Home Alliance", "Opponent Alliance"]);
     private readonly otherActions = new CheckboxGroup("Other Actions", ["Feeding/Passing", "Deposit to Human Player"]);
     private readonly defenseChoices = new CheckboxGroup("Defense", ["Depot", "Outpost", "Trench", "Bump", "Other"]);
 
