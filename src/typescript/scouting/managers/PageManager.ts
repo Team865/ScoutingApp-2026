@@ -1,4 +1,3 @@
-import StartingShiftPrompt from "../components/StartingShiftPrompt";
 import AutoPage from "../pages/AutoPage";
 import EndgameClimbPage from "../pages/EndgameClimb";
 import EndgamePreClimbPage from "../pages/EndgamePreClimbPage";
