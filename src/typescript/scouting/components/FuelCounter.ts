@@ -92,14 +92,13 @@ class BatchCounter {
 }
 
 export default class FuelCounter {
-    private fuelScoredCount: number = 0;
     private readonly mainContainer = document.createElement("div");
 
     private readonly header = document.createElement("h1");
     private readonly textInput = document.createElement("input");
-    private readonly decrementButton = document.createElement("button");
+    private readonly decrement1Button = document.createElement("button");
     private readonly decrement5Button = document.createElement("button");
-    private readonly incrementButton = document.createElement("button");
+    private readonly increment1Button = document.createElement("button");
     private readonly increment5Button = document.createElement("button");
     private readonly batchButton = document.createElement("button");
     private readonly batchCounter = new BatchCounter();
@@ -108,31 +107,35 @@ export default class FuelCounter {
         this.mainContainer.classList.add("fuel-counter");
 
         this.header.innerText = "FUEL SCORED"
-        this.decrementButton.innerText = "-1";
+        this.decrement1Button.innerText = "-1";
         this.decrement5Button.innerText = "-5";
-        this.incrementButton.innerText = "+1";
+        this.increment1Button.innerText = "+1";
         this.increment5Button.innerText = "+5";
         this.batchButton.innerText = "Add Batch";
         this.textInput.value = "0";
         makeInputIntegerOnly(this.textInput);
 
-        this.decrementButton.addEventListener("click", _ => this.textInput.value = Math.max(Number.parseInt(this.textInput.value) - 1, 0).toString());
-        this.decrement5Button.addEventListener("click", _ => this.textInput.value = Math.max(Number.parseInt(this.textInput.value) - 5, 0).toString());
-        this.incrementButton.addEventListener("click", _ => this.textInput.value = (Number.parseInt(this.textInput.value) + 1).toString());
-        this.increment5Button.addEventListener("click", _ => this.textInput.value = (Number.parseInt(this.textInput.value) + 5).toString());
+        this.decrement1Button.addEventListener("click", _ => this.changeCount(-1));
+        this.decrement5Button.addEventListener("click", _ => this.changeCount(-5));
+        this.increment1Button.addEventListener("click", _ => this.changeCount(+1));
+        this.increment5Button.addEventListener("click", _ => this.changeCount(+5));
         this.batchButton.addEventListener("click", _ => this.batchCounter.show());
 
         this.batchCounter.onSubmit.connect(scoreContribution => this.textInput.value = (Number.parseInt(this.textInput.value) + scoreContribution).toString());
 
         this.mainContainer.append(
             this.header,
-            this.decrementButton,
+            this.decrement1Button,
             this.decrement5Button,
             this.textInput,
-            this.incrementButton,
+            this.increment1Button,
             this.increment5Button,
             this.batchButton
         );
+    }
+    
+    private changeCount(changeAmount: number) {
+        this.textInput.value = Math.max(0, this.fuelScored + changeAmount).toString();
     }
 
     public get domElement() {
@@ -140,6 +143,6 @@ export default class FuelCounter {
     }
 
     public get fuelScored() {
-        return this.fuelScored
+        return Number.parseInt(this.textInput.value);
     }
 }
