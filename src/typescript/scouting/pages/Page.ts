@@ -10,4 +10,6 @@ export default abstract class Page {
         this.domElement.appendChild(this.header);
         this.header.textContent = title;
     }
+
+    public updateAppData() {}
 }

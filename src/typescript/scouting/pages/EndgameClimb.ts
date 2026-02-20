@@ -1,3 +1,4 @@
+import AppData, { ClimbHeight } from "../AppData";
 import CheckboxGroup from "../components/CheckboxGroup";
 import FuelCounter from "../components/FuelCounter";
 import LabeledCheckbox from "../components/LabeledCheckbox";
@@ -46,5 +47,26 @@ export default class EndgameClimbPage extends Page {
             commentContainer,
             this.submitButton
         );
+    }
+
+    public override updateAppData(): void {
+        switch(this.climbChoices.selectedOption) {
+            case "No Attempt":
+                AppData.endgameClimbType = ClimbHeight.NO_ATTEMPT
+                break;
+            case "Level 1":
+                AppData.endgameClimbType = ClimbHeight.L1
+                break;
+            case "Level 2":
+                AppData.endgameClimbType = ClimbHeight.L2
+                break;
+            case "Level 3":
+                AppData.endgameClimbType = ClimbHeight.L3
+                break;
+        }
+
+        AppData.endgameClimbFailed = this.failedClimb.isChecked;
+        AppData.endgameClimbTimeRemaining = this.climbTime.value ? Number.parseFloat(this.climbTime.value) : -1;
+        AppData.comments = this.commentInput.value;
     }
 }

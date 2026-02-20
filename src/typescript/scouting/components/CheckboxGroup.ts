@@ -4,12 +4,15 @@ export default class CheckboxGroup {
     private readonly mainContainer = document.createElement("div");
     private readonly header = document.createElement("h1");
 
+    private readonly title;
+
     private readonly checkboxes: Map<string, HTMLInputElement> = new Map();
 
     constructor(title: string, options: string[]) {
         this.mainContainer.classList.add("checkbox-group");
 
         this.header.textContent = title;
+        this.title = title;
 
         this.mainContainer.appendChild(this.header);
         
@@ -29,6 +32,12 @@ export default class CheckboxGroup {
         }
 
         return selected;
+    }
+
+    public isChecked(optionName: string): boolean {
+        if(!this.checkboxes.has(optionName)) throw new Error(`${optionName} is not a valid option in checkbox group ${this.title}`);
+
+        return this.checkboxes.get(optionName).checked;
     }
 
     public get domElement(): HTMLDivElement {

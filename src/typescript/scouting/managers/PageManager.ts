@@ -36,6 +36,7 @@ export namespace PageManager {
         endgamePreClimbPage.nextButton.addEventListener("click", _ => changePage(endgameClimbPage));
 
         endgameClimbPage.backButton.addEventListener("click", _ => changePage(endgamePreClimbPage));
+        endgameClimbPage.submitButton.addEventListener("click", onSubmit);
 
         changePage(preMatchPage);
     }
@@ -50,5 +51,15 @@ export namespace PageManager {
         mainElement.appendChild(targetPage.bottomBar.domElement);
 
         titleElement.scrollIntoView();
+    }
+
+    function onSubmit() {
+        autoPage.updateAppData();
+        transitionPhasePage.updateAppData();
+        teleopShiftsPage.updateAppData();
+        endgamePreClimbPage.updateAppData();
+        endgameClimbPage.updateAppData();
+
+        console.log(AppData);
     }
 }

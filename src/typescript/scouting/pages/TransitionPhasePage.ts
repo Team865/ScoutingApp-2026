@@ -1,3 +1,4 @@
+import AppData from "../AppData";
 import CheckboxGroup from "../components/CheckboxGroup";
 import FuelCounter from "../components/FuelCounter";
 import LabeledCheckbox from "../components/LabeledCheckbox";
@@ -26,5 +27,20 @@ export default class TransitionPhasePage extends Page {
             this.passerChoice.domElement,
             this.defenseChoice.domElement
         );
+    }
+
+    public override updateAppData(): void {
+        AppData.transitionFuelScored = this.fuelCounter.fuelScored;
+
+        AppData.transitionIntake = {
+            depot: this.intakeChoices.isChecked("Depot"),
+            neutralZone: this.intakeChoices.isChecked("Neutral Zone"),
+            outpost: this.intakeChoices.isChecked("Outpost"),
+            homeAlliance: this.intakeChoices.isChecked("Home Alliance"),
+            oppoAlliance: this.intakeChoices.isChecked("Opponent Alliance")
+        };
+
+        AppData.transitionPasser = this.passerChoice.isChecked;
+        AppData.transitionDefense = this.defenseChoice.isChecked;
     }
 }

@@ -1,3 +1,4 @@
+import AppData from "../AppData";
 import CheckboxGroup from "../components/CheckboxGroup";
 import FuelCounter from "../components/FuelCounter";
 import LabeledCheckbox from "../components/LabeledCheckbox";
@@ -25,5 +26,28 @@ export default class TeleopShiftsPage extends Page {
             this.defenseChoices.domElement,
             this.otherActions.domElement
         );
+    }
+    
+    public override updateAppData(): void {
+        AppData.teleopFuelScored = this.fuelCounter.fuelScored;
+
+        AppData.teleopIntake = {
+            depot: this.intakeChoices.isChecked("Depot"),
+            neutralZone: this.intakeChoices.isChecked("Neutral Zone"),
+            outpost: this.intakeChoices.isChecked("Outpost"),
+            homeAlliance: this.intakeChoices.isChecked("Home Alliance"),
+            oppoAlliance: this.intakeChoices.isChecked("Opponent Alliance")
+        };
+
+        AppData.teleopDefense = {
+            depot: this.defenseChoices.isChecked("Depot"),
+            outpost: this.defenseChoices.isChecked("Outpost"),
+            trench: this.defenseChoices.isChecked("Trench"),
+            bump: this.defenseChoices.isChecked("Bump"),
+            other: this.defenseChoices.isChecked("Other")
+        }
+
+        AppData.teleopPasser = this.otherActions.isChecked("Feeding/Passing");
+        AppData.teleopHumanPlayerDeposit = this.otherActions.isChecked("Deposit to Human Player");
     }
 }

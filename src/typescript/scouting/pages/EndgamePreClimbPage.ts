@@ -1,5 +1,7 @@
+import AppData from "../AppData";
 import CheckboxGroup from "../components/CheckboxGroup";
 import FuelCounter from "../components/FuelCounter";
+import LabeledCheckbox from "../components/LabeledCheckbox";
 import Page from "./Page";
 
 export default class EndgamePreClimbPage extends Page {
@@ -8,7 +10,8 @@ export default class EndgamePreClimbPage extends Page {
 
     private readonly fuelCounter = new FuelCounter();
     private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost", "Home Alliance", "Opponent Alliance"]);
-    private readonly defenseChoices = new CheckboxGroup("Defense", ["Depot", "Neutral Zone", "Outpost"]);
+    private readonly defenseChoices = new CheckboxGroup("Defense", ["Depot", "Outpost", "Trench", "Bump", "Other"]);
+    private readonly passerChoice = new LabeledCheckbox("Passer/Feeder?");
 
     constructor() {
         super("ENDGAME PRE-CLIMB");
@@ -20,7 +23,30 @@ export default class EndgamePreClimbPage extends Page {
         this.domElement.append(
             this.fuelCounter.domElement,
             this.intakeChoices.domElement,
-            this.defenseChoices.domElement
+            this.defenseChoices.domElement,
+            this.passerChoice.domElement
         );
+    }
+    
+    public override updateAppData(): void {
+        AppData.endgameFuelScored = this.fuelCounter.fuelScored;
+
+        AppData.endgameIntake = {
+            depot: this.intakeChoices.isChecked("Depot"),
+            neutralZone: this.intakeChoices.isChecked("Neutral Zone"),
+            outpost: this.intakeChoices.isChecked("Outpost"),
+            homeAlliance: this.intakeChoices.isChecked("Home Alliance"),
+            oppoAlliance: this.intakeChoices.isChecked("Opponent Alliance")
+        };
+
+        AppData.endgameDefense = {
+            depot: this.defenseChoices.isChecked("Depot"),
+            outpost: this.defenseChoices.isChecked("Outpost"),
+            trench: this.defenseChoices.isChecked("Trench"),
+            bump: this.defenseChoices.isChecked("Bump"),
+            other: this.defenseChoices.isChecked("Other")
+        }
+
+        AppData.endgamePasser = this.passerChoice.isChecked;
     }
 }
