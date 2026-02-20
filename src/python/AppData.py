@@ -41,7 +41,7 @@ class FetchedTeamData(TypedDict):
     epa: Optional[int]
     normalized_epa: Optional[int]
 
-class MatchData_Team(TypedDict):
+class TBAMatchData_Team(TypedDict):
     team_number: int
     alliance: Literal["red", "blue"]
 
@@ -51,7 +51,64 @@ class TBAMatchData(TypedDict):
     comp_level: str
     red_score: int
     blue_score: int
-    teams: list[MatchData_Team]
+    teams: list[TBAMatchData_Team]
+
+class ScoutingMatchData(TypedDict):
+    class _AutoIntake(TypedDict):
+        depot: bool
+        neutral_zone: bool
+        outpost: bool
+
+    class _AutoClimb(TypedDict):
+        attempted: bool
+        failed: bool
+
+    class _TransitionIntake(_AutoIntake):
+        home_alliance: bool
+        opponent_alliance: bool
+
+    class _TeleopIntake(_TransitionIntake): pass
+
+    class _TeleopDefense(TypedDict):
+        depot: bool
+        outpost: bool
+        trench: bool
+        bump: bool
+        other: bool
+
+    class _EndgameIntake(_TeleopIntake): pass
+    class _EndgameDefense(_TeleopDefense): pass
+
+    scouter_name: str
+    robot_position: Literal[
+        "Red Right", "Red Middle", "Red Left",
+        "Blue Left", "Blue Middle", "Blue Right"
+    ]
+    comments: str
+
+    auto_fuel_scored: int
+    auto_intake: _AutoIntake
+    auto_climb: _AutoClimb
+
+    transition_fuel_scored: int
+    transition_intake: _TransitionIntake
+    transition_passer: bool
+    transition_defense: bool
+
+    teleop_fuel_scored: int
+    teleop_intake: _TeleopIntake
+    teleop_defense: _TeleopDefense
+    teleop_passer: bool
+    teleop_hp_deposit: bool
+
+    endgame_fuel_scored: int
+    endgame_intake: _EndgameIntake
+    endgame_defense: _EndgameDefense
+    endgame_passer: bool
+    
+    endgame_climb_type: Literal["No Attempt", "Level 1", "Level 2", "Level 3"]
+    endgame_climb_failed: bool
+    endgame_climb_time_remaining: float
 
 class MatchNotesChunkJSon(TypedDict):
     team_number: int
@@ -63,7 +120,7 @@ class PitScoutingNotesChunkJSon(TypedDict):
     data: dict[str, Any]
 
 class QuantitativeScoutingData:
-    data: dict[int, dict[int, QuantitativeScoutingFields_t]]
+    data: dict[int, dict[int, ScoutingMatchData]]
 
     def __init__(self) -> None:
         self.data = {}
@@ -370,7 +427,7 @@ class AppData:
 
         for match_json in tbaMatches:
             match_key = match_json["key"]
-            teams_in_match: list[MatchData_Team] = []
+            teams_in_match: list[TBAMatchData_Team] = []
 
             # Loop through red alliance
             for team_key in match_json["alliances"]["red"]["team_keys"]:
