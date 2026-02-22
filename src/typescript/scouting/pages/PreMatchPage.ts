@@ -16,53 +16,48 @@ export default class PreMatchPage extends Page {
 
         this.nextButton.textContent = "NEXT";
 
-        const topRowYPos = 0.2;
-        const bottomRowYPos = 0.8;
-
-        const leftColumnXPos = 0.05;
-        const middleColumnXPos = 0.5;
-        const rightColumnXPos = 0.95;
+        const yPos = 0.6;
 
         const fieldDiagramContainer = document.createElement("div");
         const fieldImage = document.createElement("img");
         
         const redLeftButton = createPositionButton(
-            new Vector2(0.05, 0.5),
+            new Vector2(0.05, yPos),
             new Vector2(0, 0.5),
             RobotPosition.RED_LEFT,
             this.goToNextPage.emit.bind(this.goToNextPage)
         );
         
         const redMiddleButton = createPositionButton(
-            new Vector2(0.5, 0.5),
+            new Vector2(0.5, yPos),
             new Vector2(0.5, 0.5),
             RobotPosition.RED_MIDDLE,
             this.goToNextPage.emit.bind(this.goToNextPage)
         );
         
         const redRightButton = createPositionButton(
-            new Vector2(0.95, 0.5),
+            new Vector2(0.95, yPos),
             new Vector2(1, 0.5),
             RobotPosition.RED_RIGHT,
             this.goToNextPage.emit.bind(this.goToNextPage)
         );
 
         const blueLeftButton = createPositionButton(
-            new Vector2(0.05, 0.5),
+            new Vector2(0.05, yPos),
             new Vector2(0, 0.5),
             RobotPosition.BLUE_LEFT,
             this.goToNextPage.emit.bind(this.goToNextPage)
         );
         
         const blueMiddleButton = createPositionButton(
-            new Vector2(0.5, 0.5),
+            new Vector2(0.5, yPos),
             new Vector2(0.5, 0.5),
             RobotPosition.BLUE_MIDDLE,
             this.goToNextPage.emit.bind(this.goToNextPage)
         );
         
         const blueRightButton = createPositionButton(
-            new Vector2(0.95, 0.5),
+            new Vector2(0.95, yPos),
             new Vector2(1, 0.5),
             RobotPosition.BLUE_RIGHT,
             this.goToNextPage.emit.bind(this.goToNextPage)
@@ -70,7 +65,7 @@ export default class PreMatchPage extends Page {
 
         fieldDiagramContainer.classList.add("field-diagram-container");
 
-        fieldImage.src = "./static/deploy/rebuiltBackground.png";
+        fieldImage.src = "./static/deploy/fieldImages/redHalf.png";
 
         fieldDiagramContainer.append(
             fieldImage, 
@@ -81,4 +76,6 @@ export default class PreMatchPage extends Page {
         this.bottomBar.domElement.appendChild(this.nextButton);
         this.domElement.append(this.matchNumberLabel, this.teamNumberLabel, fieldDiagramContainer);
     }
+
+    
 }

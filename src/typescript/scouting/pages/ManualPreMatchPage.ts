@@ -71,7 +71,7 @@ export default class ManualInputPage extends Page {
         const fieldImage = document.createElement("img");
 
         fieldDiagramContainer.classList.add("field-diagram-container");
-        fieldImage.src = "./static/deploy/rebuiltBackground.png";
+        fieldImage.src = "./static/deploy/fieldImages/full.png";
 
         fieldDiagramContainer.append(
             fieldImage,
