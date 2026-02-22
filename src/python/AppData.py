@@ -84,6 +84,7 @@ class ScoutingMatchData(TypedDict):
         "Red Right", "Red Middle", "Red Left",
         "Blue Left", "Blue Middle", "Blue Right"
     ]
+    driverSkill: int
     comments: str
 
     auto_fuel_scored: int

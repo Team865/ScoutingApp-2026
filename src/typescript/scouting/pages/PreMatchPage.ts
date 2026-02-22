@@ -1,14 +1,20 @@
 import Signal from "../../lib/dataTypes/Signal";
 import Vector2 from "../../lib/dataTypes/Vector2";
-import { absolutePosition } from "../../lib/DOMHelper";
+import createPositionButton from "../util/createPositionSelectionButton";
 import AppData, { RobotPosition } from "../AppData";
 import Page from "./Page";
 
 export default class PreMatchPage extends Page {
+    public readonly nextButton = document.createElement("button");
+    private readonly matchNumberLabel = document.createElement("h2");
+    private readonly teamNumberLabel = document.createElement("h2");
+
     public goToNextPage = new Signal<void>();
 
     constructor() {
         super("PRE-MATCH");
+
+        this.nextButton.textContent = "NEXT";
 
         const topRowYPos = 0.2;
         const bottomRowYPos = 0.8;
@@ -19,40 +25,47 @@ export default class PreMatchPage extends Page {
 
         const fieldDiagramContainer = document.createElement("div");
         const fieldImage = document.createElement("img");
-        const topLeftButton = this.createPositionButton(
-            new Vector2(leftColumnXPos, topRowYPos), 
-            new Vector2(0, 0.5), 
-            RobotPosition.RED_RIGHT
+        
+        const redLeftButton = createPositionButton(
+            new Vector2(0.05, 0.5),
+            new Vector2(0, 0.5),
+            RobotPosition.RED_LEFT,
+            this.goToNextPage.emit.bind(this.goToNextPage)
         );
-
-        const topMiddleButton = this.createPositionButton(
-            new Vector2(middleColumnXPos, topRowYPos), 
+        
+        const redMiddleButton = createPositionButton(
             new Vector2(0.5, 0.5),
-            RobotPosition.RED_MIDDLE
-        );
-
-        const topRightButton = this.createPositionButton(
-            new Vector2(rightColumnXPos, topRowYPos), 
-            new Vector2(1, 0.5),
-            RobotPosition.RED_LEFT
-        );
-
-        const bottomLeftButton = this.createPositionButton(
-            new Vector2(leftColumnXPos, bottomRowYPos), 
-            new Vector2(0, 0.5), 
-            RobotPosition.BLUE_LEFT
-        );
-
-        const bottomMiddleButton = this.createPositionButton(
-            new Vector2(middleColumnXPos, bottomRowYPos), 
             new Vector2(0.5, 0.5),
-            RobotPosition.BLUE_MIDDLE
+            RobotPosition.RED_MIDDLE,
+            this.goToNextPage.emit.bind(this.goToNextPage)
+        );
+        
+        const redRightButton = createPositionButton(
+            new Vector2(0.95, 0.5),
+            new Vector2(1, 0.5),
+            RobotPosition.RED_RIGHT,
+            this.goToNextPage.emit.bind(this.goToNextPage)
         );
 
-        const bottomRightButton = this.createPositionButton(
-            new Vector2(rightColumnXPos, bottomRowYPos), 
+        const blueLeftButton = createPositionButton(
+            new Vector2(0.05, 0.5),
+            new Vector2(0, 0.5),
+            RobotPosition.BLUE_LEFT,
+            this.goToNextPage.emit.bind(this.goToNextPage)
+        );
+        
+        const blueMiddleButton = createPositionButton(
+            new Vector2(0.5, 0.5),
+            new Vector2(0.5, 0.5),
+            RobotPosition.BLUE_MIDDLE,
+            this.goToNextPage.emit.bind(this.goToNextPage)
+        );
+        
+        const blueRightButton = createPositionButton(
+            new Vector2(0.95, 0.5),
             new Vector2(1, 0.5),
-            RobotPosition.BLUE_RIGHT
+            RobotPosition.BLUE_RIGHT,
+            this.goToNextPage.emit.bind(this.goToNextPage)
         );
 
         fieldDiagramContainer.classList.add("field-diagram-container");
@@ -61,29 +74,11 @@ export default class PreMatchPage extends Page {
 
         fieldDiagramContainer.append(
             fieldImage, 
-            topLeftButton, topMiddleButton, topRightButton,
-            bottomLeftButton, bottomMiddleButton, bottomRightButton
+            redLeftButton, redMiddleButton, redRightButton,
+            blueLeftButton, blueMiddleButton, blueRightButton
         );
-        this.domElement.appendChild(fieldDiagramContainer);
-    }
-    
-    private createPositionButton(position: Vector2, anchorPoint: Vector2, robotPosition: RobotPosition): HTMLButtonElement {
-        const button = document.createElement("button");
-        const pointerImage = document.createElement("img");
 
-        pointerImage.src = "./static/deploy/icons/pointer.svg";
-        button.appendChild(pointerImage);
-
-        absolutePosition(button, position, anchorPoint);
-
-        button.addEventListener("click", _ => this.setRobotPosition(robotPosition));
-
-        return button
-    }
-
-    private setRobotPosition(robotPosition: RobotPosition) {
-        AppData.robotPosition = robotPosition;
-
-        this.goToNextPage.emit();
+        this.bottomBar.domElement.appendChild(this.nextButton);
+        this.domElement.append(this.matchNumberLabel, this.teamNumberLabel, fieldDiagramContainer);
     }
 }

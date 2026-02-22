@@ -23,6 +23,9 @@ export type ScoutingData = {
     matchNumber: number,
     teamNumber: number,
     robotPosition: RobotPosition,
+    comments: string,
+    driverSkill: number,
+
     // Auto
     autoFuelScored: number,
     autoIntake: {
@@ -83,8 +86,7 @@ export type ScoutingData = {
     
     endgameClimbType: ClimbHeight,
     endgameClimbFailed: boolean,
-    endgameClimbTimeRemaining: number,
-    comments: string
+    endgameClimbTimeRemaining: number
 }
 
 type ClientAppData = ScoutingData & {
@@ -96,6 +98,7 @@ const AppData: ClientAppData = {
     matchNumber: -1,
     teamNumber: -1,
     robotPosition: RobotPosition.UNSET,
+    driverSkill: 0,
     autoFuelScored: 0,
     autoIntake: {
         depot: false,

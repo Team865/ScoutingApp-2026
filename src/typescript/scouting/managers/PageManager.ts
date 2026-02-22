@@ -6,10 +6,12 @@ import Page from "../pages/Page";
 import TransitionPhasePage from "../pages/TransitionPhasePage";
 import PreMatchPage from "../pages/PreMatchPage";
 import AppData from '../AppData';
+import ManualInputPage from "../pages/ManualPreMatchPage";
 
 const mainElement: HTMLElement = document.querySelector("main");
 const titleElement: HTMLHeadingElement = document.querySelector("h1#page-title");
 
+const manualInputPage = new ManualInputPage();
 const preMatchPage = new PreMatchPage();
 const autoPage = new AutoPage();
 const transitionPhasePage = new TransitionPhasePage();
@@ -18,9 +20,13 @@ const endgamePreClimbPage = new EndgamePreClimbPage();
 const endgameClimbPage = new EndgameClimbPage();
 
 let currentPage: Page = autoPage;
+let isManualMatchChoice: boolean = true;
 
 export namespace PageManager {
     export function begin() {
+        manualInputPage.goToNextPage.connect(() => {
+            if(manualInputPage.readyToContinue()) changePage(autoPage);
+        });
         preMatchPage.goToNextPage.connect(() => changePage(autoPage));
 
         autoPage.backButton.addEventListener("click", _ => changePage(preMatchPage));
@@ -38,7 +44,9 @@ export namespace PageManager {
         endgameClimbPage.backButton.addEventListener("click", _ => changePage(endgamePreClimbPage));
         endgameClimbPage.submitButton.addEventListener("click", onSubmit);
 
-        changePage(preMatchPage);
+        // TEMPORARY, FIX THIS ONCE MATCH SELECTION PAGE IS COMPLETE
+        preMatchPage.nextButton.onclick = _ => changePage(manualInputPage);
+        changePage(endgameClimbPage);
     }
 
     function changePage(targetPage: Page) {
@@ -54,6 +62,8 @@ export namespace PageManager {
     }
 
     function onSubmit() {
+        if(isManualMatchChoice) manualInputPage.updateAppData();
+
         autoPage.updateAppData();
         transitionPhasePage.updateAppData();
         teleopShiftsPage.updateAppData();

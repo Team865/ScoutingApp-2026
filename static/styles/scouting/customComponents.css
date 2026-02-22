@@ -218,3 +218,11 @@ div.comments-container > textarea {
     width: 100%;
     font-size: 1rem;
 }
+
+div.number-slider > * {
+    font-size: 2rem;
+}
+
+div.number-slider > input {
+    width: 15rem;
+}
