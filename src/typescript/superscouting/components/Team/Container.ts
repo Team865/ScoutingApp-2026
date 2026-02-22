@@ -67,7 +67,7 @@ export default class TeamContainer {
             () => this.teamImage.src = "static/deploy/teamLogos/FIRSTLogo.svg", 
             {once: true}
         );
-        this.teamImage.src = `https://www.thebluealliance.com/avatar/2025/frc${teamNumber}.png`;
+        this.teamImage.src = `static/deploy/teamLogos/${teamData.key}.png`;
 
         // Have to wrap in a lambda function so that "this" still refers to the TeamContainer object
         this.toggleButton.addEventListener("click", () => this.toggle());

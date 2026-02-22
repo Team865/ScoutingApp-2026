@@ -158,7 +158,7 @@ export default class TeamMatchContainer {
                 const teamLabel: HTMLHeadingElement = this.matchDataPopupTags[`${alliance}${teamIndex}TeamLabel`];
                 const teamImage: HTMLImageElement = this.matchDataPopupTags[`${alliance}${teamIndex}TeamImage`];
 
-                teamImage.src = `https://www.thebluealliance.com/avatar/2025/frc${team.team_number}.png`;
+                teamImage.src = `static/deploy/teamLogos/frc${team.team_number}.png`;
                 teamLabel.innerText = team.team_number.toString();
             }
             
