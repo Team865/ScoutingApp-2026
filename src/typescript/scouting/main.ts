@@ -1,15 +1,26 @@
 import AppData from "./AppData";
 import { PageManager } from "./managers/PageManager";
-import { getScoutingRotation } from "./util/APIHelper";
+import { getScoutingRotation, ScoutingRotation } from "./util/APIHelper";
 
 AppData.scouterName = prompt("What is your name?") || "Unset";
 
 (async () => {
-    const scoutingRotation = await getScoutingRotation();
-    const statusCode = scoutingRotation.status;
+    const scoutingRotationRequest = await getScoutingRotation();
 
-    console.log(statusCode);
-    console.log(await scoutingRotation.json());
+    let scoutingRotation: ScoutingRotation = new Map();
 
-    PageManager.begin();
+    if(scoutingRotationRequest.status == 200) {
+        const scoutingRotationJSon: {
+            [matchNumber: string]: [number, "Red" | "Blue"]
+        } = await scoutingRotationRequest.json();
+
+        for(const [matchNumber, assignedMatch] of Object.entries(scoutingRotationJSon)) {
+            scoutingRotation.set(Number.parseInt(matchNumber), {
+                teamNumber: assignedMatch[0],
+                alliance: assignedMatch[1]
+            });
+        }
+    }
+
+    PageManager.begin(scoutingRotation);
 })()

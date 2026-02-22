@@ -232,3 +232,20 @@ button.match-selection {
     width: 90dvw;
     font-size: 2.5rem;
 }
+
+button.match-selection.red {
+    background-color: var(--red-alliance);
+}
+
+button.match-selection.red:hover {
+    background-color: var(--red-alliance-light);
+}
+
+
+button.match-selection.blue {
+    background-color: var(--blue-alliance);
+}
+
+button.match-selection.blue:hover {
+    background-color: var(--blue-alliance-light);
+}

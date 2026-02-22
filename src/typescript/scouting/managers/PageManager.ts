@@ -8,6 +8,7 @@ import PreMatchPage from "../pages/PreMatchPage";
 import AppData from '../AppData';
 import ManualInputPage from "../pages/ManualPreMatchPage";
 import MatchSelectionPage from "../pages/MatchSelectionPage";
+import { ScoutingRotation } from "../util/APIHelper";
 
 const mainElement: HTMLElement = document.querySelector("main");
 const titleElement: HTMLHeadingElement = document.querySelector("h1#page-title");
@@ -25,10 +26,17 @@ let currentPage: Page = autoPage;
 let isManualMatchChoice: boolean = true;
 
 export namespace PageManager {
-    export function begin() {
+    export function begin(rotation: ScoutingRotation) {
         matchSelectionPage.header.textContent = `Name: ${AppData.scouterName}`;
-
         matchSelectionPage.manualInputButton.addEventListener("click", _ => changePage(manualInputPage));
+        matchSelectionPage.matchSelected.connect(alliance => {
+            preMatchPage.update(alliance);
+            changePage(preMatchPage);
+        });
+
+        for(const [matchNumber, assignedMatch] of rotation.entries()) {
+            matchSelectionPage.addMatch(matchNumber, assignedMatch.teamNumber, assignedMatch.alliance);
+        }
 
         manualInputPage.goToNextPage.connect(() => {
             if(manualInputPage.readyToContinue()) changePage(autoPage);

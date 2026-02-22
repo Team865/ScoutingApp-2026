@@ -147,6 +147,7 @@ class QuantitativeScoutingData:
         self.rotations = {}
 
         # TEMPORARY FOR DEBUGGING PURPOSES
+        self.set_rotation("Thomas Vu", 10, 865, "Blue")
         self.set_rotation("Thomas Vu", 20, 865, "Red")
 
     def set_rotation(

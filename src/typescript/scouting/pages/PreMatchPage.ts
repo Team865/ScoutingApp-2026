@@ -10,70 +10,98 @@ export default class PreMatchPage extends Page {
 
     public goToNextPage = new Signal<void>();
 
+    private readonly buttonsYPos = 0.6;
+    private readonly fieldImage = document.createElement("img");
+    
+    private readonly redLeftButton = createPositionButton(
+        new Vector2(0.05, this.buttonsYPos),
+        new Vector2(0, 0.5),
+        RobotPosition.RED_LEFT,
+        this.goToNextPage.emit.bind(this.goToNextPage)
+    );
+    
+    private readonly redMiddleButton = createPositionButton(
+        new Vector2(0.5, this.buttonsYPos),
+        new Vector2(0.5, 0.5),
+        RobotPosition.RED_MIDDLE,
+        this.goToNextPage.emit.bind(this.goToNextPage)
+    );
+    
+    private readonly redRightButton = createPositionButton(
+        new Vector2(0.95, this.buttonsYPos),
+        new Vector2(1, 0.5),
+        RobotPosition.RED_RIGHT,
+        this.goToNextPage.emit.bind(this.goToNextPage)
+    );
+
+    private readonly blueLeftButton = createPositionButton(
+        new Vector2(0.05, this.buttonsYPos),
+        new Vector2(0, 0.5),
+        RobotPosition.BLUE_LEFT,
+        this.goToNextPage.emit.bind(this.goToNextPage)
+    );
+    
+    private readonly blueMiddleButton = createPositionButton(
+        new Vector2(0.5, this.buttonsYPos),
+        new Vector2(0.5, 0.5),
+        RobotPosition.BLUE_MIDDLE,
+        this.goToNextPage.emit.bind(this.goToNextPage)
+    );
+    
+    private readonly blueRightButton = createPositionButton(
+        new Vector2(0.95, this.buttonsYPos),
+        new Vector2(1, 0.5),
+        RobotPosition.BLUE_RIGHT,
+        this.goToNextPage.emit.bind(this.goToNextPage)
+    );
+
     constructor() {
         super("PRE-MATCH");
-
-        const yPos = 0.6;
-
         const fieldDiagramContainer = document.createElement("div");
-        const fieldImage = document.createElement("img");
-        
-        const redLeftButton = createPositionButton(
-            new Vector2(0.05, yPos),
-            new Vector2(0, 0.5),
-            RobotPosition.RED_LEFT,
-            this.goToNextPage.emit.bind(this.goToNextPage)
-        );
-        
-        const redMiddleButton = createPositionButton(
-            new Vector2(0.5, yPos),
-            new Vector2(0.5, 0.5),
-            RobotPosition.RED_MIDDLE,
-            this.goToNextPage.emit.bind(this.goToNextPage)
-        );
-        
-        const redRightButton = createPositionButton(
-            new Vector2(0.95, yPos),
-            new Vector2(1, 0.5),
-            RobotPosition.RED_RIGHT,
-            this.goToNextPage.emit.bind(this.goToNextPage)
-        );
+        const infoContainer = document.createElement("div");
 
-        const blueLeftButton = createPositionButton(
-            new Vector2(0.05, yPos),
-            new Vector2(0, 0.5),
-            RobotPosition.BLUE_LEFT,
-            this.goToNextPage.emit.bind(this.goToNextPage)
-        );
-        
-        const blueMiddleButton = createPositionButton(
-            new Vector2(0.5, yPos),
-            new Vector2(0.5, 0.5),
-            RobotPosition.BLUE_MIDDLE,
-            this.goToNextPage.emit.bind(this.goToNextPage)
-        );
-        
-        const blueRightButton = createPositionButton(
-            new Vector2(0.95, yPos),
-            new Vector2(1, 0.5),
-            RobotPosition.BLUE_RIGHT,
-            this.goToNextPage.emit.bind(this.goToNextPage)
-        );
-
+        infoContainer.classList.add("info-container");
         fieldDiagramContainer.classList.add("field-diagram-container");
 
-        fieldImage.src = "./static/deploy/fieldImages/redHalf.png";
+        this.fieldImage.src = this.getFieldImageLink("red");
+
+        infoContainer.append(this.matchNumberLabel, this.teamNumberLabel);
 
         fieldDiagramContainer.append(
-            fieldImage, 
-            redLeftButton, redMiddleButton, redRightButton,
-            blueLeftButton, blueMiddleButton, blueRightButton
+            this.fieldImage, 
+            this.redLeftButton, this.redMiddleButton, this.redRightButton,
+            this.blueLeftButton, this.blueMiddleButton, this.blueRightButton
         );
-        this.domElement.append(this.matchNumberLabel, this.teamNumberLabel, fieldDiagramContainer);
+        
+        this.domElement.append(infoContainer, fieldDiagramContainer);
     }
 
-    public update() {
+    private getFieldImageLink(alliance: string): string {
+        return `./static/deploy/fieldImages/${alliance.toLowerCase()}Half.png`;
+    }
+
+    public update(alliance: "Red" | "Blue") {
         this.matchNumberLabel.textContent = `Match ${AppData.matchNumber}`;
-        this.matchNumberLabel.textContent = `Team ${AppData.teamNumber}`;
+        this.teamNumberLabel.textContent = `Team ${AppData.teamNumber}`;
+
+        this.fieldImage.src = this.getFieldImageLink(alliance);
+
+        if(alliance == "Red") {
+            this.blueLeftButton.hidden = true;
+            this.blueMiddleButton.hidden = true;
+            this.blueRightButton.hidden = true;
+
+            this.redLeftButton.hidden = false;
+            this.redMiddleButton.hidden = false;
+            this.redRightButton.hidden = false;
+        } else {
+            this.blueLeftButton.hidden = false;
+            this.blueMiddleButton.hidden = false;
+            this.blueRightButton.hidden = false;
+
+            this.redLeftButton.hidden = true;
+            this.redMiddleButton.hidden = true;
+            this.redRightButton.hidden = true;
+        }
     }
 }

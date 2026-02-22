@@ -12,6 +12,12 @@ div.page > h1 {
     font-weight: 900;
 }
 
+div.info-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .sticky-bottom:empty {
     padding: 0;
 }
