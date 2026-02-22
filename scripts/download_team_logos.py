@@ -45,21 +45,24 @@ def fetch_team_logo(team_key: str) -> Optional[ImageFile]:
     image_url = f"https://www.thebluealliance.com/avatar/2026/{team_key}.png"
 
     current_status_code = 400
-    remaining_attempts = 5
+    remaining_attempts = 10
 
     while current_status_code >= 400:
         image_request = requests.get(image_url)
         remaining_attempts -= 1
 
         if(image_request.status_code == 403):
-            print(team_key, "does not have a logo available")
-            return None
+            print(f"Request for the logo of team {team_key} was blocked. Retrying {remaining_attempts} more times.")
         elif(image_request.status_code == 404):
-            print("Request for the logo of team", team_key, f"was blocked. Retrying {remaining_attempts} more times.")
+            print(f"Request for the logo of team {team_key} resulted in a 404: {image_request.json()}")
         else:
             return Image.open(BytesIO(image_request.content))
         
-        if(remaining_attempts == 0): return None
+        if(remaining_attempts == 5):
+            # Try 2025
+            image_url = f"https://www.thebluealliance.com/avatar/2025/{team_key}.png"
+        elif(remaining_attempts <= 0):
+            return None
 
 def download_logos(download_directory: str, team_keys: list[str], thread_count: int):
     download_directory_path = Path(download_directory)
