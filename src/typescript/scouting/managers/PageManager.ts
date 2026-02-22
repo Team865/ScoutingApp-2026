@@ -43,10 +43,8 @@ export namespace PageManager {
 
         endgameClimbPage.backButton.addEventListener("click", _ => changePage(endgamePreClimbPage));
         endgameClimbPage.submitButton.addEventListener("click", onSubmit);
-
-        // TEMPORARY, FIX THIS ONCE MATCH SELECTION PAGE IS COMPLETE
-        preMatchPage.nextButton.onclick = _ => changePage(manualInputPage);
-        changePage(endgameClimbPage);
+        
+        changePage(manualInputPage);
     }
 
     function changePage(targetPage: Page) {

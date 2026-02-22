@@ -5,7 +5,6 @@ import AppData, { RobotPosition } from "../AppData";
 import Page from "./Page";
 
 export default class PreMatchPage extends Page {
-    public readonly nextButton = document.createElement("button");
     private readonly matchNumberLabel = document.createElement("h2");
     private readonly teamNumberLabel = document.createElement("h2");
 
@@ -13,8 +12,6 @@ export default class PreMatchPage extends Page {
 
     constructor() {
         super("PRE-MATCH");
-
-        this.nextButton.textContent = "NEXT";
 
         const yPos = 0.6;
 
@@ -72,10 +69,11 @@ export default class PreMatchPage extends Page {
             redLeftButton, redMiddleButton, redRightButton,
             blueLeftButton, blueMiddleButton, blueRightButton
         );
-
-        this.bottomBar.domElement.appendChild(this.nextButton);
         this.domElement.append(this.matchNumberLabel, this.teamNumberLabel, fieldDiagramContainer);
     }
 
-    
+    public update() {
+        this.matchNumberLabel.textContent = `Match ${AppData.matchNumber}`;
+        this.matchNumberLabel.textContent = `Team ${AppData.teamNumber}`;
+    }
 }
