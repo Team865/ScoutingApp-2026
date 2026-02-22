@@ -91,6 +91,16 @@ def analysis():
     return render_template("analysis.html")
 
 # App API Endpoints
+@app.route("/api/scouting/rotation")
+def get_scouting_rotation_data():
+    scouter_name = request.headers.get("X-Request-ID")
+    rotations = app_data.quantitative_scouting_data.rotations
+
+    if(scouter_name not in rotations):
+        return jsonify({"Error": f"{scouter_name} does not exist in the rotation."}), 404
+
+    return jsonify(rotations[scouter_name]), 200
+
 @app.route("/api/superscouting")
 def get_superscouting_data():
     # Add event name to the json response as well

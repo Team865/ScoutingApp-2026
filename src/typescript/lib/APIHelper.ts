@@ -1,9 +1,9 @@
 
-export async function genericGetRequest(apiEndpoint: string) {
-    const response = await fetch(apiEndpoint);
-    if (!response.ok) {
-        throw new Error(`GET request for ${apiEndpoint} failed with status code: ${response.status}`);
-    }
+export async function genericGetRequest(apiEndpoint: string, headers?: {[key: string]: any}) {
+    const response = await fetch(apiEndpoint, {
+        headers: headers
+    });
+    
     return await response.json();
 }
 

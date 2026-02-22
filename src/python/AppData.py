@@ -80,6 +80,9 @@ class ScoutingMatchData(TypedDict):
     class _EndgameDefense(_TeleopDefense): pass # pyright: ignore[reportGeneralTypeIssues]
 
     scouter_name: str
+    team_number: int
+    match_number: int
+
     robot_position: Literal[
         "Red Right", "Red Middle", "Red Left",
         "Blue Left", "Blue Middle", "Blue Right"
@@ -121,10 +124,42 @@ class PitScoutingNotesChunkJSon(TypedDict):
     data: dict[str, Any]
 
 class QuantitativeScoutingData:
-    data: dict[int, dict[int, ScoutingMatchData]]
+    type _Alliance = Literal["Red", "Blue"]
+
+    # {
+    #     scouter_name: {
+    #         match_number: (team_number, alliance)
+    #     }
+    # }
+    rotations: dict[str, 
+                    dict[
+                        int, tuple[
+                            int, 
+                            _Alliance
+                        ]
+                    ]]
+
+    tba_match_data: list[TBAMatchData]
+    data: list[ScoutingMatchData]
 
     def __init__(self) -> None:
-        self.data = {}
+        self.data = []
+        self.rotations = {}
+
+        # TEMPORARY FOR DEBUGGING PURPOSES
+        self.set_rotation("Thomas Vu", 20, 865, "Red")
+
+    def set_rotation(
+        self, 
+        scouter_name: str, 
+        match_number: int, 
+        team_number: int,
+        alliance: _Alliance
+    ):
+        if(scouter_name not in self.rotations):
+            self.rotations[scouter_name] = {}
+        
+        self.rotations[scouter_name][match_number] = (team_number, alliance)
 
     # def set_data_from_csv(self, csv: list[list[str]]):
     #     if(len(csv) < 2): return # No pit scouting data
