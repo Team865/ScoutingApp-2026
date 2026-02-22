@@ -121,16 +121,25 @@ if __name__ == "__main__":
     parser = ArgumentParser(description="Script for downloading team logos from thebluealliance")
     parser.add_argument("-d", "--district", type=str, help="Downloads logos from specific district key(s) (i.e. 2026ont)", nargs="+")
     parser.add_argument("-e", "--event", type=str, help="Downloads logos from specific event key(s) (i.e. 2026week0)", nargs="+")
-    parser.add_argument("-od", "--outputdir", type=str, help=f"The output directory to output to. Defaults to {default_output_dir}")
+    parser.add_argument("-tk", "--teamkey", type=str, help="Download logos from specific team keys(s) (i.e. frc865)", nargs="+")
+    parser.add_argument("-tn", "--teamnumber", type=int, help="Download logos from specific team number(s) (i.e. 865)", nargs="+")
     parser.add_argument("-t", "--threads", type=int, help=f"The number of threads to use. Defaults to {default_num_threads}")
+    parser.add_argument("-od", "--outputdir", type=str, help=f"The output directory to output to. Defaults to {default_output_dir}")
 
     args = parser.parse_args()
 
     districts: list[str] = args.district
     events: list[str] = args.event
+    team_numbers_requested: list[int] = args.teamnumber
+    team_keys: list[str] = args.teamkey
     
-    if(districts is None) and (events is None):
-        print("NOTHING DOWNLOADED. PLEASE SELECT AT LEAST 1 EVENT OR DISTRICT VIA THE -d OR -e FLAGS")
+    if (
+        (districts is None) and 
+        (events is None) and
+        (team_numbers_requested is None) and
+        (team_keys is None)
+    ):
+        print("NO TEAMS PROVIDED. NOTHING WAS DOWNLOADED")
         exit(1)
 
     output_dir: str = args.outputdir or default_output_dir
@@ -138,7 +147,11 @@ if __name__ == "__main__":
 
     request_header = {"X-TBA-Auth-Key": api_key}
 
-    team_keys: list[str] = []
+    team_keys = team_keys or [] # Create an empty list if no keys were directly provided
+
+    # Insert team numbers
+    if(team_numbers_requested):
+        team_keys.extend([f"frc{team_number}" for team_number in team_numbers_requested])
 
     # Districts
     if(districts):
