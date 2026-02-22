@@ -1,3 +1,7 @@
+import Signal from "../lib/dataTypes/Signal";
+import { encrypt, decrypt } from "../lib/Randomizer"
+import { removePrefix } from '../superscouting/util/StringManipulation';
+
 /** The robot position relative to the alliance's Driver Station */
 export enum RobotPosition {
     UNSET,
@@ -90,7 +94,7 @@ export type ScoutingData = {
 }
 
 type ClientAppData = ScoutingData & {
-    // Signals
+    scouterNameChanged: Signal<void>
 }
 
 const AppData: ClientAppData = {
@@ -155,7 +159,22 @@ const AppData: ClientAppData = {
     endgameClimbType: ClimbHeight.NO_ATTEMPT,
     endgameClimbFailed: false,
     endgameClimbTimeRemaining: -1,
-    comments: ""
+    comments: "",
+
+    scouterNameChanged: new Signal()
 };
+
+export function getScouterName() {
+    const xorKey = "d67t819yhusaid";
+
+    if(!removePrefix(document.cookie, "username=")) {
+        const scouterName = prompt("What is your name?");
+        AppData.scouterName = scouterName || "Unset";
+
+        document.cookie = "username=" + encrypt(scouterName, xorKey);
+    } else {
+        AppData.scouterName = decrypt(removePrefix(document.cookie, "username="), xorKey);
+    }
+}
 
 export default AppData;

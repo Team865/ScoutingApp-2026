@@ -9,8 +9,25 @@ export type AssignedMatch = {
 
 export type ScoutingRotation = Map<number, AssignedMatch>
 
-export async function getScoutingRotation() {
-    return await fetch(`${apiRoot}/rotation`, {
+export async function getScoutingRotation(): Promise<ScoutingRotation> {
+    const scoutingRotationRequest = await fetch(`${apiRoot}/rotation`, {
         headers: {"X-Request-ID": AppData.scouterName}
     });
+
+    let scoutingRotation: ScoutingRotation = new Map();
+
+    if(scoutingRotationRequest.status == 200) {
+        const scoutingRotationJSon: {
+            [matchNumber: string]: [number, "Red" | "Blue"]
+        } = await scoutingRotationRequest.json();
+
+        for(const [matchNumber, assignedMatch] of Object.entries(scoutingRotationJSon)) {
+            scoutingRotation.set(Number.parseInt(matchNumber), {
+                teamNumber: assignedMatch[0],
+                alliance: assignedMatch[1]
+            });
+        }
+    }
+
+    return scoutingRotation;
 }

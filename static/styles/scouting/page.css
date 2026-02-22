@@ -40,3 +40,8 @@ div.info-container {
     flex-grow: 1;
     font-size: 2rem;
 }
+
+div.matches-container {
+    display: flex;
+    flex-flow: column;
+}
