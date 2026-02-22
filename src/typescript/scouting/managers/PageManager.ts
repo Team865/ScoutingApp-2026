@@ -7,10 +7,12 @@ import TransitionPhasePage from "../pages/TransitionPhasePage";
 import PreMatchPage from "../pages/PreMatchPage";
 import AppData from '../AppData';
 import ManualInputPage from "../pages/ManualPreMatchPage";
+import MatchSelectionPage from "../pages/MatchSelectionPage";
 
 const mainElement: HTMLElement = document.querySelector("main");
 const titleElement: HTMLHeadingElement = document.querySelector("h1#page-title");
 
+const matchSelectionPage = new MatchSelectionPage("PLACEHOLDER");
 const manualInputPage = new ManualInputPage();
 const preMatchPage = new PreMatchPage();
 const autoPage = new AutoPage();
@@ -24,6 +26,9 @@ let isManualMatchChoice: boolean = true;
 
 export namespace PageManager {
     export function begin() {
+
+        matchSelectionPage.manualInputButton.addEventListener("click", _ => changePage(manualInputPage));
+
         manualInputPage.goToNextPage.connect(() => {
             if(manualInputPage.readyToContinue()) changePage(autoPage);
         });
@@ -46,7 +51,7 @@ export namespace PageManager {
 
         // TEMPORARY, FIX THIS ONCE MATCH SELECTION PAGE IS COMPLETE
         preMatchPage.nextButton.onclick = _ => changePage(manualInputPage);
-        changePage(endgameClimbPage);
+        changePage(matchSelectionPage);
     }
 
     function changePage(targetPage: Page) {
