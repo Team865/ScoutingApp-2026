@@ -95,8 +95,16 @@ div.labeled-input {
     align-items: center;
 }
 
-div.labeled-input > label, div.labeled-input > input {
+div.labeled-input > label {
     font-size: 2rem;
+}
+
+div.labeled-input:has(input[type="text"]) > label,
+div.labeled-input:has(input[type="number"]) > label,
+div.labeled-input > input[type="text"],
+div.labeled-input > input[type="number"] {
+    font-size: min(4dvw, 2rem);
+    min-width: 0;
 }
 
 div.labeled-input > input[type="checkbox"] {

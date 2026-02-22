@@ -14,6 +14,7 @@ export default class LabeledInput {
         this.label.innerText = labelText;
         this.label.htmlFor = labelText + uniqueHash;
         this.input.id = labelText + uniqueHash;
+        this.input.type = "text";
 
         if(inputFirst) {
             this.mainContainer.append(this.input, this.label);

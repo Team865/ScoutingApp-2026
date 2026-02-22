@@ -28,8 +28,12 @@ let isManualMatchChoice: boolean = true;
 export namespace PageManager {
     export function begin(rotation: ScoutingRotation) {
         matchSelectionPage.header.textContent = `Name: ${AppData.scouterName}`;
-        matchSelectionPage.manualInputButton.addEventListener("click", _ => changePage(manualInputPage));
+        matchSelectionPage.manualInputButton.addEventListener("click", _ => {
+            autoPage.backButton.addEventListener("click", _ => changePage(manualInputPage));
+            changePage(manualInputPage);
+        });
         matchSelectionPage.matchSelected.connect(alliance => {
+            autoPage.backButton.addEventListener("click", _ => changePage(preMatchPage));
             preMatchPage.update(alliance);
             changePage(preMatchPage);
         });
@@ -42,8 +46,7 @@ export namespace PageManager {
             if(manualInputPage.readyToContinue()) changePage(autoPage);
         });
         preMatchPage.goToNextPage.connect(() => changePage(autoPage));
-
-        autoPage.backButton.addEventListener("click", _ => changePage(preMatchPage));
+;
         autoPage.nextButton.addEventListener("click", _ => changePage(transitionPhasePage));
 
         transitionPhasePage.backButton.addEventListener("click", _ => changePage(autoPage));
