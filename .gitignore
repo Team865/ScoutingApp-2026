@@ -7,3 +7,4 @@ __pycache__/
 uv.lock
 package-lock.json
 service_account.json
+temp

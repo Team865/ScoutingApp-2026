@@ -20,3 +20,8 @@ dependencies = [
     "werkzeug>=3.1.4",
     "xlsxwriter>=3.2.9",
 ]
+
+[dependency-groups]
+dev = [
+    "pillow>=12.1.1",
+]
