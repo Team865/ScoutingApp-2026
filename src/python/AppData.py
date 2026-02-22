@@ -57,34 +57,34 @@ class ScoutingMatchData(TypedDict):
     class _AutoIntake(TypedDict):
         depot: bool
         neutral_zone: bool
-        outpost: bool
+        outpost: bool # pyright: ignore[reportGeneralTypeIssues]
 
     class _AutoClimb(TypedDict):
         attempted: bool
-        failed: bool
+        failed: bool# pyright: ignore[reportGeneralTypeIssues]
 
     class _TransitionIntake(_AutoIntake):
         home_alliance: bool
-        opponent_alliance: bool
+        opponent_alliance: bool # pyright: ignore[reportGeneralTypeIssues]
 
-    class _TeleopIntake(_TransitionIntake): pass
+    class _TeleopIntake(_TransitionIntake): pass # pyright: ignore[reportGeneralTypeIssues]
 
     class _TeleopDefense(TypedDict):
         depot: bool
         outpost: bool
         trench: bool
         bump: bool
-        other: bool
+        other: bool # pyright: ignore[reportGeneralTypeIssues]
 
-    class _EndgameIntake(_TeleopIntake): pass
-    class _EndgameDefense(_TeleopDefense): pass
+    class _EndgameIntake(_TeleopIntake): pass # pyright: ignore[reportGeneralTypeIssues]
+    class _EndgameDefense(_TeleopDefense): pass # pyright: ignore[reportGeneralTypeIssues]
 
     scouter_name: str
     robot_position: Literal[
         "Red Right", "Red Middle", "Red Left",
         "Blue Left", "Blue Middle", "Blue Right"
     ]
-    driverSkill: int
+    driver_skill: int
     comments: str
 
     auto_fuel_scored: int
