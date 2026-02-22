@@ -226,3 +226,9 @@ div.number-slider > * {
 div.number-slider > input {
     width: 15rem;
 }
+
+button.match-selection {
+    height: 6rem;
+    width: 90dvw;
+    font-size: 2.5rem;
+}

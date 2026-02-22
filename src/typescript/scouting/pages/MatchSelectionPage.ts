@@ -10,12 +10,8 @@ export default class MatchSelectionPage extends Page {
         super("Name: " + scouterName);
         
         this.manualInputButton.textContent = "Manual";
-        this.manualInputButton.style.height = "6rem";
-        this.manualInputButton.style.width = "24rem";
-        this.manualInputButton.style.fontSize = "2.5rem";
-
+        this.manualInputButton.classList.add("match-selection");
         this.domElement.append(this.manualInputButton);
-
     }
 
     public addMatch(matchNumber: number, teamNumber: number) {
@@ -29,9 +25,7 @@ export default class MatchSelectionPage extends Page {
         });
 
         button.textContent = `${matchNumber}`;
-        button.style.height = "6rem";
-        button.style.width = "24rem";
-        button.style.fontSize = "2.5rem";
+        button.classList.add("match-selection");
 
         this.domElement.append(button);
     }

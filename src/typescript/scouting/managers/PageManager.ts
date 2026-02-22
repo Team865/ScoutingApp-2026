@@ -26,6 +26,7 @@ let isManualMatchChoice: boolean = true;
 
 export namespace PageManager {
     export function begin() {
+        matchSelectionPage.header.textContent = `Name: ${AppData.scouterName}`;
 
         matchSelectionPage.manualInputButton.addEventListener("click", _ => changePage(manualInputPage));
 
