@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description="Script for downloading team logos from thebluealliance")
     parser.add_argument("-d", "--district", type=str, help="Downloads logos from specific district key(s) (i.e. 2026ont)", nargs="+")
-    parser.add_argument("-e", "--event", type=str, help="Downloads logos from specific event(s) (i.e. 2026week0)", nargs="+")
+    parser.add_argument("-e", "--event", type=str, help="Downloads logos from specific event key(s) (i.e. 2026week0)", nargs="+")
     parser.add_argument("-od", "--outputdir", type=str, help=f"The output directory to output to. Defaults to {default_output_dir}")
     parser.add_argument("-t", "--threads", type=int, help=f"The number of threads to use. Defaults to {default_num_threads}")
 
