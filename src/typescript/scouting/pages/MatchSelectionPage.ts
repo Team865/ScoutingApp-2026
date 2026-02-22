@@ -13,11 +13,8 @@ export default class MatchSelectionPage extends Page {
         this.manualInputButton.style.height = "6rem";
         this.manualInputButton.style.width = "24rem";
         this.manualInputButton.style.fontSize = "2.5rem";
-        this.manualInputButton.style.color = "000000";
 
-        this.domElement.append(
-            this.manualInputButton
-        );
+        this.domElement.append(this.manualInputButton);
 
     }
 
@@ -31,5 +28,11 @@ export default class MatchSelectionPage extends Page {
 
         });
 
+        button.textContent = `${matchNumber}`;
+        button.style.height = "6rem";
+        button.style.width = "24rem";
+        button.style.fontSize = "2.5rem";
+
+        this.domElement.append(button);
     }
 }
