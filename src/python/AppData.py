@@ -1,6 +1,7 @@
-from typing import Literal, Optional, TypedDict, Any, Callable
+from typing import Literal, Optional, TypedDict, Any, Callable, cast
 
 from src.python.ScoutingFields import PitScoutingFields, QuantitativeScoutingFields_t
+from src.python.util import ListUtil
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
 from .api_helpers.StatboticsAPI import update_epa
@@ -41,17 +42,21 @@ class FetchedTeamData(TypedDict):
     epa: Optional[int]
     normalized_epa: Optional[int]
 
-class TBAMatchData_Team(TypedDict):
+class Scouting_TBAMatchData(TypedDict):
+    red_team_numbers: list[int]
+    blue_team_numbers: list[int]
+
+class Superscouting_TBAMatchData_Team(TypedDict):
     team_number: int
     alliance: Literal["red", "blue"]
 
-class TBAMatchData(TypedDict):
+class Superscouting_TBAMatchData(TypedDict):
     key: str
     number: int
     comp_level: str
     red_score: int
     blue_score: int
-    teams: list[TBAMatchData_Team]
+    teams: list[Superscouting_TBAMatchData_Team]
 
 class ScoutingMatchData(TypedDict):
     class _AutoIntake(TypedDict):
@@ -125,6 +130,7 @@ class PitScoutingNotesChunkJSon(TypedDict):
 
 class QuantitativeScoutingData:
     type _Alliance = Literal["Red", "Blue"]
+    type _AllianceInfo = Literal["Red 1", "Red 2", "Red 3", "Blue 1", "Blue 2", "Blue 3"]
 
     # {
     #     scouter_name: {
@@ -139,16 +145,16 @@ class QuantitativeScoutingData:
                         ]
                     ]]
 
-    tba_match_data: list[TBAMatchData]
+    tba_match_data: dict[int, Scouting_TBAMatchData]
     data: list[ScoutingMatchData]
+
+    _alliance_regex = re.compile(r"^[a-zA-Z]+")
+    _alliance_index_regex = re.compile(r"\d$")
 
     def __init__(self) -> None:
         self.data = []
         self.rotations = {}
-
-        # TEMPORARY FOR DEBUGGING PURPOSES
-        self.set_rotation("Thomas Vu", 10, 865, "Blue")
-        self.set_rotation("Thomas Vu", 20, 865, "Red")
+        self.tba_match_data = {}
 
     def set_rotation(
         self, 
@@ -162,53 +168,58 @@ class QuantitativeScoutingData:
         
         self.rotations[scouter_name][match_number] = (team_number, alliance)
 
-    # def set_data_from_csv(self, csv: list[list[str]]):
-    #     if(len(csv) < 2): return # No pit scouting data
+    def set_scouting_rotation_from_csv(self, csv: list[list[str]]):
+        if(len(csv) < 2): return # No rotation
+
+        self.rotations = {}
+
+        column_index_to_alliance: dict[int, QuantitativeScoutingData._AllianceInfo] = {}
+
+        # Parse columns
+        for column_index in range(1, 7):
+            column_index_to_alliance[column_index] = cast(QuantitativeScoutingData._AllianceInfo, csv[0][column_index])
         
-    #     def parse_team_row(row: list[str]) -> int | None:
-    #         team_number = int(row[0])
+        def parse_shift(row: list[str]) -> int | None:
+            raw_match_range = row[0].split("-")
+            starting_match = int(raw_match_range[0].strip())
+            ending_match = int(raw_match_range[1].strip())
 
-    #         fields = row[1:]
+            # {
+            #   scouter_name: (alliance, alliance_index)
+            # }
+            assigned_matches: dict[str, tuple[Literal["Red", "Blue"], int]] = {}
 
-    #         preexisting_notes = team_number in self.pit_scouting_notes and self.pit_scouting_notes[team_number]
-    #         has_changed = False
-    #         team_notes: dict[str, Any] = {}
+            for column_index in range(1, len(row)):
+                scouter_name = row[column_index]
 
-    #         for field_index, field_value_cell in enumerate(fields):
-    #             field_type_match = _scouting_csv_field_type_regex.search(field_value_cell)
-    #             field_name = PitScoutingFields[field_index]["name"]
-    #             field_value: Any
+                if(not scouter_name) or (scouter_name.lower() == "unset"): continue
 
-    #             if field_type_match is not None:
-    #                 field_type = field_type_match.group().strip()
-    #                 field_value_str = field_value_cell[field_type_match.end():]
-    #                 field_value = _scouting_field_value_parser[field_type](field_value_str)
-    #             else:
-    #                 field_value = None
-
-    #             if(not has_changed):
-    #                 if(not preexisting_notes):
-    #                     has_changed = True
-    #                 elif(field_value != preexisting_notes[field_name]):
-    #                     has_changed = True
-
-    #             team_notes[field_name] = field_value
-
-    #         if(has_changed): 
-    #             self.pit_scouting_notes[team_number] = team_notes
-    #             return team_number
-
-    #     team_rows = csv[1:]
-
-    #     for team_row in team_rows:
-    #         team_number = parse_team_row(team_row)
-
-    #         if(team_number is None): continue # Notes didn't change
+                alliance_info = column_index_to_alliance[column_index]
+                alliance = self._alliance_regex.search(alliance_info).group() # type: ignore
+                alliance_index = int(self._alliance_index_regex.search(alliance_info).group()) - 1 # type: ignore
+                assigned_matches[scouter_name] = (alliance, alliance_index) # type: ignore
             
-    #         PitScoutingSSE.broadcast_pit_scouting_notes({
-    #             "team_number": team_number,
-    #             "data": self.pit_scouting_notes[team_number]
-    #         })
+            for match_number in range(starting_match, ending_match + 1):
+                match_data = self.tba_match_data[match_number]
+                if(match_data is None):
+                    print("Match data could not be found for match", match_number)
+                    continue
+
+                for scouter_name, assigned_match in assigned_matches.items():
+                    alliance = assigned_match[0]
+                    alliance_index = assigned_match[1]
+
+                    team_number = (
+                        match_data["red_team_numbers"][alliance_index]
+                        if assigned_match[0] == "Red" else
+                        match_data["blue_team_numbers"][alliance_index]
+                    )
+
+                    self.set_rotation(scouter_name, match_number, team_number, alliance)
+
+        for row in csv[1:]:
+            parse_shift(row)
+
 
     # @property
     # def serialized(self):
@@ -245,7 +256,7 @@ class SuperScoutingData:
     # }
     pit_scouting_notes: dict[int, dict[str, Any]]
 
-    match_data: list[TBAMatchData]
+    match_data: list[Superscouting_TBAMatchData]
 
     def __init__(self):
         self.fetched_team_data = []
@@ -464,11 +475,13 @@ class AppData:
 
         for match_json in tbaMatches:
             match_key = match_json["key"]
-            teams_in_match: list[TBAMatchData_Team] = []
+            teams_in_match: list[Superscouting_TBAMatchData_Team] = []
 
             # Loop through red alliance
             for team_key in match_json["alliances"]["red"]["team_keys"]:
-                team_data = next(team for team in self.superscouting_data.fetched_team_data if team["key"] == team_key)
+                team_data = ListUtil.find(self.superscouting_data.fetched_team_data, lambda team: team["key"] == team_key)
+                assert team_data is not None
+                
                 team_data["match_keys"].append(match_key)
                 teams_in_match.append({
                     "team_number": team_data["number"],
@@ -477,21 +490,36 @@ class AppData:
 
             # Loop through blue alliance
             for team_key in match_json["alliances"]["blue"]["team_keys"]:
-                team_data = next(team for team in self.superscouting_data.fetched_team_data if team["key"] == team_key)
+                team_data = ListUtil.find(self.superscouting_data.fetched_team_data, lambda team: team["key"] == team_key)
+                assert team_data is not None
+
                 team_data["match_keys"].append(match_key)
                 teams_in_match.append({
                     "team_number": team_data["number"],
                     "alliance": "blue"
                 })
 
-            self.superscouting_data.match_data.append({
+            tba_match_data = {
                 "key": match_json["key"],
                 "number": match_json["match_number"],
                 "comp_level": match_json["comp_level"],
                 "red_score": match_json["alliances"]["red"]["score"],
                 "blue_score": match_json["alliances"]["blue"]["score"],
                 "teams": teams_in_match
-            })
+            }
+
+            self.quantitative_scouting_data.tba_match_data[match_json["match_number"]] = {
+                "red_team_numbers": [
+                    int(team_key.removeprefix("frc"))
+                    for team_key in match_json["alliances"]["red"]["team_keys"]
+                ],
+                "blue_team_numbers": [
+                    int(team_key.removeprefix("frc"))
+                    for team_key in match_json["alliances"]["blue"]["team_keys"]
+                ]
+            }
+
+            self.superscouting_data.match_data.append(tba_match_data) # type: ignore
 
     @property
     def serialized(self):

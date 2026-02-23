@@ -1,5 +1,7 @@
 from statbotics import Statbotics
 from typing import TypedDict
+
+from src.python.util import ListUtil
 from ..typehinting.StatboticsData import StatboticsTeamEventData, StatboticsTeamData
 from requests import get
 from threading import Thread
@@ -22,7 +24,9 @@ def update_epa(app_data, event_key: str):
 
     if(len(team_event_data) > 0): # Event data exists
         for team_data in team_event_data:
-            app_team_data = next(team for team in app_data.superscouting_data.fetched_team_data if team["number"] == team_data["team"])
+            app_team_data = ListUtil.find(app_data.superscouting_data.fetched_team_data, lambda team: team["number"] == team_data["team"])
+            assert app_team_data is not None
+
             app_team_data["epa"] = team_data["epa"]["total_points"]["mean"]
             app_team_data["normalized_epa"] = team_data["epa"]["norm"]
     else: # Event data doesn't exist (offseason)

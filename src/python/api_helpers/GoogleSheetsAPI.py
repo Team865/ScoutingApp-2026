@@ -1,3 +1,5 @@
+import traceback
+
 from ..AppData import AppData
 
 from google.auth.exceptions import RefreshError
@@ -13,6 +15,8 @@ __all__ = ["GoogleSpreadsheet"]
 _SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 class BackendWorksheet(StrEnum):
+    SCOUTER_NAMES = "Scouter Names"
+    SCOUTING_ROTATION = "Scouting Rotation"
     MATCH_DATA = "Match Data"
     MATCH_NOTES = "Match Notes"
     PIT_SCOUTING = "Pit Scouting"
@@ -44,7 +48,12 @@ class GoogleSpreadsheet:
     def poll_sheets_data(self, app_data: AppData, poll_period: int | float):
         while True:
             try:
-                # Poll match data (UNIMPLEMENTED)
+                # Poll scouting rotation
+                scouting_rotation_csv = self.backend_worksheets[BackendWorksheet.SCOUTING_ROTATION].get()
+                app_data.quantitative_scouting_data.set_scouting_rotation_from_csv(scouting_rotation_csv)
+
+                # Poll quantitative scouting data (UNIMPLEMENTED)
+
                 # Poll match notes
                 match_notes_csv = self.backend_worksheets[BackendWorksheet.MATCH_NOTES].get()
                 app_data.superscouting_data.set_match_notes_from_csv(match_notes_csv)
@@ -53,7 +62,7 @@ class GoogleSpreadsheet:
                 pit_scouting_csv = self.backend_worksheets[BackendWorksheet.PIT_SCOUTING].get()
                 app_data.superscouting_data.set_pit_scouting_from_csv(pit_scouting_csv)
             except Exception as e:
-                print("Error polling sheets data:", e)
+                print("Error polling sheets data:", traceback.format_exc())
 
             sleep(poll_period)
 
@@ -82,7 +91,7 @@ class GoogleSpreadsheet:
 
     def _fetch_backend_worksheets(self):
         for backend_sheet_enum in BackendWorksheet:
-            self.backend_worksheets[backend_sheet_enum] = self._fetch_worksheet(f"{backend_sheet_enum.value} Backend")
+            self.backend_worksheets[backend_sheet_enum] = self._fetch_worksheet(backend_sheet_enum.value)
 
     def _fetch_worksheet(self, worksheet_name: str) -> gspread.Worksheet:
         try:
