@@ -6,6 +6,7 @@ import geoip2.database
 import re
 from werkzeug.middleware.proxy_fix import ProxyFix
 from waitress import serve
+from src.python.typehinting.FrontendScoutingData import FrontendScoutingData
 from src.python.util.ConfigParser import parse_config
 from src.python.AppData import AppData, MatchNotesChunkJSon, PitScoutingNotesChunkJSon
 import src.python.sse.TBAPoller as TBAPoller
@@ -128,6 +129,17 @@ def get_epa_data():
 
     return jsonify(epaJSon)
 
+@app.post("/api/scouting/match-data")
+def scouting_data_from_client():
+    match_data: FrontendScoutingData = request.json
+
+    spreadsheet_manager.add_row(
+        BackendWorksheet.MATCH_DATA, 
+        app_data.quantitative_scouting_data.add_scouting_data(match_data)
+    )
+
+    return {"message": "SUCCESS"}, 200
+
 @app.post("/api/superscouting/match-notes")
 def match_notes_from_client():
     match_notes: MatchNotesChunkJSon = request.json
@@ -168,6 +180,10 @@ if __name__ == "__main__":
 
     print("Creating App Data...")
     app_data = AppData(config["EVENT_KEY"])
+
+    if(len(spreadsheet_manager.backend_worksheets[BackendWorksheet.MATCH_DATA].get()) <= 1):
+        spreadsheet_manager.set_row_col_values(BackendWorksheet.MATCH_DATA, app_data.quantitative_scouting_data.get_header)
+
     print("App Data initialized!")
 
     threading.Thread(target=TBAPoller.poll_tba_matches, args=(app_data, config["EVENT_KEY"]), daemon=True).start()

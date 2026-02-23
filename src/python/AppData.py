@@ -1,7 +1,9 @@
 from typing import Literal, Optional, TypedDict, Any, Callable, cast
 
+from src.python.typehinting.FrontendScoutingData import FrontendScoutingData
 from src.python.typehinting.ScoutingFields import PitScoutingFields
 from src.python.util import ListUtil
+from src.python.util.CaseUtil import camel_to_snake_case
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
 from .api_helpers.StatboticsAPI import update_epa
@@ -220,6 +222,119 @@ class QuantitativeScoutingData:
         for row in csv[1:]:
             parse_shift(row)
 
+
+    def add_scouting_data(self, frontend_data: FrontendScoutingData):
+        """
+        Returns the data as a CSV row
+        """
+
+        self.data.append(camel_to_snake_case(frontend_data)) # type: ignore
+
+        return [
+            frontend_data["matchNumber"], 
+            frontend_data["teamNumber"],
+            frontend_data["scouterName"],
+            frontend_data["robotPosition"],
+            frontend_data["driverSkill"],
+            frontend_data["autoFuelScored"],
+            frontend_data["autoIntake"]["depot"],
+            frontend_data["autoIntake"]["neutralZone"],
+            frontend_data["autoIntake"]["outpost"],
+            frontend_data["autoClimb"]["attempted"],
+            frontend_data["autoClimb"]["failed"],
+            frontend_data["transitionFuelScored"],
+            frontend_data["transitionIntake"]["depot"],
+            frontend_data["transitionIntake"]["neutralZone"],
+            frontend_data["transitionIntake"]["outpost"],
+            frontend_data["transitionIntake"]["homeAlliance"],
+            frontend_data["transitionIntake"]["oppoAlliance"],
+            frontend_data["transitionPasser"],
+            frontend_data["transitionDefense"],
+            frontend_data["teleopFuelScored"],
+            frontend_data["teleopIntake"]["depot"],
+            frontend_data["teleopIntake"]["neutralZone"],
+            frontend_data["teleopIntake"]["outpost"],
+            frontend_data["teleopIntake"]["homeAlliance"],
+            frontend_data["teleopIntake"]["oppoAlliance"],
+            frontend_data["teleopDefense"]["depot"],
+            frontend_data["teleopDefense"]["outpost"],
+            frontend_data["teleopDefense"]["trench"],
+            frontend_data["teleopDefense"]["bump"],
+            frontend_data["teleopDefense"]["other"],
+            frontend_data["teleopPasser"],
+            frontend_data["teleopHumanPlayerDeposit"],
+            frontend_data["endgameFuelScored"],
+            frontend_data["endgameIntake"]["depot"],
+            frontend_data["endgameIntake"]["neutralZone"],
+            frontend_data["endgameIntake"]["outpost"],
+            frontend_data["endgameIntake"]["homeAlliance"],
+            frontend_data["endgameIntake"]["oppoAlliance"],
+            frontend_data["endgameDefense"]["depot"],
+            frontend_data["endgameDefense"]["outpost"],
+            frontend_data["endgameDefense"]["trench"],
+            frontend_data["endgameDefense"]["bump"],
+            frontend_data["endgameDefense"]["other"],
+            frontend_data["endgamePasser"],
+            frontend_data["endgameClimbType"],
+            frontend_data["endgameClimbFailed"],
+            frontend_data["endgameClimbTimeRemaining"],
+            frontend_data["comments"]
+        ]
+
+    @property
+    def get_header(self):
+        return [
+            [
+                "Match Number", 
+                "Team Number", 
+                "Scouter Name", 
+                "Robot Position",
+                "Driver Skill",
+                "Auto Fuel Scored",
+                "Auto Intake Depot",
+                "Auto Intake Neutral Zone",
+                "Auto Intake Outpost",
+                "Auto Climb Attempted",
+                "Auto Climb Failed",
+                "Transition Fuel Scored",
+                "Transition Intake Depot",
+                "Transition Intake Neutral Zone",
+                "Transition Intake Outpost",
+                "Transition Intake Home Alliance",
+                "Transition Intake Opponent Alliance",
+                "Transition Passer",
+                "Transition Defense",
+                "Teleop Fuel Scored",
+                "Teleop Intake Depot",
+                "Teleop Intake Neutral Zone",
+                "Teleop Intake Outpost",
+                "Teleop Intake Home Alliance",
+                "Teleop Intake Opponent Alliance",
+                "Teleop Defense Depot",
+                "Teleop Defense Outpost",
+                "Teleop Defense Trench",
+                "Teleop Defense Bump",
+                "Teleop Defense Other",
+                "Teleop Passer",
+                "Teleop Human Player Deposit",
+                "Endgame Fuel Scored",
+                "Endgame Intake Depot",
+                "Endgame Intake Neutral Zone",
+                "Endgame Intake Outpost",
+                "Endgame Intake Home Alliance",
+                "Endgame Intake Opponent Alliance",
+                "Endgame Defense Depot",
+                "Endgame Defense Outpost",
+                "Endgame Defense Trench",
+                "Endgame Defense Bump",
+                "Endgame Defense Other",
+                "Endgame Passer",
+                "Endgame Climb Type",
+                "Endgame Climb Failed",
+                "Endgame Time Remaining",
+                "Comments"
+            ]
+        ]
 
     # @property
     # def serialized(self):

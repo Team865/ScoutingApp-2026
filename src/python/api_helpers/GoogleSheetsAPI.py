@@ -1,4 +1,5 @@
 import traceback
+from typing import Optional
 
 from ..AppData import AppData
 
@@ -39,7 +40,14 @@ class GoogleSpreadsheet:
             values=values,
             range_name=f"{xl_rowcol_to_cell_fast(0, 0)}:{xl_rowcol_to_cell_fast(len(values), len(values[0]))}"
         )
+        
         self._style_backend_worksheet(worksheet, values)
+
+    def add_row(self, worksheetEnum: BackendWorksheet, row: list):
+        worksheet = self.backend_worksheets[worksheetEnum]
+        worksheet.append_row(row)
+
+        self._style_backend_worksheet(worksheet)
 
     def clear_backend_worksheets(self):
         for backend_sheet_enum in BackendWorksheet:
@@ -101,7 +109,9 @@ class GoogleSpreadsheet:
             new_worksheet = self.spreadsheet.add_worksheet(worksheet_name, 1000, 1000)
             return new_worksheet
         
-    def _style_backend_worksheet(self, worksheet: gspread.Worksheet, csv: list[list]):
+    def _style_backend_worksheet(self, worksheet: gspread.Worksheet, csv: Optional[list[list]] = None):
+        csv = csv or worksheet.get()
+
         num_rows = len(csv)
         if num_rows < 2: return
         

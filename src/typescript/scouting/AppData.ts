@@ -48,7 +48,7 @@ export type ScoutingData = {
         neutralZone: boolean,
         outpost: boolean,
         homeAlliance: boolean,
-        oppoAlliance: boolean
+        opponentAlliance: boolean
     },
     transitionPasser: boolean,
     transitionDefense: boolean,
@@ -59,7 +59,7 @@ export type ScoutingData = {
         neutralZone: boolean,
         outpost: boolean,
         homeAlliance: boolean,
-        oppoAlliance: boolean
+        opponentAlliance: boolean
     },
     teleopDefense: {
         depot: boolean,
@@ -77,7 +77,7 @@ export type ScoutingData = {
         neutralZone: boolean,
         outpost: boolean,
         homeAlliance: boolean,
-        oppoAlliance: boolean
+        opponentAlliance: boolean
     },
     endgameDefense: {
         depot: boolean,
@@ -93,11 +93,7 @@ export type ScoutingData = {
     endgameClimbTimeRemaining: number
 }
 
-type ClientAppData = ScoutingData & {
-    scouterNameChanged: Signal<void>
-}
-
-const AppData: ClientAppData = {
+const AppData: ScoutingData = {
     scouterName: "",
     matchNumber: -1,
     teamNumber: -1,
@@ -119,7 +115,7 @@ const AppData: ClientAppData = {
         neutralZone: false,
         outpost: false,
         homeAlliance: false,
-        oppoAlliance: false
+        opponentAlliance: false
     },
     transitionPasser: false,
     transitionDefense: false,
@@ -129,7 +125,7 @@ const AppData: ClientAppData = {
         neutralZone: false,
         outpost: false,
         homeAlliance: false,
-        oppoAlliance: false
+        opponentAlliance: false
     },
     teleopDefense: {
         depot: false,
@@ -146,7 +142,7 @@ const AppData: ClientAppData = {
         neutralZone: false,
         outpost: false,
         homeAlliance: false,
-        oppoAlliance: false
+        opponentAlliance: false
     },
     endgameDefense: {
         depot: false,
@@ -159,10 +155,10 @@ const AppData: ClientAppData = {
     endgameClimbType: ClimbHeight.NO_ATTEMPT,
     endgameClimbFailed: false,
     endgameClimbTimeRemaining: -1,
-    comments: "",
-
-    scouterNameChanged: new Signal()
+    comments: ""
 };
+
+export const scouterNameChanged = new Signal<void>();
 
 export function getScouterName() {
     const xorKey = "d67t819yhusaid";

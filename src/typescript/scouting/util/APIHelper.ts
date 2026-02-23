@@ -1,3 +1,4 @@
+import { genericPostRequest } from "../../lib/APIHelper";
 import AppData from "../AppData";
 
 const apiRoot = "api/scouting";
@@ -30,4 +31,8 @@ export async function getScoutingRotation(): Promise<ScoutingRotation> {
     }
 
     return scoutingRotation;
+}
+
+export async function uploadScoutingData() {
+    return await genericPostRequest(`${apiRoot}/match-data`, AppData);
 }

@@ -1,6 +1,6 @@
 import Page from "./Page";
 import Signal from "../../lib/dataTypes/Signal";
-import AppData, { getScouterName } from "../AppData";
+import AppData, { getScouterName, scouterNameChanged } from "../AppData";
 import { ScoutingRotation } from "../util/APIHelper";
 
 export default class MatchSelectionPage extends Page {
@@ -17,7 +17,7 @@ export default class MatchSelectionPage extends Page {
         this.changeNameButton.addEventListener("click", _ => {
             document.cookie = "username=";
             getScouterName();
-            AppData.scouterNameChanged.emit();
+            scouterNameChanged.emit();
         });
 
         this.manualInputButton.textContent = "Manual";
@@ -39,6 +39,7 @@ export default class MatchSelectionPage extends Page {
         button.addEventListener("click", _ => {
             AppData.matchNumber = matchNumber;
             AppData.teamNumber = teamNumber;
+
             this.matchSelected.emit(alliance);
         });
 

@@ -4,7 +4,6 @@ This script will generate test data for the app.
 
 import sys
 import re
-from pprint import pprint
 from os import chdir
 import random
 import string
@@ -12,7 +11,7 @@ from threading import Thread
 
 sys.path.append("..")
 
-from src.python.ScoutingFields import FieldConfig, PitScoutingFields
+from src.python.typehinting.ScoutingFields import FieldConfig, PitScoutingFields
 from src.python.AppData import AppData
 from src.python.api_helpers.GoogleSheetsAPI import GoogleSpreadsheet, BackendWorksheet
 from src.python.util.ConfigParser import parse_config

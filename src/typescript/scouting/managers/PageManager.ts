@@ -5,10 +5,10 @@ import TeleopShiftsPage from "../pages/TeleopShiftsPage";
 import Page from "../pages/Page";
 import TransitionPhasePage from "../pages/TransitionPhasePage";
 import PreMatchPage from "../pages/PreMatchPage";
-import AppData from '../AppData';
+import AppData, { scouterNameChanged } from '../AppData';
 import ManualInputPage from "../pages/ManualPreMatchPage";
 import MatchSelectionPage from "../pages/MatchSelectionPage";
-import { getScoutingRotation, ScoutingRotation } from "../util/APIHelper";
+import { getScoutingRotation, ScoutingRotation, uploadScoutingData } from "../util/APIHelper";
 
 const mainElement: HTMLElement = document.querySelector("main");
 const titleElement: HTMLHeadingElement = document.querySelector("h1#page-title");
@@ -23,7 +23,6 @@ const endgamePreClimbPage = new EndgamePreClimbPage();
 const endgameClimbPage = new EndgameClimbPage();
 
 let currentPage: Page = autoPage;
-let isManualMatchChoice: boolean = true;
 
 async function updateScouterName() {
     const scoutingRotation = await getScoutingRotation();
@@ -32,7 +31,7 @@ async function updateScouterName() {
     matchSelectionPage.updateMatches(scoutingRotation);
 }
 
-AppData.scouterNameChanged.connect(updateScouterName);
+scouterNameChanged.connect(updateScouterName);
 
 export namespace PageManager {
     export async function begin() {
@@ -50,7 +49,10 @@ export namespace PageManager {
         });
 
         manualInputPage.goToNextPage.connect(() => {
-            if(manualInputPage.readyToContinue()) changePage(autoPage);
+            if(manualInputPage.readyToContinue()) {
+                changePage(autoPage);
+                manualInputPage.updateAppData();
+            }
         });
         preMatchPage.goToNextPage.connect(() => changePage(autoPage));
 ;
@@ -84,14 +86,12 @@ export namespace PageManager {
     }
 
     function onSubmit() {
-        if(isManualMatchChoice) manualInputPage.updateAppData();
-
         autoPage.updateAppData();
         transitionPhasePage.updateAppData();
         teleopShiftsPage.updateAppData();
         endgamePreClimbPage.updateAppData();
         endgameClimbPage.updateAppData();
 
-        console.log(AppData);
+        uploadScoutingData();
     }
 }

@@ -19,11 +19,11 @@ export async function updateEPA() {
 }
 
 export async function sendMatchNotesFromClient(matchNotes: MatchNotesRequest) {
-    return await genericPostRequest(`${apiRoot}/match-notes`, JSON.stringify(matchNotes));
+    return await genericPostRequest(`${apiRoot}/match-notes`, matchNotes);
 }
 
 export async function sendPitScoutingNotesFromClient(pitScoutingNotes: PitScoutingNotesRequest) {
-    return await genericPostRequest(`${apiRoot}/pit-scouting-notes`, JSON.stringify(pitScoutingNotes));
+    return await genericPostRequest(`${apiRoot}/pit-scouting-notes`, pitScoutingNotes);
 }
 
 // export async function getMatch(matchKey: string): Promise<TBAMatchJSon> {
