@@ -1,4 +1,4 @@
-__all__ = ["QuantitativeScoutingFields", "QuantitativeScoutingFields_t", "PitScoutingFields", "PitScoutingFields_t"]
+__all__ = ["PitScoutingFields", "PitScoutingFields_t"]
 
 from typing import TypedDict, Literal, NotRequired, Union
 
@@ -19,10 +19,6 @@ class FieldConfigPartial3(FieldsConfigBase):
     choices: tuple[str, ...]
 
 type FieldConfig = Union[FieldConfigPartial1, FieldConfigPartial2, FieldConfigPartial3]
-
-# Quantitative Scouting Fields
-type QuantitativeScoutingFields_t = tuple[]
-QuantitativeScoutingFields: tuple[FieldConfig, ...] = ()
 
 # Pit Scouting Fields
 class _PitScoutingFields_F0(TypedDict):

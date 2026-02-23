@@ -34,7 +34,7 @@ def parse_config_file(config_path: Path) -> list[dict[str, Any]]:
         
         return fields
 
-_quantitative_fields = parse_config_file(_quantitative_scouting_fields_config_path)
+# _quantitative_fields = parse_config_file(_quantitative_scouting_fields_config_path)
 _pitscouting_fields = parse_config_file(_pit_scouting_fields_config_path)
 
 def typehint_fields(fields_name: str, fields: list[dict[str, Any]]):
@@ -67,7 +67,7 @@ def typehint_fields(fields_name: str, fields: list[dict[str, Any]]):
 
 with _python_typehint_file_path.open("wt+") as python_typehint_file:
     python_typehint_file.write("""
-__all__ = ["QuantitativeScoutingFields", "QuantitativeScoutingFields_t", "PitScoutingFields", "PitScoutingFields_t"]
+__all__ = ["PitScoutingFields", "PitScoutingFields_t"]
 
 from typing import TypedDict, Literal, NotRequired, Union
     """.strip())
@@ -94,9 +94,9 @@ class FieldConfigPartial3(FieldsConfigBase):
 type FieldConfig = Union[FieldConfigPartial1, FieldConfigPartial2, FieldConfigPartial3]
     """.strip())
 
-    # Quantitative Scouting Fields
-    python_typehint_file.write("\n\n# Quantitative Scouting Fields\n")
-    python_typehint_file.write(typehint_fields("QuantitativeScoutingFields", _quantitative_fields))
+    # # Quantitative Scouting Fields
+    # python_typehint_file.write("\n\n# Quantitative Scouting Fields\n")
+    # python_typehint_file.write(typehint_fields("QuantitativeScoutingFields", _quantitative_fields))
 
     # Pit Scouting Fields
     python_typehint_file.write("\n\n# Pit Scouting Fields\n")

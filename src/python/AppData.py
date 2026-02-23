@@ -1,6 +1,6 @@
 from typing import Literal, Optional, TypedDict, Any, Callable, cast
 
-from src.python.ScoutingFields import PitScoutingFields, QuantitativeScoutingFields_t
+from src.python.typehinting.ScoutingFields import PitScoutingFields
 from src.python.util import ListUtil
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
