@@ -23,6 +23,7 @@ const endgamePreClimbPage = new EndgamePreClimbPage();
 const endgameClimbPage = new EndgameClimbPage();
 
 let currentPage: Page = autoPage;
+let isSubmitting: boolean = false;
 
 async function updateScouterName() {
     const scoutingRotation = await getScoutingRotation();
@@ -86,12 +87,16 @@ export namespace PageManager {
     }
 
     function onSubmit() {
+        if(isSubmitting) return;
+        if(!confirm("ARE YOU SURE YOU WANT TO SUBMIT? YOU WILL BE REDIRECTED BACK TO THE MATCH SELECTION PAGE AFTER SUBMISSION")) return;
+        isSubmitting = true;
+
         autoPage.updateAppData();
         transitionPhasePage.updateAppData();
         teleopShiftsPage.updateAppData();
         endgamePreClimbPage.updateAppData();
         endgameClimbPage.updateAppData();
 
-        uploadScoutingData();
+        uploadScoutingData().then(() => window.location.reload());
     }
 }
