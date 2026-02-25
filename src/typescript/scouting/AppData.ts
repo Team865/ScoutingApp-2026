@@ -188,7 +188,7 @@ export function getScouterName() {
     const xorKey = "d67t819yhusaid";
 
     if(!removePrefix(document.cookie, "username=")) {
-        const scouterName = prompt("What is your name?");
+        const scouterName = prompt("What is your FULL name (FirstName LastName)?");
         AppData.scouterName = scouterName || "Unset";
 
         document.cookie = "username=" + encrypt(scouterName, xorKey);
