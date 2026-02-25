@@ -192,7 +192,7 @@ export function getScouterName() {
 
         AppData.scouterName = titleCase(scouterName) || "Unset";
 
-        document.cookie = "username=" + encrypt(scouterName, xorKey);
+        document.cookie = "username=" + encrypt(AppData.scouterName, xorKey);
     } else {
         AppData.scouterName = decrypt(removePrefix(document.cookie, "username="), xorKey);
     }
