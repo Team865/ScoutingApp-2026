@@ -3,7 +3,22 @@ export function titleCase(str: string): string {
         return str.toUpperCase();
     }
 
-    return str[0].toUpperCase() + str.slice(1).toLowerCase();
+    const alphabeticCharRegex = /[a-zA-Z]/;
+    let finalString = "";
+    let currentSubstring = "";
+
+    for(const letter of str) {
+        if(letter.match(alphabeticCharRegex)) {
+            currentSubstring += currentSubstring.match(alphabeticCharRegex) ? letter.toLowerCase() : letter.toUpperCase();
+        } else {
+            finalString += currentSubstring;
+            currentSubstring = letter;
+        }
+    }
+
+    finalString += currentSubstring;
+
+    return finalString;
 }
 
 export function insertString(srcString: string, stringToInsert: string, insertIndex: number) {

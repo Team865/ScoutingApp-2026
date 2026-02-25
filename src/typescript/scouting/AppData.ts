@@ -1,6 +1,6 @@
 import Signal from "../lib/dataTypes/Signal";
 import { encrypt, decrypt } from "../lib/Randomizer"
-import { removePrefix } from '../superscouting/util/StringManipulation';
+import { removePrefix, titleCase } from '../superscouting/util/StringManipulation';
 
 /** The robot position relative to the alliance's Driver Station */
 export enum RobotPosition {
@@ -189,7 +189,8 @@ export function getScouterName() {
 
     if(!removePrefix(document.cookie, "username=")) {
         const scouterName = prompt("What is your FULL name (FirstName LastName)?");
-        AppData.scouterName = scouterName || "Unset";
+
+        AppData.scouterName = titleCase(scouterName) || "Unset";
 
         document.cookie = "username=" + encrypt(scouterName, xorKey);
     } else {
