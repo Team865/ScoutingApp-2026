@@ -12,6 +12,7 @@ export default class TransitionPhasePage extends Page {
     private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost", "Home Alliance", "Opponent Alliance"]);
     private readonly passerChoice = new LabeledCheckbox("Passer/Feeder?");
     private readonly defenseChoice = new LabeledCheckbox("Defense?");
+    private readonly foulChoices = new CheckboxGroup("Fouls", ["Minor", "Major"]);
 
     constructor() {
         super("TRANSTION PHASE");
@@ -25,7 +26,8 @@ export default class TransitionPhasePage extends Page {
             this.fuelCounter.domElement,
             this.intakeChoices.domElement,
             this.passerChoice.domElement,
-            this.defenseChoice.domElement
+            this.defenseChoice.domElement,
+            this.foulChoices.domElement
         );
     }
 
@@ -37,10 +39,15 @@ export default class TransitionPhasePage extends Page {
             neutralZone: this.intakeChoices.isChecked("Neutral Zone"),
             outpost: this.intakeChoices.isChecked("Outpost"),
             homeAlliance: this.intakeChoices.isChecked("Home Alliance"),
-            oppoAlliance: this.intakeChoices.isChecked("Opponent Alliance")
+            opponentAlliance: this.intakeChoices.isChecked("Opponent Alliance"),
         };
 
         AppData.transitionPasser = this.passerChoice.isChecked;
         AppData.transitionDefense = this.defenseChoice.isChecked;
+
+        AppData.transitionFouls = {
+            minor: this.foulChoices.isChecked("Minor"),
+            major: this.foulChoices.isChecked("Major")
+        };
     }
 }

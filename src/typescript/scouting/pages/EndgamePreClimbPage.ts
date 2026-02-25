@@ -12,6 +12,7 @@ export default class EndgamePreClimbPage extends Page {
     private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost", "Home Alliance", "Opponent Alliance"]);
     private readonly defenseChoices = new CheckboxGroup("Defense", ["Depot", "Outpost", "Trench", "Bump", "Other"]);
     private readonly passerChoice = new LabeledCheckbox("Passer/Feeder?");
+    private readonly foulChoices = new CheckboxGroup("Fouls", ["Minor", "Major"]);
 
     constructor() {
         super("ENDGAME PRE-CLIMB");
@@ -24,7 +25,8 @@ export default class EndgamePreClimbPage extends Page {
             this.fuelCounter.domElement,
             this.intakeChoices.domElement,
             this.defenseChoices.domElement,
-            this.passerChoice.domElement
+            this.passerChoice.domElement,
+            this.foulChoices.domElement
         );
     }
     
@@ -36,7 +38,7 @@ export default class EndgamePreClimbPage extends Page {
             neutralZone: this.intakeChoices.isChecked("Neutral Zone"),
             outpost: this.intakeChoices.isChecked("Outpost"),
             homeAlliance: this.intakeChoices.isChecked("Home Alliance"),
-            oppoAlliance: this.intakeChoices.isChecked("Opponent Alliance")
+            opponentAlliance: this.intakeChoices.isChecked("Opponent Alliance")
         };
 
         AppData.endgameDefense = {
@@ -48,5 +50,10 @@ export default class EndgamePreClimbPage extends Page {
         }
 
         AppData.endgamePasser = this.passerChoice.isChecked;
+
+        AppData.endgameFouls = {
+            minor: this.foulChoices.isChecked("Minor"),
+            major: this.foulChoices.isChecked("Major")
+        };
     }
 }

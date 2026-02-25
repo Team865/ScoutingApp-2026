@@ -70,11 +70,13 @@ class ScoutingMatchData(TypedDict):
         attempted: bool
         failed: bool# pyright: ignore[reportGeneralTypeIssues]
 
-    class _TransitionIntake(_AutoIntake):
+    class _TeleopIntake(_AutoIntake):
         home_alliance: bool
         opponent_alliance: bool # pyright: ignore[reportGeneralTypeIssues]
 
-    class _TeleopIntake(_TransitionIntake): pass # pyright: ignore[reportGeneralTypeIssues]
+    class _Fouls(TypedDict):
+        minor: bool
+        major: bool # pyright: ignore[reportGeneralTypeIssues]
 
     class _TeleopDefense(TypedDict):
         depot: bool
@@ -83,12 +85,9 @@ class ScoutingMatchData(TypedDict):
         bump: bool
         other: bool # pyright: ignore[reportGeneralTypeIssues]
 
-    class _EndgameIntake(_TeleopIntake): pass # pyright: ignore[reportGeneralTypeIssues]
-    class _EndgameDefense(_TeleopDefense): pass # pyright: ignore[reportGeneralTypeIssues]
-
     scouter_name: str
-    team_number: int
     match_number: int
+    team_number: int
 
     robot_position: Literal[
         "Red Right", "Red Middle", "Red Left",
@@ -102,20 +101,23 @@ class ScoutingMatchData(TypedDict):
     auto_climb: _AutoClimb
 
     transition_fuel_scored: int
-    transition_intake: _TransitionIntake
+    transition_intake: _TeleopIntake
     transition_passer: bool
     transition_defense: bool
+    transition_fouls: _Fouls
 
     teleop_fuel_scored: int
     teleop_intake: _TeleopIntake
     teleop_defense: _TeleopDefense
     teleop_passer: bool
-    teleop_hp_deposit: bool
+    teleop_human_player_deposit: bool
+    teleop_fouls: _Fouls
 
     endgame_fuel_scored: int
-    endgame_intake: _EndgameIntake
-    endgame_defense: _EndgameDefense
+    endgame_intake: _TeleopIntake
+    endgame_defense: _TeleopDefense
     endgame_passer: bool
+    endgame_fouls: _Fouls
     
     endgame_climb_type: Literal["No Attempt", "Level 1", "Level 2", "Level 3"]
     endgame_climb_failed: bool
@@ -247,15 +249,17 @@ class QuantitativeScoutingData:
             frontend_data["transitionIntake"]["neutralZone"],
             frontend_data["transitionIntake"]["outpost"],
             frontend_data["transitionIntake"]["homeAlliance"],
-            frontend_data["transitionIntake"]["oppoAlliance"],
+            frontend_data["transitionIntake"]["opponentAlliance"],
             frontend_data["transitionPasser"],
             frontend_data["transitionDefense"],
+            frontend_data["transitionFouls"]["minor"],
+            frontend_data["transitionFouls"]["major"],
             frontend_data["teleopFuelScored"],
             frontend_data["teleopIntake"]["depot"],
             frontend_data["teleopIntake"]["neutralZone"],
             frontend_data["teleopIntake"]["outpost"],
             frontend_data["teleopIntake"]["homeAlliance"],
-            frontend_data["teleopIntake"]["oppoAlliance"],
+            frontend_data["teleopIntake"]["opponentAlliance"],
             frontend_data["teleopDefense"]["depot"],
             frontend_data["teleopDefense"]["outpost"],
             frontend_data["teleopDefense"]["trench"],
@@ -263,18 +267,22 @@ class QuantitativeScoutingData:
             frontend_data["teleopDefense"]["other"],
             frontend_data["teleopPasser"],
             frontend_data["teleopHumanPlayerDeposit"],
+            frontend_data["teleopFouls"]["minor"],
+            frontend_data["teleopFouls"]["major"],
             frontend_data["endgameFuelScored"],
             frontend_data["endgameIntake"]["depot"],
             frontend_data["endgameIntake"]["neutralZone"],
             frontend_data["endgameIntake"]["outpost"],
             frontend_data["endgameIntake"]["homeAlliance"],
-            frontend_data["endgameIntake"]["oppoAlliance"],
+            frontend_data["endgameIntake"]["opponentAlliance"],
             frontend_data["endgameDefense"]["depot"],
             frontend_data["endgameDefense"]["outpost"],
             frontend_data["endgameDefense"]["trench"],
             frontend_data["endgameDefense"]["bump"],
             frontend_data["endgameDefense"]["other"],
             frontend_data["endgamePasser"],
+            frontend_data["endgameFouls"]["minor"],
+            frontend_data["endgameFouls"]["major"],
             frontend_data["endgameClimbType"],
             frontend_data["endgameClimbFailed"],
             frontend_data["endgameClimbTimeRemaining"],
@@ -304,6 +312,8 @@ class QuantitativeScoutingData:
                 "Transition Intake Opponent Alliance",
                 "Transition Passer",
                 "Transition Defense",
+                "Transition Minor Foul",
+                "Transition Major Foul",
                 "Teleop Fuel Scored",
                 "Teleop Intake Depot",
                 "Teleop Intake Neutral Zone",
@@ -317,6 +327,8 @@ class QuantitativeScoutingData:
                 "Teleop Defense Other",
                 "Teleop Passer",
                 "Teleop Human Player Deposit",
+                "Teleop Minor Foul",
+                "Teleop Major Foul",
                 "Endgame Fuel Scored",
                 "Endgame Intake Depot",
                 "Endgame Intake Neutral Zone",
@@ -329,6 +341,8 @@ class QuantitativeScoutingData:
                 "Endgame Defense Bump",
                 "Endgame Defense Other",
                 "Endgame Passer",
+                "Endgame Minor Foul",
+                "Endgame Major Foul",
                 "Endgame Climb Type",
                 "Endgame Climb Failed",
                 "Endgame Time Remaining",

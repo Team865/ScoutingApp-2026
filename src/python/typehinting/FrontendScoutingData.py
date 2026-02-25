@@ -14,7 +14,7 @@ class FrontendScoutingData(TypedDict):
 
     class _TeleopIntake(_AutoIntake):
         homeAlliance: bool
-        oppoAlliance: bool # pyright: ignore[reportGeneralTypeIssues]
+        opponentAlliance: bool # pyright: ignore[reportGeneralTypeIssues]
 
     class _TeleopDefense(TypedDict):
         depot: bool
@@ -22,6 +22,10 @@ class FrontendScoutingData(TypedDict):
         trench: bool
         bump: bool
         other: bool # pyright: ignore[reportGeneralTypeIssues]
+
+    class _Fouls(TypedDict):
+        minor: bool
+        major: bool # pyright: ignore[reportGeneralTypeIssues]
 
     scouterName: str
     matchNumber: int
@@ -42,17 +46,20 @@ class FrontendScoutingData(TypedDict):
     transitionIntake: _TeleopIntake
     transitionPasser: bool
     transitionDefense: bool
+    transitionFouls: _Fouls
     # Tele-op
     teleopFuelScored: int
     teleopIntake: _TeleopIntake
     teleopDefense: _TeleopDefense
     teleopPasser: bool
     teleopHumanPlayerDeposit: bool
+    teleopFouls: _Fouls
     # Endgame
     endgameFuelScored: int
     endgameIntake: _TeleopIntake
     endgameDefense: _TeleopDefense
     endgamePasser: bool
+    endgameFouls: _Fouls
     
     endgameClimbType: Literal["No Attempt", "Level 1", "Level 2", "Level 3"]
     endgameClimbFailed: bool

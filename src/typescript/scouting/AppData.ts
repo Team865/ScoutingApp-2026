@@ -27,8 +27,8 @@ export type ScoutingData = {
     matchNumber: number,
     teamNumber: number,
     robotPosition: RobotPosition,
-    comments: string,
     driverSkill: number,
+    comments: string,
 
     // Auto
     autoFuelScored: number,
@@ -52,6 +52,10 @@ export type ScoutingData = {
     },
     transitionPasser: boolean,
     transitionDefense: boolean,
+    transitionFouls: {
+        minor: boolean,
+        major: boolean
+    },
     // Tele-op
     teleopFuelScored: number,
     teleopIntake: {
@@ -70,6 +74,10 @@ export type ScoutingData = {
     },
     teleopPasser: boolean,
     teleopHumanPlayerDeposit: boolean,
+    teleopFouls: {
+        minor: boolean,
+        major: boolean
+    },
     // Endgame
     endgameFuelScored: number,
     endgameIntake: {
@@ -87,6 +95,10 @@ export type ScoutingData = {
         other: boolean
     },
     endgamePasser: boolean,
+    endgameFouls: {
+        minor: boolean,
+        major: boolean
+    },
     
     endgameClimbType: ClimbHeight,
     endgameClimbFailed: boolean,
@@ -119,6 +131,10 @@ const AppData: ScoutingData = {
     },
     transitionPasser: false,
     transitionDefense: false,
+    transitionFouls: {
+        minor: false,
+        major: false
+    },
     teleopFuelScored: 0,
     teleopIntake: {
         depot: false,
@@ -136,6 +152,10 @@ const AppData: ScoutingData = {
     },
     teleopPasser: false,
     teleopHumanPlayerDeposit: false,
+    teleopFouls: {
+        minor: false,
+        major: false
+    },
     endgameFuelScored: 0,
     endgameIntake: {
         depot: false,
@@ -152,6 +172,10 @@ const AppData: ScoutingData = {
         other: false
     },
     endgamePasser: false,
+    endgameFouls: {
+        minor: false,
+        major: false
+    },
     endgameClimbType: ClimbHeight.NO_ATTEMPT,
     endgameClimbFailed: false,
     endgameClimbTimeRemaining: -1,
