@@ -1,9 +1,7 @@
 import AutoPage from "../pages/AutoPage";
 import EndgameClimbPage from "../pages/EndgameClimb";
-import EndgamePreClimbPage from "../pages/EndgamePreClimbPage";
 import TeleopShiftsPage from "../pages/TeleopShiftsPage";
 import Page from "../pages/Page";
-import TransitionPhasePage from "../pages/TransitionPhasePage";
 import PreMatchPage from "../pages/PreMatchPage";
 import AppData, { scouterNameChanged } from '../AppData';
 import ManualInputPage from "../pages/ManualPreMatchPage";
@@ -17,9 +15,7 @@ const matchSelectionPage = new MatchSelectionPage("PLACEHOLDER");
 const manualInputPage = new ManualInputPage();
 const preMatchPage = new PreMatchPage();
 const autoPage = new AutoPage();
-const transitionPhasePage = new TransitionPhasePage();
 const teleopShiftsPage = new TeleopShiftsPage();
-const endgamePreClimbPage = new EndgamePreClimbPage();
 const endgameClimbPage = new EndgameClimbPage();
 
 let currentPage: Page = autoPage;
@@ -57,18 +53,12 @@ export namespace PageManager {
         });
         preMatchPage.goToNextPage.connect(() => changePage(autoPage));
 ;
-        autoPage.nextButton.addEventListener("click", _ => changePage(transitionPhasePage));
+        autoPage.nextButton.addEventListener("click", _ => changePage(teleopShiftsPage));
 
-        transitionPhasePage.backButton.addEventListener("click", _ => changePage(autoPage));
-        transitionPhasePage.nextButton.addEventListener("click", _ => changePage(teleopShiftsPage));
+        teleopShiftsPage.backButton.addEventListener("click", _ => changePage(autoPage));
+        teleopShiftsPage.nextButton.addEventListener("click", _ => changePage(endgameClimbPage));
 
-        teleopShiftsPage.backButton.addEventListener("click", _ => changePage(transitionPhasePage));
-        teleopShiftsPage.nextButton.addEventListener("click", _ => changePage(endgamePreClimbPage));
-
-        endgamePreClimbPage.backButton.addEventListener("click", _ => changePage(teleopShiftsPage));
-        endgamePreClimbPage.nextButton.addEventListener("click", _ => changePage(endgameClimbPage));
-
-        endgameClimbPage.backButton.addEventListener("click", _ => changePage(endgamePreClimbPage));
+        endgameClimbPage.backButton.addEventListener("click", _ => changePage(teleopShiftsPage));
         endgameClimbPage.submitButton.addEventListener("click", onSubmit);
 
         changePage(matchSelectionPage);
@@ -92,9 +82,7 @@ export namespace PageManager {
         isSubmitting = true;
 
         autoPage.updateAppData();
-        transitionPhasePage.updateAppData();
         teleopShiftsPage.updateAppData();
-        endgamePreClimbPage.updateAppData();
         endgameClimbPage.updateAppData();
 
         uploadScoutingData().then(() => window.location.reload());

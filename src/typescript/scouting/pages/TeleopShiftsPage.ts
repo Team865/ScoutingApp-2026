@@ -10,8 +10,7 @@ export default class TeleopShiftsPage extends Page {
 
     private readonly fuelCounter = new FuelCounter();
     private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost", "Home Alliance", "Opponent Alliance"]);
-    private readonly otherActions = new CheckboxGroup("Other Actions", ["Feeding/Passing", "Deposit to Human Player"]);
-    private readonly defenseChoices = new CheckboxGroup("Defense", ["Depot", "Outpost", "Trench", "Bump", "Other"]);
+    private readonly otherActions = new CheckboxGroup("Other Actions", ["Defense (Bump/Trench)", "Feeding/Passing", "Deposit to Human Player"]);
     private readonly foulChoices = new CheckboxGroup("Fouls", ["Minor", "Major"]);
 
     constructor() {
@@ -24,7 +23,6 @@ export default class TeleopShiftsPage extends Page {
         this.domElement.append(
             this.fuelCounter.domElement,
             this.intakeChoices.domElement,
-            this.defenseChoices.domElement,
             this.otherActions.domElement,
             this.foulChoices.domElement
         );
@@ -41,13 +39,7 @@ export default class TeleopShiftsPage extends Page {
             opponentAlliance: this.intakeChoices.isChecked("Opponent Alliance")
         };
 
-        AppData.teleopDefense = {
-            depot: this.defenseChoices.isChecked("Depot"),
-            outpost: this.defenseChoices.isChecked("Outpost"),
-            trench: this.defenseChoices.isChecked("Trench"),
-            bump: this.defenseChoices.isChecked("Bump"),
-            other: this.defenseChoices.isChecked("Other")
-        }
+        AppData.teleopDefense = this.otherActions.isChecked("Defense (Bump/Trench)");
 
         AppData.teleopPasser = this.otherActions.isChecked("Feeding/Passing");
         AppData.teleopHumanPlayerDeposit = this.otherActions.isChecked("Deposit to Human Player");

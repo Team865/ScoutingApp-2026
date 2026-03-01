@@ -100,24 +100,12 @@ class ScoutingMatchData(TypedDict):
     auto_intake: _AutoIntake
     auto_climb: _AutoClimb
 
-    transition_fuel_scored: int
-    transition_intake: _TeleopIntake
-    transition_passer: bool
-    transition_defense: bool
-    transition_fouls: _Fouls
-
     teleop_fuel_scored: int
     teleop_intake: _TeleopIntake
     teleop_defense: _TeleopDefense
     teleop_passer: bool
     teleop_human_player_deposit: bool
     teleop_fouls: _Fouls
-
-    endgame_fuel_scored: int
-    endgame_intake: _TeleopIntake
-    endgame_defense: _TeleopDefense
-    endgame_passer: bool
-    endgame_fouls: _Fouls
     
     endgame_climb_type: Literal["No Attempt", "Level 1", "Level 2", "Level 3"]
     endgame_climb_failed: bool
@@ -244,45 +232,17 @@ class QuantitativeScoutingData:
             frontend_data["autoIntake"]["outpost"],
             frontend_data["autoClimb"]["attempted"],
             frontend_data["autoClimb"]["failed"],
-            frontend_data["transitionFuelScored"],
-            frontend_data["transitionIntake"]["depot"],
-            frontend_data["transitionIntake"]["neutralZone"],
-            frontend_data["transitionIntake"]["outpost"],
-            frontend_data["transitionIntake"]["homeAlliance"],
-            frontend_data["transitionIntake"]["opponentAlliance"],
-            frontend_data["transitionPasser"],
-            frontend_data["transitionDefense"],
-            frontend_data["transitionFouls"]["minor"],
-            frontend_data["transitionFouls"]["major"],
             frontend_data["teleopFuelScored"],
             frontend_data["teleopIntake"]["depot"],
             frontend_data["teleopIntake"]["neutralZone"],
             frontend_data["teleopIntake"]["outpost"],
             frontend_data["teleopIntake"]["homeAlliance"],
             frontend_data["teleopIntake"]["opponentAlliance"],
-            frontend_data["teleopDefense"]["depot"],
-            frontend_data["teleopDefense"]["outpost"],
-            frontend_data["teleopDefense"]["trench"],
-            frontend_data["teleopDefense"]["bump"],
-            frontend_data["teleopDefense"]["other"],
+            frontend_data["teleopDefense"],
             frontend_data["teleopPasser"],
             frontend_data["teleopHumanPlayerDeposit"],
             frontend_data["teleopFouls"]["minor"],
             frontend_data["teleopFouls"]["major"],
-            frontend_data["endgameFuelScored"],
-            frontend_data["endgameIntake"]["depot"],
-            frontend_data["endgameIntake"]["neutralZone"],
-            frontend_data["endgameIntake"]["outpost"],
-            frontend_data["endgameIntake"]["homeAlliance"],
-            frontend_data["endgameIntake"]["opponentAlliance"],
-            frontend_data["endgameDefense"]["depot"],
-            frontend_data["endgameDefense"]["outpost"],
-            frontend_data["endgameDefense"]["trench"],
-            frontend_data["endgameDefense"]["bump"],
-            frontend_data["endgameDefense"]["other"],
-            frontend_data["endgamePasser"],
-            frontend_data["endgameFouls"]["minor"],
-            frontend_data["endgameFouls"]["major"],
             frontend_data["endgameClimbType"],
             frontend_data["endgameClimbFailed"],
             frontend_data["endgameClimbTimeRemaining"],
@@ -304,45 +264,17 @@ class QuantitativeScoutingData:
                 "Auto Intake Outpost",
                 "Auto Climb Attempted",
                 "Auto Climb Failed",
-                "Transition Fuel Scored",
-                "Transition Intake Depot",
-                "Transition Intake Neutral Zone",
-                "Transition Intake Outpost",
-                "Transition Intake Home Alliance",
-                "Transition Intake Opponent Alliance",
-                "Transition Passer",
-                "Transition Defense",
-                "Transition Minor Foul",
-                "Transition Major Foul",
                 "Teleop Fuel Scored",
                 "Teleop Intake Depot",
                 "Teleop Intake Neutral Zone",
                 "Teleop Intake Outpost",
                 "Teleop Intake Home Alliance",
                 "Teleop Intake Opponent Alliance",
-                "Teleop Defense Depot",
-                "Teleop Defense Outpost",
-                "Teleop Defense Trench",
-                "Teleop Defense Bump",
-                "Teleop Defense Other",
+                "Teleop Defense",
                 "Teleop Passer",
                 "Teleop Human Player Deposit",
                 "Teleop Minor Foul",
                 "Teleop Major Foul",
-                "Endgame Fuel Scored",
-                "Endgame Intake Depot",
-                "Endgame Intake Neutral Zone",
-                "Endgame Intake Outpost",
-                "Endgame Intake Home Alliance",
-                "Endgame Intake Opponent Alliance",
-                "Endgame Defense Depot",
-                "Endgame Defense Outpost",
-                "Endgame Defense Trench",
-                "Endgame Defense Bump",
-                "Endgame Defense Other",
-                "Endgame Passer",
-                "Endgame Minor Foul",
-                "Endgame Major Foul",
                 "Endgame Climb Type",
                 "Endgame Climb Failed",
                 "Endgame Time Remaining",

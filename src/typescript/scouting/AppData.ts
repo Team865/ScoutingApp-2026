@@ -41,21 +41,6 @@ export type ScoutingData = {
         attempted: boolean,
         failed: boolean
     },
-    // Transition phase
-    transitionFuelScored: number,
-    transitionIntake: {
-        depot: boolean,
-        neutralZone: boolean,
-        outpost: boolean,
-        homeAlliance: boolean,
-        opponentAlliance: boolean
-    },
-    transitionPasser: boolean,
-    transitionDefense: boolean,
-    transitionFouls: {
-        minor: boolean,
-        major: boolean
-    },
     // Tele-op
     teleopFuelScored: number,
     teleopIntake: {
@@ -65,13 +50,7 @@ export type ScoutingData = {
         homeAlliance: boolean,
         opponentAlliance: boolean
     },
-    teleopDefense: {
-        depot: boolean,
-        outpost: boolean,
-        trench: boolean,
-        bump: boolean,
-        other: boolean
-    },
+    teleopDefense: boolean,
     teleopPasser: boolean,
     teleopHumanPlayerDeposit: boolean,
     teleopFouls: {
@@ -79,27 +58,6 @@ export type ScoutingData = {
         major: boolean
     },
     // Endgame
-    endgameFuelScored: number,
-    endgameIntake: {
-        depot: boolean,
-        neutralZone: boolean,
-        outpost: boolean,
-        homeAlliance: boolean,
-        opponentAlliance: boolean
-    },
-    endgameDefense: {
-        depot: boolean,
-        outpost: boolean,
-        trench: boolean,
-        bump: boolean,
-        other: boolean
-    },
-    endgamePasser: boolean,
-    endgameFouls: {
-        minor: boolean,
-        major: boolean
-    },
-    
     endgameClimbType: ClimbHeight,
     endgameClimbFailed: boolean,
     endgameClimbTimeRemaining: number
@@ -121,20 +79,6 @@ const AppData: ScoutingData = {
         attempted: false,
         failed: false
     },
-    transitionFuelScored: 0,
-    transitionIntake: {
-        depot: false,
-        neutralZone: false,
-        outpost: false,
-        homeAlliance: false,
-        opponentAlliance: false
-    },
-    transitionPasser: false,
-    transitionDefense: false,
-    transitionFouls: {
-        minor: false,
-        major: false
-    },
     teleopFuelScored: 0,
     teleopIntake: {
         depot: false,
@@ -143,36 +87,10 @@ const AppData: ScoutingData = {
         homeAlliance: false,
         opponentAlliance: false
     },
-    teleopDefense: {
-        depot: false,
-        outpost: false,
-        trench: false,
-        bump: false,
-        other: false
-    },
+    teleopDefense: false,
     teleopPasser: false,
     teleopHumanPlayerDeposit: false,
     teleopFouls: {
-        minor: false,
-        major: false
-    },
-    endgameFuelScored: 0,
-    endgameIntake: {
-        depot: false,
-        neutralZone: false,
-        outpost: false,
-        homeAlliance: false,
-        opponentAlliance: false
-    },
-    endgameDefense: {
-        depot: false,
-        outpost: false,
-        trench: false,
-        bump: false,
-        other: false
-    },
-    endgamePasser: false,
-    endgameFouls: {
         minor: false,
         major: false
     },
