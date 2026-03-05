@@ -36,7 +36,7 @@ export type ScoutingData = {
     autoIntake: {
         depot: boolean,
         neutralZone: boolean,
-        outpost: boolean
+        humanPlayer: boolean
     },
     autoClimb: {
         attempted: boolean,
@@ -47,7 +47,7 @@ export type ScoutingData = {
     teleopIntake: {
         depot: boolean,
         neutralZone: boolean,
-        outpost: boolean,
+        humanPlayer: boolean,
         homeAlliance: boolean,
         opponentAlliance: boolean
     },
@@ -76,7 +76,7 @@ const AppData: ScoutingData = {
     autoIntake: {
         depot: false,
         neutralZone: false,
-        outpost: false
+        humanPlayer: false
     },
     autoClimb: {
         attempted: false,
@@ -86,7 +86,7 @@ const AppData: ScoutingData = {
     teleopIntake: {
         depot: false,
         neutralZone: false,
-        outpost: false,
+        humanPlayer: false,
         homeAlliance: false,
         opponentAlliance: false
     },

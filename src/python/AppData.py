@@ -65,7 +65,7 @@ class ScoutingMatchData(TypedDict):
     class _AutoIntake(TypedDict):
         depot: bool
         neutral_zone: bool
-        outpost: bool # pyright: ignore[reportGeneralTypeIssues]
+        human_player: bool # pyright: ignore[reportGeneralTypeIssues]
 
     class _AutoClimb(TypedDict):
         attempted: bool
@@ -81,7 +81,7 @@ class ScoutingMatchData(TypedDict):
 
     class _TeleopDefense(TypedDict):
         depot: bool
-        outpost: bool
+        human_player: bool
         trench: bool
         bump: bool
         other: bool # pyright: ignore[reportGeneralTypeIssues]
@@ -231,13 +231,13 @@ class QuantitativeScoutingData:
             frontend_data["autoFuelScored"],
             frontend_data["autoIntake"]["depot"],
             frontend_data["autoIntake"]["neutralZone"],
-            frontend_data["autoIntake"]["outpost"],
+            frontend_data["autoIntake"]["humanPlayer"],
             frontend_data["autoClimb"]["attempted"],
             frontend_data["autoClimb"]["failed"],
             frontend_data["teleopFuelScored"],
             frontend_data["teleopIntake"]["depot"],
             frontend_data["teleopIntake"]["neutralZone"],
-            frontend_data["teleopIntake"]["outpost"],
+            frontend_data["teleopIntake"]["humanPlayer"],
             frontend_data["teleopIntake"]["homeAlliance"],
             frontend_data["teleopIntake"]["opponentAlliance"],
             frontend_data["teleopDefense"],
@@ -280,13 +280,13 @@ class QuantitativeScoutingData:
                 "Auto Fuel Scored",
                 "Auto Intake Depot",
                 "Auto Intake Neutral Zone",
-                "Auto Intake Outpost",
+                "Auto Intake Human Player",
                 "Auto Climb Attempted",
                 "Auto Climb Failed",
                 "Teleop Fuel Scored",
                 "Teleop Intake Depot",
                 "Teleop Intake Neutral Zone",
-                "Teleop Intake Outpost",
+                "Teleop Intake Human Player",
                 "Teleop Intake Home Alliance",
                 "Teleop Intake Opponent Alliance",
                 "Teleop Defense",

@@ -8,7 +8,7 @@ export default class AutoPage extends Page {
     public readonly nextButton = document.createElement("button");
     
     private readonly fuelCounter = new FuelCounter();
-    private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost"]);
+    private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Human Player"]);
     private readonly climbChoices = new CheckboxGroup("Climb", ["Attempted?", "Failed?"]);
 
     constructor() {
@@ -32,7 +32,7 @@ export default class AutoPage extends Page {
         AppData.autoIntake = {
             depot: this.intakeChoices.isChecked("Depot"),
             neutralZone: this.intakeChoices.isChecked("Neutral Zone"),
-            outpost: this.intakeChoices.isChecked("Outpost")
+            humanPlayer: this.intakeChoices.isChecked("Human Player")
         };
 
         AppData.autoClimb = {
