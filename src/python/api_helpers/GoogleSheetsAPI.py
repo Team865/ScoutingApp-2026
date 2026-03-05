@@ -1,6 +1,8 @@
 import traceback
 from typing import Optional
 
+from gspread.utils import Dimension, ValidationConditionType
+
 from ..AppData import AppData
 
 from google.auth.exceptions import RefreshError
@@ -147,5 +149,56 @@ class GoogleSpreadsheet:
             }
         ])
 
+        self.spreadsheet.batch_update({"requests": [
+            {
+                "autoResizeDimensions": {
+                    "dimensions": {
+                        "sheetId": worksheet.id,
+                        "dimension": Dimension.cols,
+                        "startIndex": 0,
+                        "endIndex": num_columns
+                    }
+                }
+            }
+        ]})
+
         # Column auto resize is not great but is better than nothing
         worksheet.columns_auto_resize(0, num_columns)
+
+    def set_scouting_rotation(self, csv: list[list[str]]):
+        worksheet = self.backend_worksheets[BackendWorksheet.SCOUTING_ROTATION]
+        self.set_row_col_values(BackendWorksheet.SCOUTING_ROTATION, csv)
+
+        requests = [
+            {
+                "setDataValidation": {
+                    "range": {
+                        "sheetId": worksheet.id,
+                        "startRowIndex": 1,
+                        "endRowIndex": len(csv),
+                        "startColumnIndex": 1,
+                        "endColumnIndex": 7,
+                    },
+                    "rule": {
+                        "showCustomUi": True,
+                        "strict": True,
+                        "condition": {"values": [{"userEnteredValue": f"='{BackendWorksheet.SCOUTER_NAMES.value}'!A1:A"}], "type": "ONE_OF_RANGE"},
+                    },
+                }
+            },
+            {
+                "updateDimensionProperties": {    
+                    "range": {
+                        "sheetId": worksheet.id,
+                        "dimension": Dimension.cols,
+                        "startIndex": 1,
+                        "endIndex": 7
+                    },
+                    "properties": {
+                        "pixelSize": 150
+                    },
+                    "fields": "pixelSize"
+                }
+            }
+        ]
+        self.spreadsheet.batch_update({"requests": requests})

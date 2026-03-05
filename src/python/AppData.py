@@ -1,3 +1,4 @@
+from math import ceil
 from typing import Literal, Optional, TypedDict, Any, Callable, cast
 
 from src.python.typehinting.FrontendScoutingData import FrontendScoutingData
@@ -250,6 +251,21 @@ class QuantitativeScoutingData:
             frontend_data["endgameClimbTimeRemaining"],
             frontend_data["comments"]
         ]
+
+    def generate_scouting_rotation_csv(self):
+        csv: list[list[str]] = [["Matches", "Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3"]]
+
+        last_match_number = max(self.tba_match_data.keys())
+        shift_size = 3
+
+        num_shifts = ceil(last_match_number / shift_size)
+
+        for shift_index in range(0, num_shifts):
+            starting_match = 1 + shift_index * shift_size
+            ending_match = min(starting_match + shift_size - 1, last_match_number)
+            csv.append([f"{starting_match} - {ending_match}"])
+
+        return csv
 
     @property
     def get_header(self):

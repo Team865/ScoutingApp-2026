@@ -28,6 +28,8 @@ export async function getScoutingRotation(): Promise<ScoutingRotation> {
                 alliance: assignedMatch[1]
             });
         }
+    } else {
+        console.error(await scoutingRotationRequest.json());
     }
 
     return scoutingRotation;
