@@ -6,7 +6,7 @@ class FrontendScoutingData(TypedDict):
     class _AutoIntake(TypedDict):
         depot: bool
         neutralZone: bool
-        outpost: bool # pyright: ignore[reportGeneralTypeIssues]
+        humanPlayer: bool # pyright: ignore[reportGeneralTypeIssues]
 
     class _AutoClimb(TypedDict):
         attempted: bool
