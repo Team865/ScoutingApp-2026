@@ -1,5 +1,6 @@
 import Signal from "../../lib/dataTypes/Signal";
 import { makeInputIntegerOnly } from "../../lib/DOMHelper";
+import NumberSlider from "./NumberSlider";
 
 class BatchCounter {
     private readonly inputBlocker = document.createElement('div');
@@ -8,7 +9,7 @@ class BatchCounter {
     private readonly fieldsContainer = document.createElement("div");
     private readonly startScoreInput = document.createElement("input");
     private readonly endScoreInput = document.createElement("input");
-    private readonly scorePercentInput = document.createElement("input");
+    private readonly scorePercentageSlider = new NumberSlider("Contribution %", 0, 20, 5);
 
     private readonly submitButton = document.createElement("button");
     private readonly discardButton = document.createElement("button");
@@ -35,18 +36,25 @@ class BatchCounter {
         startScoreLabel.htmlFor = "start-score";
         this.startScoreInput.id = "start-score";
         this.startScoreInput.type = "number";
+        makeInputIntegerOnly(this.startScoreInput);
         endScoreLabel.htmlFor = "end-score";
         this.endScoreInput.id = "end-score";
         this.endScoreInput.type = "number";
-        scorePercentLabel.htmlFor = "score-percentage";
-        this.scorePercentInput.id = "score-percentage";
+        makeInputIntegerOnly(this.endScoreInput);
+
+        this.startScoreInput.addEventListener("keypress", e => {
+            if(e.key === "Enter") {
+                e.preventDefault();
+                this.endScoreInput.focus();
+            }
+        });
 
         this.submitButton.addEventListener("click", _ => {
             this.hide();
             
-            const startScore = Number.parseInt(this.startScoreInput.value);
-            const endScore = Number.parseInt(this.endScoreInput.value);
-            const percentage = Number.parseFloat(this.scorePercentInput.value);
+            const startScore = Number.parseInt(this.startScoreInput.value || this.startScoreInput.placeholder);
+            const endScore = Number.parseInt(this.endScoreInput.value || this.endScoreInput.placeholder);
+            const percentage = this.scorePercentageSlider.value;
 
             if(isNaN(startScore)) {
                 alert("The Start Score provided is not a number.");
@@ -69,7 +77,7 @@ class BatchCounter {
         this.fieldsContainer.append(
             startScoreLabel, this.startScoreInput,
             endScoreLabel, this.endScoreInput,
-            scorePercentLabel, this.scorePercentInput,
+            this.scorePercentageSlider.domElement,
             this.submitButton, this.discardButton
         );
         this.popupContainer.append(this.header, this.fieldsContainer);
@@ -77,9 +85,11 @@ class BatchCounter {
     }
 
     public show(): void {
-        this.startScoreInput.value = "0";
-        this.endScoreInput.value = "0";
-        this.scorePercentInput.value = "100";
+        this.startScoreInput.value = "";
+        this.endScoreInput.value = "";
+        this.startScoreInput.placeholder = "0";
+        this.endScoreInput.placeholder = "0";
+        this.scorePercentageSlider.setValue(100);
 
         document.body.appendChild(this.inputBlocker);
 

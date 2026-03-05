@@ -28,7 +28,7 @@ export default class LabeledInput {
     }
 
     public get value() {
-        return this.input.value;
+        return this.input.value || this.input.placeholder;
     }
 
     public get domElement() {

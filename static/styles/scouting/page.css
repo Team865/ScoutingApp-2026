@@ -45,3 +45,9 @@ div.matches-container {
     display: flex;
     flex-flow: column;
 }
+
+@media only screen and (max-width: 700px) {
+    div.page {
+        width: 90%;
+    }
+}

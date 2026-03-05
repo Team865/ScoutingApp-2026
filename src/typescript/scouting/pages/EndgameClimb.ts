@@ -15,6 +15,7 @@ export default class EndgameClimbPage extends Page {
     private readonly failedClimb = new LabeledCheckbox("Failed Climb?");
     private readonly climbTime = new LabeledInput("Time remaining at start of attempt (seconds)");
     private readonly driverSkill = new NumberSlider("Drive Skill", 0, 10);
+    private readonly defenseSkill = new NumberSlider("Defense Skill", 0, 10);
 
     private readonly commentInput = document.createElement("textarea");
 
@@ -47,6 +48,7 @@ export default class EndgameClimbPage extends Page {
             this.failedClimb.domElement,
             this.climbTime.domElement,
             this.driverSkill.domElement,
+            this.defenseSkill.domElement,
             commentContainer,
             this.submitButton
         );
@@ -72,6 +74,7 @@ export default class EndgameClimbPage extends Page {
         AppData.endgameClimbTimeRemaining = this.climbTime.value ? Number.parseFloat(this.climbTime.value) : -1;
 
         AppData.driverSkill = this.driverSkill.value;
+        AppData.defenseSkill = this.defenseSkill.value;
         AppData.comments = this.commentInput.value;
     }
 }

@@ -10,7 +10,7 @@ export default class TeleopShiftsPage extends Page {
 
     private readonly fuelCounter = new FuelCounter();
     private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Outpost", "Home Alliance", "Opponent Alliance"]);
-    private readonly otherActions = new CheckboxGroup("Other Actions", ["Defense (Bump/Trench)", "Feeding/Passing", "Deposit to Human Player"]);
+    private readonly otherActions = new CheckboxGroup("Other Actions", ["Defense (Bump/Trench)", "Feeding/Passing", "Snowploughing", "Deposit to Human Player"]);
     private readonly foulChoices = new CheckboxGroup("Fouls", ["Minor", "Major"]);
 
     constructor() {
@@ -42,6 +42,7 @@ export default class TeleopShiftsPage extends Page {
         AppData.teleopDefense = this.otherActions.isChecked("Defense (Bump/Trench)");
 
         AppData.teleopPasser = this.otherActions.isChecked("Feeding/Passing");
+        AppData.teleopSnowploughing = this.otherActions.isChecked("Snowploughing");
         AppData.teleopHumanPlayerDeposit = this.otherActions.isChecked("Deposit to Human Player");
 
         AppData.teleopFouls = {

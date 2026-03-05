@@ -103,7 +103,7 @@ div.labeled-input:has(input[type="text"]) > label,
 div.labeled-input:has(input[type="number"]) > label,
 div.labeled-input > input[type="text"],
 div.labeled-input > input[type="number"] {
-    font-size: min(4dvw, 2rem);
+    font-size: clamp(min(4dvw, 2rem), 16px);
     min-width: 0;
 }
 
@@ -142,25 +142,31 @@ div.popup-input-blocker > div {
 
 div.batch-score-container > div {
     display: grid;
-    grid-template-columns: fit-content auto;
-    grid-template-rows: repeat(auto, 3);
+    grid-template-columns: min-content auto;
+    grid-template-rows: auto auto auto auto;
     gap: 0.5rem;
 }
 
-div.batch-score-container > div > label {
-    grid-column: 1;
-}
-
 div.batch-score-container > div > input {
+    font-size: max(16px, 1rem);
     grid-column: 2;
+    margin: auto;
 }
 
-div.batch-score-container > div > button:first-child {
+div.batch-score-container > div > .number-slider {
+    grid-column: span 2;
+    gap: 1rem;
+    grid-template-columns: 1fr 5rem;
+}
+
+div.batch-score-container > div > button:first-of-type {
     grid-column: 1;
+    grid-row: 4;
 }
 
-div.batch-score-container > div > button:last-child {
+div.batch-score-container > div > button:last-of-type {
     grid-column: 2;
+    grid-row: 4;
 }
 
 div.starting-shift-prompt-container, 

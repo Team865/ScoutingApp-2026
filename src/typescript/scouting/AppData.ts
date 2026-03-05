@@ -28,6 +28,7 @@ export type ScoutingData = {
     teamNumber: number,
     robotPosition: RobotPosition,
     driverSkill: number,
+    defenseSkill: number,
     comments: string,
 
     // Auto
@@ -52,6 +53,7 @@ export type ScoutingData = {
     },
     teleopDefense: boolean,
     teleopPasser: boolean,
+    teleopSnowploughing: boolean,
     teleopHumanPlayerDeposit: boolean,
     teleopFouls: {
         minor: boolean,
@@ -69,6 +71,7 @@ const AppData: ScoutingData = {
     teamNumber: -1,
     robotPosition: RobotPosition.UNSET,
     driverSkill: 0,
+    defenseSkill: 0,
     autoFuelScored: 0,
     autoIntake: {
         depot: false,
@@ -89,6 +92,7 @@ const AppData: ScoutingData = {
     },
     teleopDefense: false,
     teleopPasser: false,
+    teleopSnowploughing: false,
     teleopHumanPlayerDeposit: false,
     teleopFouls: {
         minor: false,
