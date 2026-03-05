@@ -29,6 +29,7 @@ class FrontendScoutingData(TypedDict):
     ]
     comments: str
     driverSkill: int
+    defenseSkill: int
 
     # Auto
     autoFuelScored: int
@@ -39,6 +40,7 @@ class FrontendScoutingData(TypedDict):
     teleopIntake: _TeleopIntake
     teleopDefense: bool
     teleopPasser: bool
+    teleopSnowploughing: bool
     teleopHumanPlayerDeposit: bool
     teleopFouls: _Fouls
     # Endgame
