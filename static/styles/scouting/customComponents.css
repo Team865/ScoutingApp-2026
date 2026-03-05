@@ -103,7 +103,7 @@ div.labeled-input:has(input[type="text"]) > label,
 div.labeled-input:has(input[type="number"]) > label,
 div.labeled-input > input[type="text"],
 div.labeled-input > input[type="number"] {
-    font-size: clamp(min(4dvw, 2rem), 16px);
+    font-size: max(16px, min(2rem, 4dvw));
     min-width: 0;
 }
 
