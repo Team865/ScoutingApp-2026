@@ -184,8 +184,8 @@ if __name__ == "__main__":
     if(len(spreadsheet_manager.backend_worksheets[BackendWorksheet.MATCH_DATA].get()) <= 1):
         spreadsheet_manager.set_row_col_values(BackendWorksheet.MATCH_DATA, app_data.quantitative_scouting_data.get_header)
 
-    # if(len(spreadsheet_manager.backend_worksheets[BackendWorksheet.SCOUTING_ROTATION].get()) <= 1):
-    #     spreadsheet_manager.set_scouting_rotation(app_data.quantitative_scouting_data.generate_scouting_rotation_csv())
+    if(len(spreadsheet_manager.backend_worksheets[BackendWorksheet.SCOUTING_ROTATION].get()) <= 1):
+        spreadsheet_manager.set_scouting_rotation(app_data.quantitative_scouting_data.generate_scouting_rotation_csv())
 
     print("App Data initialized!")
 
