@@ -1,5 +1,5 @@
 from math import ceil
-from typing import Literal, Optional, TypedDict, Any, Callable, cast
+from typing import Literal, Mapping, Optional, TypedDict, Any, Callable, cast
 
 from src.python.typehinting.FrontendScoutingData import FrontendScoutingData
 from src.python.typehinting.ScoutingFields import PitScoutingFields
@@ -144,6 +144,43 @@ class QuantitativeScoutingData:
     _alliance_regex = re.compile(r"^[a-zA-Z]+")
     _alliance_index_regex = re.compile(r"\d$")
 
+    # [
+    #   (
+    #       column_header: string,
+    #       value_getter: (FrontendScoutingData) -> cell value
+    #   )
+    # ]
+    _csv_columns: list[tuple[str, Callable[[FrontendScoutingData], Any]]] = [
+        ("Match Number", lambda d: d["matchNumber"]),
+        ("Team Number", lambda d: d["teamNumber"]),
+        ("Scouter Name", lambda d: d["scouterName"]),
+        ("Robot Position", lambda d: d["robotPosition"]),
+        ("Driver Skill", lambda d: d["driverSkill"]),
+        ("Defense Skill", lambda d: d["defenseSkill"]),
+        ("Auto Fuel Scored", lambda d: d["autoFuelScored"]),
+        ("Auto Intake Depot", lambda d: d["autoIntake"]["depot"]),
+        ("Auto Intake Neutral Zone", lambda d: d["autoIntake"]["neutralZone"]),
+        ("Auto Intake Human Player", lambda d: d["autoIntake"]["humanPlayer"]),
+        ("Auto Climb Attempted", lambda d: d["autoClimb"]["attempted"]),
+        ("Auto Climb Failed", lambda d: d["autoClimb"]["failed"]),
+        ("Teleop Fuel Scored", lambda d: d["teleopFuelScored"]),
+        ("Teleop Intake Depot", lambda d: d["teleopIntake"]["depot"]),
+        ("Teleop Intake Neutral Zone", lambda d: d["teleopIntake"]["neutralZone"]),
+        ("Teleop Intake Human Player", lambda d: d["teleopIntake"]["humanPlayer"]),
+        ("Teleop Intake Home Alliance", lambda d: d["teleopIntake"]["homeAlliance"]),
+        ("Teleop Intake Opponent Alliance", lambda d: d["teleopIntake"]["opponentAlliance"]),
+        ("Teleop Defense", lambda d: d["teleopDefense"]),
+        ("Teleop Passer", lambda d: d["teleopPasser"]),
+        ("Teleop Snowploughing", lambda d: d["teleopSnowploughing"]),
+        ("Teleop Human Player Deposit", lambda d: d["teleopHumanPlayerDeposit"]),
+        ("Teleop Minor Foul", lambda d: d["teleopFouls"]["minor"]),
+        ("Teleop Major Foul", lambda d: d["teleopFouls"]["major"]),
+        ("Endgame Climb Type", lambda d: d["endgameClimbType"]),
+        ("Endgame Climb Failed", lambda d: d["endgameClimbFailed"]),
+        ("Endgame Climb Time Remaining", lambda d: d["endgameClimbTimeRemaining"]),
+        ("Comments", lambda d: d["comments"])
+    ]
+
     def __init__(self) -> None:
         self.data = []
         self.rotations = {}
@@ -222,34 +259,7 @@ class QuantitativeScoutingData:
         self.data.append(camel_to_snake_case(frontend_data)) # type: ignore
 
         return [
-            frontend_data["matchNumber"], 
-            frontend_data["teamNumber"],
-            frontend_data["scouterName"],
-            frontend_data["robotPosition"],
-            frontend_data["driverSkill"],
-            frontend_data["defenseSkill"],
-            frontend_data["autoFuelScored"],
-            frontend_data["autoIntake"]["depot"],
-            frontend_data["autoIntake"]["neutralZone"],
-            frontend_data["autoIntake"]["humanPlayer"],
-            frontend_data["autoClimb"]["attempted"],
-            frontend_data["autoClimb"]["failed"],
-            frontend_data["teleopFuelScored"],
-            frontend_data["teleopIntake"]["depot"],
-            frontend_data["teleopIntake"]["neutralZone"],
-            frontend_data["teleopIntake"]["humanPlayer"],
-            frontend_data["teleopIntake"]["homeAlliance"],
-            frontend_data["teleopIntake"]["opponentAlliance"],
-            frontend_data["teleopDefense"],
-            frontend_data["teleopPasser"],
-            frontend_data["teleopSnowploughing"],
-            frontend_data["teleopHumanPlayerDeposit"],
-            frontend_data["teleopFouls"]["minor"],
-            frontend_data["teleopFouls"]["major"],
-            frontend_data["endgameClimbType"],
-            frontend_data["endgameClimbFailed"],
-            frontend_data["endgameClimbTimeRemaining"],
-            frontend_data["comments"]
+            column_specs[1](frontend_data) for column_specs in self._csv_columns
         ]
 
     def generate_scouting_rotation_csv(self):
@@ -270,36 +280,7 @@ class QuantitativeScoutingData:
     @property
     def get_header(self):
         return [
-            [
-                "Match Number", 
-                "Team Number", 
-                "Scouter Name", 
-                "Robot Position",
-                "Driver Skill",
-                "Defense Skill",
-                "Auto Fuel Scored",
-                "Auto Intake Depot",
-                "Auto Intake Neutral Zone",
-                "Auto Intake Human Player",
-                "Auto Climb Attempted",
-                "Auto Climb Failed",
-                "Teleop Fuel Scored",
-                "Teleop Intake Depot",
-                "Teleop Intake Neutral Zone",
-                "Teleop Intake Human Player",
-                "Teleop Intake Home Alliance",
-                "Teleop Intake Opponent Alliance",
-                "Teleop Defense",
-                "Teleop Passer",
-                "Teleop Snowploughing",
-                "Teleop Human Player Deposit",
-                "Teleop Minor Foul",
-                "Teleop Major Foul",
-                "Endgame Climb Type",
-                "Endgame Climb Failed",
-                "Endgame Time Remaining",
-                "Comments"
-            ]
+            [column_specs[0] for column_specs in self._csv_columns]
         ]
 
     # @property
