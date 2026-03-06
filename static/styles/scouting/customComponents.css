@@ -19,8 +19,7 @@ div.field-diagram-container > button > img {
 div.fuel-counter {
     display: grid;
     grid-template-columns: min-content 1fr min-content;
-    width: fit-content;
-    min-width: 100%;
+    width: 100%;
     box-sizing: border-box;
     max-width: 80dvw;
     margin: 1rem;
@@ -247,6 +246,7 @@ div.radio-group > div > input[type="radio"] {
 div.climb-time-container {
     align-items: stretch;
     gap: 2rem;
+    margin: 1rem 0;
 }
 
 div.climb-time-container > label {
