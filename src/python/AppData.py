@@ -214,7 +214,7 @@ class QuantitativeScoutingData:
             parse_shift(row)
 
 
-    def add_scouting_data(self, frontend_data: FrontendScoutingData):
+    def add_scouting_data(self, frontend_data: FrontendScoutingData) -> list:
         """
         Returns the data as a CSV row
         """
