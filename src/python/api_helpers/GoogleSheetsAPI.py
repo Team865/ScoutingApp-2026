@@ -149,7 +149,7 @@ class GoogleSpreadsheet:
             }
         ])
 
-        self.spreadsheet.batch_update({"requests": [
+        requests: list[dict] = [
             {
                 "autoResizeDimensions": {
                     "dimensions": {
@@ -160,7 +160,24 @@ class GoogleSpreadsheet:
                     }
                 }
             }
-        ]})
+        ]
+
+        isMatchDataSheet = worksheet == self.backend_worksheets[BackendWorksheet.MATCH_DATA]
+
+        requests.append({
+            "updateSheetProperties": {
+                "properties": {
+                    "sheetId": worksheet.id,
+                    "gridProperties": {
+                        "frozenRowCount": 1,
+                        "frozenColumnCount": 2 if isMatchDataSheet else 1
+                    }
+                },
+                "fields": "gridProperties.frozenRowCount,gridProperties.frozenColumnCount"
+            }
+        })
+
+        self.spreadsheet.batch_update({"requests": requests})
 
         # Column auto resize is not great but is better than nothing
         worksheet.columns_auto_resize(0, num_columns)
