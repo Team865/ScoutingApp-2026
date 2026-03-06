@@ -1,3 +1,4 @@
+import { getRandomUUID } from "../../lib/Randomizer";
 import LabeledCheckbox from "./LabeledCheckbox";
 
 export default class CheckboxGroup {
@@ -17,10 +18,18 @@ export default class CheckboxGroup {
         this.mainContainer.appendChild(this.header);
         
         for(const optionName of options) {
-            const labeledCheckbox = new LabeledCheckbox(optionName);
+            const uniqueHash = getRandomUUID();
 
-            this.checkboxes.set(optionName, labeledCheckbox.inputElement);
-            this.mainContainer.appendChild(labeledCheckbox.domElement);
+            const label = document.createElement("label");
+            label.innerText = optionName;
+            label.htmlFor = optionName + uniqueHash;
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = optionName + uniqueHash;
+
+            this.checkboxes.set(optionName, checkbox);
+            this.mainContainer.append(label, checkbox);
         }
     }
 

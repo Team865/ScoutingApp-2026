@@ -78,7 +78,7 @@ class BatchCounter {
             startScoreLabel, this.startScoreInput,
             endScoreLabel, this.endScoreInput,
             this.scorePercentageSlider.domElement,
-            this.submitButton, this.discardButton
+            this.discardButton, this.submitButton
         );
         this.popupContainer.append(this.header, this.fieldsContainer);
         this.inputBlocker.appendChild(this.popupContainer);

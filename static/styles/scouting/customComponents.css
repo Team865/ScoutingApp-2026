@@ -162,6 +162,12 @@ div.batch-score-container > div > .number-slider {
 div.batch-score-container > div > button:first-of-type {
     grid-column: 1;
     grid-row: 4;
+    background-color: var(--red-alliance);
+    border-color: var(--red-alliance-light);
+}
+
+div.batch-score-container > div > button:first-of-type:hover {
+    background-color: var(--red-alliance-light);
 }
 
 div.batch-score-container > div > button:last-of-type {
@@ -182,19 +188,51 @@ div.starting-shift-prompt-container> div > * {
     text-align: center;
 }
 
-div.checkbox-group, div.radio-group {
-    display: flex;
-    flex-flow: column;
+div.checkbox-group {
+    display: grid;
     align-items: center;
     background-color: var(--bg-medium);
     padding: 1rem;
     border-radius: 1rem;
     width: 100%;
     box-sizing: border-box;
+    grid-template-columns: 1fr auto;
 }
 
-div.checkbox-group > h1 {
+div.radio-group {
+    display: flex;
+    align-items: stretch;
+    flex-flow: column;
+    background-color: var(--bg-medium);
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    grid-template-columns: 1fr auto;
+}
+
+div.checkbox-group > h1,
+div.radio-group > h1 {
     margin: 0.5rem;
+    grid-column: span 2;
+    text-align: center;
+    border-bottom: var(--text) 1px solid;
+    padding-bottom: 1rem;
+}
+
+div.checkbox-group > label, 
+div.radio-group > label {
+    grid-column: 1;
+    font-size: 2rem;
+    text-align: center;
+    padding: 0.5rem 0;
+}
+
+div.checkbox-group > input, 
+div.radio-group > input {
+    grid-column: 2;
+    width: 2rem;
+    height: 2rem;
 }
 
 div.radio-group > div > label {
