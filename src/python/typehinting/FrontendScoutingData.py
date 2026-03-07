@@ -19,8 +19,8 @@ class _FrontendScoutingData_teleopIntake(TypedDict):
     opponentAlliance: bool
 
 class _FrontendScoutingData_teleopFouls(TypedDict):
-    minor: bool
-    major: bool
+    minor: int | float
+    major: int | float
 
 class FrontendScoutingData(TypedDict):
     scouterName: str

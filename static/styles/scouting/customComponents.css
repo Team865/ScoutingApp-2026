@@ -21,8 +21,7 @@ div.fuel-counter {
     grid-template-columns: min-content 1fr min-content;
     width: 100%;
     box-sizing: border-box;
-    max-width: 80dvw;
-    margin: 1rem;
+    margin: 1rem 0;
     gap: 0.5rem;
     background-color: var(--bg-medium);
     padding: 1rem;
@@ -362,4 +361,78 @@ button.match-selection.blue {
 
 button.match-selection.blue:hover {
     background-color: var(--blue-alliance-light);
+}
+
+div.foul-counter {
+    background-color: var(--bg-medium);
+    display: grid;
+    grid-template-columns: min-content auto min-content;
+    grid-template-areas: 
+        "mainHeader mainHeader mainHeader"
+        "minorHeader minorHeader minorHeader"
+        "removeMinor minorInput addMinor"
+        "majorHeader majorHeader majorHeader"
+        "removeMajor majorInput addMajor"
+    ;
+    margin: 1rem 0;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: 1rem;
+    width: 100%;
+}
+
+div.foul-counter > h1 {
+    grid-area: mainHeader;
+    font-size: 2rem;
+    text-align: center;
+
+    border-bottom: 1px solid var(--text);
+    padding: 1rem 0;
+    margin: 0;
+}
+
+div.foul-counter > * {
+    font-size: 2rem;
+}
+
+div.foul-counter > button {
+    width: 4rem;
+    height: 4rem;
+}
+
+div.foul-counter > input {
+    text-align: center;
+    min-width: 0;
+}
+
+div.foul-counter > h2:first-of-type {
+    grid-area: minorHeader;
+}
+
+div.foul-counter > h2:last-of-type {
+    grid-area: majorHeader;
+}
+
+div.foul-counter > button:nth-of-type(1) {
+    grid-area: removeMinor;
+}
+
+div.foul-counter > button:nth-of-type(2) {
+    grid-area: addMinor;
+}
+
+div.foul-counter > button:nth-of-type(3) {
+    grid-area: removeMajor;
+}
+
+div.foul-counter > button:nth-of-type(4) {
+    grid-area: addMajor;
+}
+
+div.foul-counter > input:first-of-type {
+    grid-area: minorInput;
+}
+
+div.foul-counter > input:last-of-type {
+    grid-area: majorInput;
 }

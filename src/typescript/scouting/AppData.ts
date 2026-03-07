@@ -56,8 +56,8 @@ export type ScoutingData = {
     teleopSnowploughing: boolean,
     teleopHumanPlayerDeposit: boolean,
     teleopFouls: {
-        minor: boolean,
-        major: boolean
+        minor: number,
+        major: number
     },
     // Endgame
     endgameClimbType: ClimbHeight,
@@ -95,8 +95,8 @@ const AppData: ScoutingData = {
     teleopSnowploughing: false,
     teleopHumanPlayerDeposit: false,
     teleopFouls: {
-        minor: false,
-        major: false
+        minor: 0,
+        major: 0
     },
     endgameClimbType: ClimbHeight.NO_ATTEMPT,
     endgameClimbFailed: false,

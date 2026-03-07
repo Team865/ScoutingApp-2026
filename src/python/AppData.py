@@ -76,8 +76,8 @@ class ScoutingMatchData(TypedDict):
         opponent_alliance: bool # pyright: ignore[reportGeneralTypeIssues]
 
     class _Fouls(TypedDict):
-        minor: bool
-        major: bool # pyright: ignore[reportGeneralTypeIssues]
+        minor: int
+        major: int # pyright: ignore[reportGeneralTypeIssues]
 
     class _TeleopDefense(TypedDict):
         depot: bool

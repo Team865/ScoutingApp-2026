@@ -1,5 +1,6 @@
 import AppData from "../AppData";
 import CheckboxGroup from "../components/CheckboxGroup";
+import FoulCounter from "../components/FoulCounter";
 import FuelCounter from "../components/FuelCounter";
 import LabeledCheckbox from "../components/LabeledCheckbox";
 import Page from "./Page";
@@ -11,7 +12,7 @@ export default class TeleopShiftsPage extends Page {
     private readonly fuelCounter = new FuelCounter();
     private readonly intakeChoices = new CheckboxGroup("Intake", ["Depot", "Neutral Zone", "Human Player", "Home Alliance", "Opponent Alliance"]);
     private readonly otherActions = new CheckboxGroup("Other Actions", ["Defense (Bump/Trench)", "Feeding/Passing", "Snowploughing", "Deposit to Human Player"]);
-    private readonly foulChoices = new CheckboxGroup("Fouls", ["Minor", "Major"]);
+    private readonly foulCounter = new FoulCounter();
 
     constructor() {
         super("TELEOP SHIFTS");
@@ -24,7 +25,7 @@ export default class TeleopShiftsPage extends Page {
             this.fuelCounter.domElement,
             this.intakeChoices.domElement,
             this.otherActions.domElement,
-            this.foulChoices.domElement
+            this.foulCounter.domElement
         );
     }
     
@@ -46,8 +47,8 @@ export default class TeleopShiftsPage extends Page {
         AppData.teleopHumanPlayerDeposit = this.otherActions.isChecked("Deposit to Human Player");
 
         AppData.teleopFouls = {
-            minor: this.foulChoices.isChecked("Minor"),
-            major: this.foulChoices.isChecked("Major")
+            minor: this.foulCounter.getMinorFouls(),
+            major: this.foulCounter.getMajorFouls()
         };
     }
 }
