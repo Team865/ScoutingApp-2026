@@ -27,6 +27,9 @@ function validateIntegerInput(startInput: string, newInput: string): string {
 export function makeInputIntegerOnly(input: HTMLInputElement, min?: number, max?: number) {
     let previousInput: string = input.value;
 
+    input.type = "number";
+    input.pattern = "[0-9]*";
+
     input.addEventListener("focusin", () => previousInput = input.value);
     input.addEventListener("focusout", () => input.value = validateIntegerInput(previousInput, input.value));
 }
