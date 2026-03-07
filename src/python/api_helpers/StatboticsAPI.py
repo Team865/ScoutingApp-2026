@@ -1,5 +1,4 @@
-from statbotics import Statbotics
-from typing import TypedDict
+from typing import Any
 
 from src.python.util import ListUtil
 from ..typehinting.StatboticsData import StatboticsTeamEventData, StatboticsTeamData
@@ -10,17 +9,23 @@ _STATBOTICS_ROOT = "https://api.statbotics.io/v3"
 
 __all__ = ["_statbotics_request"]
 
-def _statbotics_request(path: str):
+def _statbotics_request(path: str) -> tuple[Any, int]:
     resp = get(f"{_STATBOTICS_ROOT}/{path}")
 
     if(not resp.ok):
-        raise ValueError(f"GET failed with HTTP code {resp.status_code} ({resp.reason})")
+        print(f"GET failed with HTTP code {resp.status_code} ({resp.reason})")
+        return None, resp.status_code
     
-    return resp.json()
+    return resp.json(), 200
 
 def update_epa(app_data, event_key: str):
     # Get event data first
-    team_event_data: list[StatboticsTeamEventData] = _statbotics_request(f"team_events?event={event_key}")
+    data, status_code = _statbotics_request(f"team_events?event={event_key}")
+
+    if(status_code != 200):
+        return
+
+    team_event_data: list[StatboticsTeamEventData] = data
 
     if(len(team_event_data) > 0): # Event data exists
         for team_data in team_event_data:

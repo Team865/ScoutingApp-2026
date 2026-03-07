@@ -13,7 +13,7 @@ export default class SummaryPage implements Page {
         
         this.mainContainer.classList.add("summary-page");
 
-        this.updateData();
+        this.epaP.innerHTML = "EPA: <span class=\"epa-number\">Loading...</span>";
 
         this.mainContainer.append(
             this.epaP
@@ -22,12 +22,18 @@ export default class SummaryPage implements Page {
 
     public updateData() {
         const teamData = AppData.fetched_team_data.find((teamData) => teamData.number === this.teamNumber);
-        const epaDataExists = (teamData.normalized_epa || teamData.epa);
-        const isNormalizedEpa = epaDataExists && (teamData.epa === null);
+        const epaDataExists = teamData.normalized_epa || teamData.epa;
+
+        if(!epaDataExists) {
+            this.epaP.innerHTML = "EPA: <span class=\"epa-number\">N/A</span>";
+            return;
+        }
+
+        const isNormalizedEpa = teamData.epa === null;
 
         const epaValue = teamData.epa || teamData.normalized_epa;
 
-        this.epaP.innerHTML = `${isNormalizedEpa ? "Normalized " : ""}EPA: <span class="epa-number">${epaDataExists ? epaValue : "Loading..."}</span>`;
+        this.epaP.innerHTML = `${isNormalizedEpa ? "Normalized " : ""}EPA: <span class="epa-number">${epaValue}</span>`;
     }
 
     public show(pageContainer: HTMLDivElement): void {

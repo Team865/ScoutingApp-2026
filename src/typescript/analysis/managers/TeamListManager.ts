@@ -42,11 +42,13 @@ function populateSortFunctions() {
             const teamData2 = AppData.superscouting.fetched_team_data.find(
                 (team) => team.number === teamNumber2
             );
-
+            
+            const epaExists = (teamData1.normalized_epa && teamData2.normalized_epa);
             const useNormalizedEPA = (teamData1.epa && teamData2.epa) === undefined;
-            return useNormalizedEPA ?
+            return epaExists? (useNormalizedEPA ?
                 (teamData1.normalized_epa - teamData2.normalized_epa) :
-                (teamData1.epa - teamData2.epa);
+                (teamData1.epa - teamData2.epa)) : 
+                (teamNumber2 - teamNumber1);
         });
 
         if(isDescending) sortedArray.reverse();

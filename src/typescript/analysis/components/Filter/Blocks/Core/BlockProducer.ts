@@ -131,8 +131,8 @@ export namespace BlockProducer {
                 "Team Number",
                 (teamNumber) => teamNumber)
             ),
-            createProducerElement("NUMBER: EPA", () => new DataBlock(
-                "number",
+            createProducerElement("NUMBER?: EPA", () => new DataBlock(
+                "number?",
                 "EPA",
                 (teamNumber) => {
                     const teamData = AppData.superscouting.fetched_team_data.find(teamData => teamData.number === teamNumber);

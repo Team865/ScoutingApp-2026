@@ -14,7 +14,15 @@ export default class TeamCard {
 
         this.teamNumber = teamNumber;
         this.teamName = teamData.name;
-        this.epaLabel.innerText = `EPA: ${Math.round((teamData.epa || teamData.normalized_epa) * 10) / 10}`;
+
+        const epaExists = teamData.epa || teamData.normalized_epa;
+
+        if(epaExists) {
+            this.epaLabel.innerText = `EPA: ${Math.round((teamData.epa || teamData.normalized_epa) * 10) / 10}`;
+        } else {
+            this.epaLabel.innerText = "EPA: N/A";
+        }
+
         this.mainButton.classList.add("team-card");
         this.mainButton.innerText = this.teamString;
 

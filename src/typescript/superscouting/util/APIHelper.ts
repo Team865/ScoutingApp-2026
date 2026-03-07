@@ -9,12 +9,18 @@ export async function fetchBackendData() {
 }
 
 export async function updateEPA() {
-    const epaData: {[key: number]: {epa?: number, normalized_epa: number}} = await genericGetRequest(`${apiRoot}/epa`);
+    const epaData: {[key: number]: {epa?: number, normalized_epa: number} | null} = await genericGetRequest(`${apiRoot}/epa`);
 
-    for(const [teamNumber, {epa, normalized_epa}] of Object.entries(epaData)) {
+    for(const [teamNumber, epaInfo] of Object.entries(epaData)) {
         const teamData = AppData.fetched_team_data.find(team => team.number === Number.parseInt(teamNumber));
-        teamData.epa = epa;
-        teamData.normalized_epa = normalized_epa;
+
+        if(epaInfo == null) {
+            teamData.epa = null;
+            teamData.normalized_epa = null
+        } else {
+            teamData.epa = epaInfo["epa"];
+            teamData.normalized_epa = epaInfo["normalized_epa"];
+        }
     }
 }
 

@@ -12,7 +12,7 @@ from src.python.AppData import AppData, MatchNotesChunkJSon, PitScoutingNotesChu
 import src.python.sse.TBAPoller as TBAPoller
 from src.python.api_helpers.GoogleSheetsAPI import GoogleSpreadsheet, BackendWorksheet
 import threading
-from typing import TypedDict
+from typing import Optional, TypedDict
 from pathlib import Path
 load_dotenv()
 
@@ -113,14 +113,22 @@ def get_superscouting_data():
 def get_epa_data():
     # Create JSon to return
     class EPAGroup(TypedDict):
-        epa: float | None
+        epa: Optional[float]
         normalized_epa: int
     
-    epaJSon: dict[int, EPAGroup] = {}
+    timeout_seconds = 10
+    epaJSon: dict[int, Optional[EPAGroup]] = {}
 
     for app_team_data in app_data.superscouting_data.fetched_team_data:
-        while app_team_data["normalized_epa"] is None:
+        start_time = time.time()
+
+        while (
+            (app_team_data["normalized_epa"] is None) and
+            ((time.time() - start_time) < timeout_seconds)
+        ):
             pass
+
+        if(app_team_data["normalized_epa"] is None): epaJSon[app_team_data["number"]] = None
 
         epaJSon[app_team_data["number"]] = {
             "epa": "epa" in app_team_data and app_team_data["epa"] or None,
