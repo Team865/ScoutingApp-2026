@@ -18,7 +18,8 @@ div#filter-bar-buttons {
     gap: 5px;
 }
 
-button#filter-button {
+button#filter-button,
+button#open-filter-list {
     padding: 5px;
 }
 
@@ -40,7 +41,8 @@ button#toggle-filter:hover {
     background-color: var(--bg-complete-light);
 }
 
-button#filter-button > img {
+button#filter-button > img,
+button#open-filter-list > img {
     display: block;
     height: max(2dvh, 30px);
     aspect-ratio: 1;

@@ -79,7 +79,7 @@ div#filter-content-toolbar > div {
 }
 
 div#filter-content-display {
-    display: block;
+    display: flex;
     margin: 1rem;
     overflow: auto;
     width: 100%;
@@ -241,6 +241,14 @@ div#filter-content-toolbar button:has(img) {
 div#filter-content-toolbar img {
     width: 2rem;
     height: 2rem;
+}
+
+span.value-block {
+    margin: auto;
+    min-width: max-content;
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--text);
 }
 
 /* Selected Object */

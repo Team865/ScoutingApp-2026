@@ -9,6 +9,7 @@
   <link href="./static/styles/analysis/main.css" rel="stylesheet" />
   <link href="./static/styles/analysis/filterAndSort.css" rel="stylesheet" />
   <link href="./static/styles/analysis/filterEditor.css" rel="stylesheet" />
+  <link href="./static/styles/analysis/filterList.css" rel="stylesheet" />
   <link href="./static/styles/analysis/teamCardsList.css" rel="stylesheet" />
   <link href="./static/styles/analysis/teamPage.css" rel="stylesheet" />
 
@@ -22,6 +23,9 @@
       <div id="filter-bar-buttons">
         <button id="filter-button">
           <img alt="Filter" src="./static/deploy/icons/filter.svg" />
+        </button>
+        <button id="open-filter-list" class="disabled" commandfor="filter-list-dialog" command="show-modal">
+          <img src="./static/deploy/icons/list.svg" alt="List">
         </button>
         <button id="build-filter">BUILD</button>
         <button id="toggle-filter" class="disabled">DISABLED</button>
@@ -56,14 +60,18 @@
           <div id="filter-content-container">
             <div id="filter-content-toolbar">
               <div>
-                <button id="undo-action" class="disabled"><img src="./static/deploy/icons/arrowLoopingLeft.svg" alt="Undo"></button>
-                <button id="redo-action" class="disabled"><img src="./static/deploy/icons/arrowLoopingLeft.svg" alt="Redo"></button>
-                <button id="test-filter-block" class="disabled"><img src="./static/deploy/icons/verifyIcon.svg" alt="Test"></button>
+                <button id="undo-action" class="disabled"><img src="./static/deploy/icons/arrowLoopingLeft.svg"
+                    alt="Undo"></button>
+                <button id="redo-action" class="disabled"><img src="./static/deploy/icons/arrowLoopingLeft.svg"
+                    alt="Redo"></button>
+                <button id="test-filter-block" class="disabled"><img src="./static/deploy/icons/verifyIcon.svg"
+                    alt="Test"></button>
               </div>
               <div>
                 <button id="delete-filter-block"><img src="./static/deploy/icons/trashCan.svg" alt="Delete"></button>
                 <button id="copy-filter-block"><img src="./static/deploy/icons/copyIcon.svg" alt="Copy"></button>
-                <button id="paste-filter-block" class="disabled"><img src="./static/deploy/icons/pasteIcon.svg" alt="Paste"></button>
+                <button id="paste-filter-block" class="disabled"><img src="./static/deploy/icons/pasteIcon.svg"
+                    alt="Paste"></button>
               </div>
             </div>
             <div id="filter-content-display"></div>
@@ -75,7 +83,18 @@
       <div id="team-cards-page-container">
         <div id="team-cards-list"></div>
       </div>
+    </div>
   </main>
+  
+    <dialog id="filter-list-dialog">
+      <h1>FILTERS</h1>
+      <div id="filter-list-body"></div>
+      <div id="filter-list-bottom-bar">
+        <input id="filter-name-input" />
+        <button id="save-filter-button">SAVE</button>
+        <button id="close-filter-list-button" commandfor="filter-list-dialog" command="close">CLOSE</button>
+      </div>
+    </dialog>
   <script src="./static/build/analysis/main.js" type="module"></script>
 </body>
 

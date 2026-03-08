@@ -5,6 +5,7 @@ import { BlockCore, SetSelectedBlock } from "../components/Filter/Blocks/Core/Bl
 import { BlockProducer } from "../components/Filter/Blocks/Core/BlockProducer";
 import BlockSlot from "../components/Filter/Blocks/Core/BlockSlot";
 import { HistoryManager } from "./HistoryManager";
+import { SavedFilters } from "./SavedFilters";
 
 const filterMenuToggleButton = document.querySelector("button#filter-button") as HTMLButtonElement;
 const filterMenu = document.querySelector("div#filter-menu") as HTMLDivElement;
@@ -14,6 +15,7 @@ const filterBlockProducersMenu = document.querySelector("div#filter-blocks-menu"
 const closeBlockProducersButton = document.querySelector("button#close-block-producers-page") as HTMLButtonElement;
 
 const testFilterBlockButton = document.querySelector("button#test-filter-block") as HTMLButtonElement;
+const openFilterListButton = document.querySelector("button#open-filter-list") as HTMLButtonElement;
 
 const undoButton = document.querySelector("button#undo-action") as HTMLButtonElement;
 const redoButton = document.querySelector("button#redo-action") as HTMLButtonElement;
@@ -35,21 +37,21 @@ let historyManager: HistoryManager = null;
 const sortOrderButton = document.querySelector("button#sort-order") as HTMLButtonElement;
 const sortBySelection = document.querySelector("select#sorted-by") as HTMLSelectElement;
 
-abstract class ModifyFilterBlocks {
-    public static copyBlock(block: BlockCore) {
+namespace ModifyFilterBlocks {
+    export function copyBlock(block: BlockCore) {
         copyFilterButton.classList.remove("selected");
         pasteFilterButton.classList.remove("disabled");
         // Store a clone of the block so future modifications 
         // to the reference block won't affect the copied block
         copiedBlock = block.clone();
     }
-    public static pasteBlock(block: BlockCore | BlockSlot) {
+    export function pasteBlock(block: BlockCore | BlockSlot) {
         pasteFilterButton.classList.remove("selected");
         const target = block || BlockProducer.getTarget();
         if(target === null) return;
         BlockProducer.addBlock(copiedBlock.clone(), target);
     }
-    public static deleteBlock(block: BlockCore) {
+    export function deleteBlock(block: BlockCore) {
         historyManager.actionCommitted({
             type: "remove",
             blockRemoved: block,
@@ -248,6 +250,7 @@ export namespace FilterManager {
         bindAccordionBehavior(filterMenu, filterMenu);
         initSortOptions();
         initFilterEditor();
+        SavedFilters.start(() => topLevelBlock);
 
         historyManager = new HistoryManager(
             2 ** 16,
@@ -304,6 +307,8 @@ export namespace FilterManager {
         });
 
         sortOrderButton.addEventListener("click", () => sortOrderButton.classList.toggle("descending"));
+
+        SavedFilters.loadRequested.connect(BlockProducer.setTopLevelBlock)
 
         initKeybinds();
     }
