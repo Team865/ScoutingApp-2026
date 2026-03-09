@@ -142,6 +142,18 @@ export namespace TeamListManager {
         }
     }
 
+    export function applyCustomFilter() {
+        buildFilterButton.innerText = "...";
+        const newFilteredTeams = customFilter();
+        if(newFilteredTeams === undefined) {
+            buildFilterButton.innerText = "BUILD";
+        } else {
+            filteredTeams = newFilteredTeams;
+            buildFilterButton.innerText = "REBUILD";
+        }
+        if(!toggleFilterButton.classList.contains("disabled")) toggleTeamVisibility();
+    }
+
     export function start() {
         populateSortFunctions();
 
@@ -171,17 +183,7 @@ export namespace TeamListManager {
         });
         searchBar.inputElement.addEventListener("input", toggleTeamVisibility);
 
-        buildFilterButton.addEventListener("click", () => {
-            buildFilterButton.innerText = "...";
-            const newFilteredTeams = customFilter();
-            if(newFilteredTeams === undefined) {
-                buildFilterButton.innerText = "BUILD";
-            } else {
-                filteredTeams = newFilteredTeams;
-                buildFilterButton.innerText = "REBUILD";
-            }
-            if(!toggleFilterButton.classList.contains("disabled")) toggleTeamVisibility();
-        });
+        buildFilterButton.addEventListener("click", () => applyCustomFilter);
 
         toggleFilterButton.addEventListener("click", toggleTeamVisibility);
         sortOrderButton.addEventListener("click", sortTeams);

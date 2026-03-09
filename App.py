@@ -114,7 +114,7 @@ def get_epa_data():
     # Create JSon to return
     class EPAGroup(TypedDict):
         epa: Optional[float]
-        normalized_epa: int
+        normalized_epa: Optional[int]
     
     timeout_seconds = 10
     epaJSon: dict[int, Optional[EPAGroup]] = {}

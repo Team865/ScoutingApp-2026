@@ -6,6 +6,7 @@ import { BlockProducer } from "../components/Filter/Blocks/Core/BlockProducer";
 import BlockSlot from "../components/Filter/Blocks/Core/BlockSlot";
 import { HistoryManager } from "./HistoryManager";
 import { SavedFilters } from "./SavedFilters";
+import { TeamListManager } from "./TeamListManager";
 
 const filterMenuToggleButton = document.querySelector("button#filter-button") as HTMLButtonElement;
 const filterMenu = document.querySelector("div#filter-menu") as HTMLDivElement;
@@ -199,12 +200,13 @@ function initFilterEditor() {
         if(block) {
             filterContentDisplay.appendChild(block.domElement);
             testFilterBlockButton.classList.remove("disabled");
+            disconnectTopLevelBlockClickConnection = block.clicked.connect(setSelectedBlock);
         } else {
             testFilterBlockButton.classList.add("disabled");
+            disconnectTopLevelBlockClickConnection = null;
         }
 
         topLevelBlock = block;
-        disconnectTopLevelBlockClickConnection = topLevelBlock.clicked.connect(setSelectedBlock);
     }
     BlockProducer.start();
 }
@@ -308,7 +310,10 @@ export namespace FilterManager {
 
         sortOrderButton.addEventListener("click", () => sortOrderButton.classList.toggle("descending"));
 
-        SavedFilters.loadRequested.connect(BlockProducer.setTopLevelBlock)
+        SavedFilters.loadRequested.connect(block => {
+            BlockProducer.setTopLevelBlock(block);
+            TeamListManager.applyCustomFilter();
+        });
 
         initKeybinds();
     }

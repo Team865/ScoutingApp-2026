@@ -14,6 +14,8 @@ export namespace SavedFilters {
     const saveFilterButton: HTMLButtonElement = document.querySelector("#save-filter-button");
 
     export function start(filterBlockGetter: () => BlockCore) {
+        dialog.addEventListener("close", _ => filterNameInput.value = "");
+
         saveFilterButton.addEventListener("click", _ => {
             const filter = filterBlockGetter();
             const filterName = filterNameInput.value;
@@ -26,20 +28,27 @@ export namespace SavedFilters {
             const preexistingFilter = filterItems.find(item => item.filterName == filterName);
 
             if (preexistingFilter) {
-                const shouldOverwrite = prompt(`${filterName} already in use, overwrite?`);
+                const shouldOverwrite = confirm(`${filterName} already in use, overwrite?`);
 
                 if (!shouldOverwrite) return;
 
                 preexistingFilter.filter = filter.clone();
             } else {
-                const item = new FilterListItem(filterName, filter);
+                const item = new FilterListItem(filterName, filter.clone());
 
-                item.deleteButton.addEventListener("click", _ => {
+                item.domElement.addEventListener("click", _ => filterNameInput.value = item.filterName);
+
+                item.deleteButton.addEventListener("click", e => {
+                    e.stopPropagation();
+                    const confirmed = confirm(`Are you sure you want to delete ${item.filterName}?`);
+                    if(!confirmed) return;
+
                     filterItems.splice(filterItems.indexOf(item), 1);
                     item.domElement.remove();
                 });
 
-                item.loadButton.addEventListener('click', _ => {
+                item.loadButton.addEventListener('click', e => {
+                    e.stopPropagation();
                     const confirmed = confirm("Are you sure?");
                     if (!confirmed) return;
 
