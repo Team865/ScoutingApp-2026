@@ -23,7 +23,7 @@ def update_epa(app_data, event_key: str):
     data, status_code = _statbotics_request(f"team_events?event={event_key}")
 
     if(status_code != 200):
-        print(f"\u001B[31mFAILED TO FETCH STATBOTICS EPA FOR {event_key} \u001B[01m")
+        print(f"\u001B[31mFAILED TO FETCH STATBOTICS EPA FOR {event_key} \u001b[0m")
         return
 
     team_event_data: list[StatboticsTeamEventData] = data
@@ -45,7 +45,7 @@ def update_epa(app_data, event_key: str):
                 data, status_code = _statbotics_request(f"team/{app_team_data['number']}")
 
                 if(status_code != 200):
-                    print(f"\u001B[31mFAILED TO FETCH STATBOTICS EPA FOR TEAM {app_team_data["number"]} \u001B[01m")
+                    print(f"\u001B[31mFAILED TO FETCH STATBOTICS EPA FOR TEAM {app_team_data["number"]} \u001b[0m")
                     return
 
                 statbotics_team_data: StatboticsTeamData = data
