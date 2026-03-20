@@ -251,7 +251,35 @@ class QuantitativeScoutingData:
             parse_shift(row)
 
     def set_scouting_data_from_csv(self, csv: list[list[str]]):
-        pass
+        if(len(csv) < 2): return # No data
+
+        key_sequences = [column_spec[1] for column_spec in self._csv_columns]
+        min_cells = len(key_sequences)
+
+        def parse_row(row: list[str]):
+            if(len(row) < min_cells): return
+
+            match_data: ScoutingMatchData = {} # type: ignore
+
+            for cell_index in range(min_cells):
+                cell = row[cell_index]
+                key_sequence = key_sequences[cell_index]
+                num_keys = len(key_sequence)
+                current_dict = match_data
+
+                for key_index, key in enumerate(key_sequence):
+                    if(key_index < num_keys - 1):
+                        if(key not in current_dict):
+                            current_dict[key] = {}
+
+                        current_dict = current_dict[key]
+                    else:
+                        current_dict[key] = cell
+
+            self.data.append(match_data)
+
+        for row in csv[1:]:
+            parse_row(row)
 
     def add_scouting_data(self, frontend_data: ScoutingMatchData) -> list:
         """

@@ -62,7 +62,9 @@ class GoogleSpreadsheet:
                 scouting_rotation_csv = self.backend_worksheets[BackendWorksheet.SCOUTING_ROTATION].get()
                 app_data.quantitative_scouting_data.set_scouting_rotation_from_csv(scouting_rotation_csv)
 
-                # Poll quantitative scouting data (UNIMPLEMENTED)
+                # Poll quantitative scouting data
+                match_data_csv = self.backend_worksheets[BackendWorksheet.MATCH_DATA].get()
+                app_data.quantitative_scouting_data.set_scouting_data_from_csv(match_data_csv)
 
                 # Poll match notes
                 match_notes_csv = self.backend_worksheets[BackendWorksheet.MATCH_NOTES].get()
