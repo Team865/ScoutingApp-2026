@@ -2,6 +2,7 @@
 :: Change Directory to the project root
 cd %~dp0..\
 call scripts\build.bat
+call scripts\sanityCheck.bat
 
 :: Only run python app if the build was successful
 if %ERRORLEVEL% == 0 (

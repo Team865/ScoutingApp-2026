@@ -150,35 +150,35 @@ class QuantitativeScoutingData:
     #       value_getter: (FrontendScoutingData) -> cell value
     #   )
     # ]
-    _csv_columns: list[tuple[str, Callable[[ScoutingMatchData], Any]]] = [
-        ("Match Number", lambda d: d["match_number"]),
-        ("Team Number", lambda d: d["team_number"]),
-        ("Scouter Name", lambda d: d["scouter_name"]),
-        ("Robot Position", lambda d: d["robot_position"]),
-        ("Driver Skill", lambda d: d["driver_skill"]),
-        ("Defense Skill", lambda d: d["defense_skill"]),
-        ("Auto Fuel Scored", lambda d: d["auto_fuel_scored"]),
-        ("Auto Intake Depot", lambda d: d["auto_intake"]["depot"]),
-        ("Auto Intake Neutral Zone", lambda d: d["auto_intake"]["neutral_zone"]),
-        ("Auto Intake Human Player", lambda d: d["auto_intake"]["human_player"]),
-        ("Auto Climb Attempted", lambda d: d["auto_climb"]["attempted"]),
-        ("Auto Climb Failed", lambda d: d["auto_climb"]["failed"]),
-        ("Teleop Fuel Scored", lambda d: d["teleop_fuel_scored"]),
-        ("Teleop Intake Depot", lambda d: d["teleop_intake"]["depot"]),
-        ("Teleop Intake Neutral Zone", lambda d: d["teleop_intake"]["neutral_zone"]),
-        ("Teleop Intake Human Player", lambda d: d["teleop_intake"]["human_player"]),
-        ("Teleop Intake Home Alliance", lambda d: d["teleop_intake"]["home_alliance"]),
-        ("Teleop Intake Opponent Alliance", lambda d: d["teleop_intake"]["opponent_alliance"]),
-        ("Teleop Defense", lambda d: d["teleop_defense"]),
-        ("Teleop Passer", lambda d: d["teleop_passer"]),
-        ("Teleop Snowploughing", lambda d: d["teleop_snowploughing"]),
-        ("Teleop Human Player Deposit", lambda d: d["teleop_human_player_deposit"]),
-        ("Teleop Minor Foul", lambda d: d["teleop_fouls"]["minor"]),
-        ("Teleop Major Foul", lambda d: d["teleop_fouls"]["major"]),
-        ("Endgame Climb Type", lambda d: d["endgame_climb_type"]),
-        ("Endgame Climb Failed", lambda d: d["endgame_climb_failed"]),
-        ("Endgame Climb Time Remaining", lambda d: d["endgame_climb_time_remaining"]),
-        ("Comments", lambda d: d["comments"])
+    _csv_columns: list[tuple[str, list[str]]] = [
+        ("Match Number", ["match_number"]),
+        ("Team Number", ["team_number"]),
+        ("Scouter Name", ["scouter_name"]),
+        ("Robot Position", ["robot_position"]),
+        ("Driver Skill", ["driver_skill"]),
+        ("Defense Skill", ["defense_skill"]),
+        ("Auto Fuel Scored", ["auto_fuel_scored"]),
+        ("Auto Intake Depot", ["auto_intake", "depot"]),
+        ("Auto Intake Neutral Zone", ["auto_intake", "neutral_zone"]),
+        ("Auto Intake Human Player", ["auto_intake", "human_player"]),
+        ("Auto Climb Attempted", ["auto_climb", "attempted"]),
+        ("Auto Climb Failed", ["auto_climb", "failed"]),
+        ("Teleop Fuel Scored", ["teleop_fuel_scored"]),
+        ("Teleop Intake Depot", ["teleop_intake", "depot"]),
+        ("Teleop Intake Neutral Zone", ["teleop_intake", "neutral_zone"]),
+        ("Teleop Intake Human Player", ["teleop_intake", "human_player"]),
+        ("Teleop Intake Home Alliance", ["teleop_intake", "home_alliance"]),
+        ("Teleop Intake Opponent Alliance", ["teleop_intake", "opponent_alliance"]),
+        ("Teleop Defense", ["teleop_defense"]),
+        ("Teleop Passer", ["teleop_passer"]),
+        ("Teleop Snowploughing", ["teleop_snowploughing"]),
+        ("Teleop Human Player Deposit", ["teleop_human_player_deposit"]),
+        ("Teleop Minor Foul", ["teleop_fouls", "minor"]),
+        ("Teleop Major Foul", ["teleop_fouls", "major"]),
+        ("Endgame Climb Type", ["endgame_climb_type"]),
+        ("Endgame Climb Failed", ["endgame_climb_failed"]),
+        ("Endgame Climb Time Remaining", ["endgame_climb_time_remaining"]),
+        ("Comments", ["comments"])
     ]
 
     def __init__(self) -> None:
@@ -250,16 +250,26 @@ class QuantitativeScoutingData:
         for row in csv[1:]:
             parse_shift(row)
 
+    def set_scouting_data_from_csv(self, csv: list[list[str]]):
+        pass
 
     def add_scouting_data(self, frontend_data: ScoutingMatchData) -> list:
         """
         Returns the data as a CSV row
         """
 
+        def get_dict_entry(key_sequence: list[str]):
+            entry = frontend_data
+
+            for key in key_sequence:
+                entry = entry[key]
+
+            return entry
+
         self.data.append(frontend_data) # type: ignore
 
         return [
-            column_specs[1](frontend_data) for column_specs in self._csv_columns
+            get_dict_entry(column_specs[1]) for column_specs in self._csv_columns
         ]
 
     def generate_scouting_rotation_csv(self):
