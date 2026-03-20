@@ -37,8 +37,8 @@ export default class MatchSelectionPage extends Page {
         const button = document.createElement("button");
 
         button.addEventListener("click", _ => {
-            AppData.matchNumber = matchNumber;
-            AppData.teamNumber = teamNumber;
+            AppData.match_number = matchNumber;
+            AppData.team_number = teamNumber;
 
             this.matchSelected.emit(alliance);
         });

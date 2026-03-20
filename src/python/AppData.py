@@ -1,10 +1,8 @@
 from math import ceil
 from typing import Literal, Mapping, Optional, TypedDict, Any, Callable, cast
 
-from src.python.typehinting.FrontendScoutingData import FrontendScoutingData
 from src.python.typehinting.ScoutingFields import PitScoutingFields
 from src.python.util import ListUtil
-from src.python.util.CaseUtil import camel_to_snake_case
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
 from .api_helpers.TBAApi import get_teams, get_matches, get_event_info
 from .api_helpers.StatboticsAPI import update_epa
@@ -95,6 +93,7 @@ class ScoutingMatchData(TypedDict):
         "Blue Left", "Blue Middle", "Blue Right"
     ]
     driver_skill: int
+    defense_skill: int
     comments: str
 
     auto_fuel_scored: int
@@ -105,6 +104,7 @@ class ScoutingMatchData(TypedDict):
     teleop_intake: _TeleopIntake
     teleop_defense: _TeleopDefense
     teleop_passer: bool
+    teleop_snowploughing: bool
     teleop_human_player_deposit: bool
     teleop_fouls: _Fouls
     
@@ -150,34 +150,34 @@ class QuantitativeScoutingData:
     #       value_getter: (FrontendScoutingData) -> cell value
     #   )
     # ]
-    _csv_columns: list[tuple[str, Callable[[FrontendScoutingData], Any]]] = [
-        ("Match Number", lambda d: d["matchNumber"]),
-        ("Team Number", lambda d: d["teamNumber"]),
-        ("Scouter Name", lambda d: d["scouterName"]),
-        ("Robot Position", lambda d: d["robotPosition"]),
-        ("Driver Skill", lambda d: d["driverSkill"]),
-        ("Defense Skill", lambda d: d["defenseSkill"]),
-        ("Auto Fuel Scored", lambda d: d["autoFuelScored"]),
-        ("Auto Intake Depot", lambda d: d["autoIntake"]["depot"]),
-        ("Auto Intake Neutral Zone", lambda d: d["autoIntake"]["neutralZone"]),
-        ("Auto Intake Human Player", lambda d: d["autoIntake"]["humanPlayer"]),
-        ("Auto Climb Attempted", lambda d: d["autoClimb"]["attempted"]),
-        ("Auto Climb Failed", lambda d: d["autoClimb"]["failed"]),
-        ("Teleop Fuel Scored", lambda d: d["teleopFuelScored"]),
-        ("Teleop Intake Depot", lambda d: d["teleopIntake"]["depot"]),
-        ("Teleop Intake Neutral Zone", lambda d: d["teleopIntake"]["neutralZone"]),
-        ("Teleop Intake Human Player", lambda d: d["teleopIntake"]["humanPlayer"]),
-        ("Teleop Intake Home Alliance", lambda d: d["teleopIntake"]["homeAlliance"]),
-        ("Teleop Intake Opponent Alliance", lambda d: d["teleopIntake"]["opponentAlliance"]),
-        ("Teleop Defense", lambda d: d["teleopDefense"]),
-        ("Teleop Passer", lambda d: d["teleopPasser"]),
-        ("Teleop Snowploughing", lambda d: d["teleopSnowploughing"]),
-        ("Teleop Human Player Deposit", lambda d: d["teleopHumanPlayerDeposit"]),
-        ("Teleop Minor Foul", lambda d: d["teleopFouls"]["minor"]),
-        ("Teleop Major Foul", lambda d: d["teleopFouls"]["major"]),
-        ("Endgame Climb Type", lambda d: d["endgameClimbType"]),
-        ("Endgame Climb Failed", lambda d: d["endgameClimbFailed"]),
-        ("Endgame Climb Time Remaining", lambda d: d["endgameClimbTimeRemaining"]),
+    _csv_columns: list[tuple[str, Callable[[ScoutingMatchData], Any]]] = [
+        ("Match Number", lambda d: d["match_number"]),
+        ("Team Number", lambda d: d["team_number"]),
+        ("Scouter Name", lambda d: d["scouter_name"]),
+        ("Robot Position", lambda d: d["robot_position"]),
+        ("Driver Skill", lambda d: d["driver_skill"]),
+        ("Defense Skill", lambda d: d["defense_skill"]),
+        ("Auto Fuel Scored", lambda d: d["auto_fuel_scored"]),
+        ("Auto Intake Depot", lambda d: d["auto_intake"]["depot"]),
+        ("Auto Intake Neutral Zone", lambda d: d["auto_intake"]["neutral_zone"]),
+        ("Auto Intake Human Player", lambda d: d["auto_intake"]["human_player"]),
+        ("Auto Climb Attempted", lambda d: d["auto_climb"]["attempted"]),
+        ("Auto Climb Failed", lambda d: d["auto_climb"]["failed"]),
+        ("Teleop Fuel Scored", lambda d: d["teleop_fuel_scored"]),
+        ("Teleop Intake Depot", lambda d: d["teleop_intake"]["depot"]),
+        ("Teleop Intake Neutral Zone", lambda d: d["teleop_intake"]["neutral_zone"]),
+        ("Teleop Intake Human Player", lambda d: d["teleop_intake"]["human_player"]),
+        ("Teleop Intake Home Alliance", lambda d: d["teleop_intake"]["home_alliance"]),
+        ("Teleop Intake Opponent Alliance", lambda d: d["teleop_intake"]["opponent_alliance"]),
+        ("Teleop Defense", lambda d: d["teleop_defense"]),
+        ("Teleop Passer", lambda d: d["teleop_passer"]),
+        ("Teleop Snowploughing", lambda d: d["teleop_snowploughing"]),
+        ("Teleop Human Player Deposit", lambda d: d["teleop_human_player_deposit"]),
+        ("Teleop Minor Foul", lambda d: d["teleop_fouls"]["minor"]),
+        ("Teleop Major Foul", lambda d: d["teleop_fouls"]["major"]),
+        ("Endgame Climb Type", lambda d: d["endgame_climb_type"]),
+        ("Endgame Climb Failed", lambda d: d["endgame_climb_failed"]),
+        ("Endgame Climb Time Remaining", lambda d: d["endgame_climb_time_remaining"]),
         ("Comments", lambda d: d["comments"])
     ]
 
@@ -251,12 +251,12 @@ class QuantitativeScoutingData:
             parse_shift(row)
 
 
-    def add_scouting_data(self, frontend_data: FrontendScoutingData) -> list:
+    def add_scouting_data(self, frontend_data: ScoutingMatchData) -> list:
         """
         Returns the data as a CSV row
         """
 
-        self.data.append(camel_to_snake_case(frontend_data)) # type: ignore
+        self.data.append(frontend_data) # type: ignore
 
         return [
             column_specs[1](frontend_data) for column_specs in self._csv_columns
@@ -285,14 +285,9 @@ class QuantitativeScoutingData:
             [column_specs[0] for column_specs in self._csv_columns]
         ]
 
-    # @property
-    # def serialized(self):
-    #     return {
-    #         "fetched_team_data": self.fetched_team_data,
-    #         "match_notes": self.match_notes,
-    #         "pit_scouting_notes": self.pit_scouting_notes,
-    #         "match_data": self.match_data
-    #     }
+    @property
+    def serialized(self):
+        return self.data
 
 class SuperScoutingData:
     data_received_timestamps: dict[str, float] = {}
@@ -588,5 +583,6 @@ class AppData:
     @property
     def serialized(self):
         return {
+            "quantitative_data": self.quantitative_scouting_data,
             "superscouting": self.superscouting_data.serialized
         }

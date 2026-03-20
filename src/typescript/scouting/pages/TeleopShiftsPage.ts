@@ -30,23 +30,23 @@ export default class TeleopShiftsPage extends Page {
     }
     
     public override updateAppData(): void {
-        AppData.teleopFuelScored = this.fuelCounter.fuelScored;
+        AppData.teleop_fuel_scored = this.fuelCounter.fuelScored;
 
-        AppData.teleopIntake = {
+        AppData.teleop_intake = {
             depot: this.intakeChoices.isChecked("Depot"),
-            neutralZone: this.intakeChoices.isChecked("Neutral Zone"),
-            humanPlayer: this.intakeChoices.isChecked("Human Player"),
-            homeAlliance: this.intakeChoices.isChecked("Home Alliance"),
-            opponentAlliance: this.intakeChoices.isChecked("Opponent Alliance")
+            neutral_zone: this.intakeChoices.isChecked("Neutral Zone"),
+            human_player: this.intakeChoices.isChecked("Human Player"),
+            home_alliance: this.intakeChoices.isChecked("Home Alliance"),
+            opponent_alliance: this.intakeChoices.isChecked("Opponent Alliance")
         };
 
-        AppData.teleopDefense = this.otherActions.isChecked("Defense (Bump/Trench)");
+        AppData.teleop_defense = this.otherActions.isChecked("Defense (Bump/Trench)");
 
-        AppData.teleopPasser = this.otherActions.isChecked("Feeding/Passing");
-        AppData.teleopSnowploughing = this.otherActions.isChecked("Snowploughing");
-        AppData.teleopHumanPlayerDeposit = this.otherActions.isChecked("Deposit to Human Player");
+        AppData.teleop_passer = this.otherActions.isChecked("Feeding/Passing");
+        AppData.teleop_snowploughing = this.otherActions.isChecked("Snowploughing");
+        AppData.teleop_human_player_deposit = this.otherActions.isChecked("Deposit to Human Player");
 
-        AppData.teleopFouls = {
+        AppData.teleop_fouls = {
             minor: this.foulCounter.getMinorFouls(),
             major: this.foulCounter.getMajorFouls()
         };

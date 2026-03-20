@@ -24,7 +24,7 @@ let isSubmitting: boolean = false;
 async function updateScouterName() {
     const scoutingRotation = await getScoutingRotation();
 
-    matchSelectionPage.header.textContent = "Name: " + AppData.scouterName;
+    matchSelectionPage.header.textContent = "Name: " + AppData.scouter_name;
     matchSelectionPage.updateMatches(scoutingRotation);
 }
 
@@ -34,7 +34,7 @@ export namespace PageManager {
     export async function begin() {
         updateScouterName();
 
-        matchSelectionPage.header.textContent = `Name: ${AppData.scouterName}`;
+        matchSelectionPage.header.textContent = `Name: ${AppData.scouter_name}`;
         matchSelectionPage.manualInputButton.addEventListener("click", _ => {
             autoPage.backButton.addEventListener("click", _ => changePage(manualInputPage));
             changePage(manualInputPage);

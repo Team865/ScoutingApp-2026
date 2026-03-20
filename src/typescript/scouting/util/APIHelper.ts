@@ -12,7 +12,7 @@ export type ScoutingRotation = Map<number, AssignedMatch>
 
 export async function getScoutingRotation(): Promise<ScoutingRotation> {
     const scoutingRotationRequest = await fetch(`${apiRoot}/rotation`, {
-        headers: {"X-Request-ID": AppData.scouterName}
+        headers: {"X-Request-ID": AppData.scouter_name}
     });
 
     let scoutingRotation: ScoutingRotation = new Map();

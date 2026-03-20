@@ -12,7 +12,7 @@ export default function createPositionButton(position: Vector2, anchorPoint: Vec
     absolutePosition(button, position, anchorPoint);
 
     button.addEventListener("click", _ => {
-        AppData.robotPosition = robotPosition;
+        AppData.robot_position = robotPosition;
         callback();
     });
 

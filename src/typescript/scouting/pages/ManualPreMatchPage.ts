@@ -90,7 +90,7 @@ export default class ManualInputPage extends Page {
     }
 
     public override updateAppData(): void {
-        AppData.matchNumber = Number.parseInt(this.matchNumber.value);
-        AppData.teamNumber = Number.parseInt(this.teamNumber.value);
+        AppData.match_number = Number.parseInt(this.matchNumber.value);
+        AppData.team_number = Number.parseInt(this.teamNumber.value);
     }
 }

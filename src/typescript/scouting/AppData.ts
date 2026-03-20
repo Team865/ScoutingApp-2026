@@ -23,84 +23,84 @@ export enum ClimbHeight {
 }
 
 export type ScoutingData = {
-    scouterName: string,
-    matchNumber: number,
-    teamNumber: number,
-    robotPosition: RobotPosition,
-    driverSkill: number,
-    defenseSkill: number,
+    scouter_name: string,
+    match_number: number,
+    team_number: number,
+    robot_position: RobotPosition,
+    driver_skill: number,
+    defense_skill: number,
     comments: string,
 
     // Auto
-    autoFuelScored: number,
-    autoIntake: {
+    auto_fuel_scored: number,
+    auto_intake: {
         depot: boolean,
-        neutralZone: boolean,
-        humanPlayer: boolean
+        neutral_zone: boolean,
+        human_player: boolean
     },
-    autoClimb: {
+    auto_climb: {
         attempted: boolean,
         failed: boolean
     },
     // Tele-op
-    teleopFuelScored: number,
-    teleopIntake: {
+    teleop_fuel_scored: number,
+    teleop_intake: {
         depot: boolean,
-        neutralZone: boolean,
-        humanPlayer: boolean,
-        homeAlliance: boolean,
-        opponentAlliance: boolean
+        neutral_zone: boolean,
+        human_player: boolean,
+        home_alliance: boolean,
+        opponent_alliance: boolean
     },
-    teleopDefense: boolean,
-    teleopPasser: boolean,
-    teleopSnowploughing: boolean,
-    teleopHumanPlayerDeposit: boolean,
-    teleopFouls: {
+    teleop_defense: boolean,
+    teleop_passer: boolean,
+    teleop_snowploughing: boolean,
+    teleop_human_player_deposit: boolean,
+    teleop_fouls: {
         minor: number,
         major: number
     },
     // Endgame
-    endgameClimbType: ClimbHeight,
-    endgameClimbFailed: boolean,
-    endgameClimbTimeRemaining: number
+    endgame_climb_type: ClimbHeight,
+    endgame_climb_failed: boolean,
+    endgame_climb_time_remaining: number
 }
 
 const AppData: ScoutingData = {
-    scouterName: "",
-    matchNumber: -1,
-    teamNumber: -1,
-    robotPosition: RobotPosition.UNSET,
-    driverSkill: 0,
-    defenseSkill: 0,
-    autoFuelScored: 0,
-    autoIntake: {
+    scouter_name: "",
+    match_number: -1,
+    team_number: -1,
+    robot_position: RobotPosition.UNSET,
+    driver_skill: 0,
+    defense_skill: 0,
+    auto_fuel_scored: 0,
+    auto_intake: {
         depot: false,
-        neutralZone: false,
-        humanPlayer: false
+        neutral_zone: false,
+        human_player: false
     },
-    autoClimb: {
+    auto_climb: {
         attempted: false,
         failed: false
     },
-    teleopFuelScored: 0,
-    teleopIntake: {
+    teleop_fuel_scored: 0,
+    teleop_intake: {
         depot: false,
-        neutralZone: false,
-        humanPlayer: false,
-        homeAlliance: false,
-        opponentAlliance: false
+        neutral_zone: false,
+        human_player: false,
+        home_alliance: false,
+        opponent_alliance: false
     },
-    teleopDefense: false,
-    teleopPasser: false,
-    teleopSnowploughing: false,
-    teleopHumanPlayerDeposit: false,
-    teleopFouls: {
+    teleop_defense: false,
+    teleop_passer: false,
+    teleop_snowploughing: false,
+    teleop_human_player_deposit: false,
+    teleop_fouls: {
         minor: 0,
         major: 0
     },
-    endgameClimbType: ClimbHeight.NO_ATTEMPT,
-    endgameClimbFailed: false,
-    endgameClimbTimeRemaining: -1,
+    endgame_climb_type: ClimbHeight.NO_ATTEMPT,
+    endgame_climb_failed: false,
+    endgame_climb_time_remaining: -1,
     comments: ""
 };
 
@@ -112,11 +112,11 @@ export function getScouterName() {
     if(!removePrefix(document.cookie, "username=")) {
         const scouterName = prompt("What is your FULL name (FirstName LastName)?");
 
-        AppData.scouterName = titleCase(scouterName) || "Unset";
+        AppData.scouter_name = titleCase(scouterName) || "Unset";
 
-        document.cookie = "username=" + encrypt(AppData.scouterName, xorKey);
+        document.cookie = "username=" + encrypt(AppData.scouter_name, xorKey);
     } else {
-        AppData.scouterName = decrypt(removePrefix(document.cookie, "username="), xorKey);
+        AppData.scouter_name = decrypt(removePrefix(document.cookie, "username="), xorKey);
     }
 }
 

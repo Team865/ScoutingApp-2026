@@ -81,8 +81,8 @@ export default class PreMatchPage extends Page {
     }
 
     public update(alliance: "Red" | "Blue") {
-        this.matchNumberLabel.textContent = `Match ${AppData.matchNumber}`;
-        this.teamNumberLabel.textContent = `Team ${AppData.teamNumber}`;
+        this.matchNumberLabel.textContent = `Match ${AppData.match_number}`;
+        this.teamNumberLabel.textContent = `Team ${AppData.team_number}`;
 
         this.fieldImage.src = this.getFieldImageLink(alliance);
 

@@ -57,24 +57,24 @@ export default class EndgameClimbPage extends Page {
     public override updateAppData(): void {
         switch(this.climbChoices.selectedOption) {
             case "No Attempt":
-                AppData.endgameClimbType = ClimbHeight.NO_ATTEMPT
+                AppData.endgame_climb_type = ClimbHeight.NO_ATTEMPT
                 break;
             case "Level 1":
-                AppData.endgameClimbType = ClimbHeight.L1
+                AppData.endgame_climb_type = ClimbHeight.L1
                 break;
             case "Level 2":
-                AppData.endgameClimbType = ClimbHeight.L2
+                AppData.endgame_climb_type = ClimbHeight.L2
                 break;
             case "Level 3":
-                AppData.endgameClimbType = ClimbHeight.L3
+                AppData.endgame_climb_type = ClimbHeight.L3
                 break;
         }
 
-        AppData.endgameClimbFailed = this.failedClimb.isChecked;
-        AppData.endgameClimbTimeRemaining = this.climbTime.value ? Number.parseFloat(this.climbTime.value) : -1;
+        AppData.endgame_climb_failed = this.failedClimb.isChecked;
+        AppData.endgame_climb_time_remaining = this.climbTime.value ? Number.parseFloat(this.climbTime.value) : -1;
 
-        AppData.driverSkill = this.driverSkill.value;
-        AppData.defenseSkill = this.defenseSkill.value;
+        AppData.driver_skill = this.driverSkill.value;
+        AppData.defense_skill = this.defenseSkill.value;
         AppData.comments = this.commentInput.value;
     }
 }

@@ -27,15 +27,15 @@ export default class AutoPage extends Page {
     }
 
     public override updateAppData(): void {
-        AppData.autoFuelScored = this.fuelCounter.fuelScored;
+        AppData.auto_fuel_scored = this.fuelCounter.fuelScored;
 
-        AppData.autoIntake = {
+        AppData.auto_intake = {
             depot: this.intakeChoices.isChecked("Depot"),
-            neutralZone: this.intakeChoices.isChecked("Neutral Zone"),
-            humanPlayer: this.intakeChoices.isChecked("Human Player")
+            neutral_zone: this.intakeChoices.isChecked("Neutral Zone"),
+            human_player: this.intakeChoices.isChecked("Human Player")
         };
 
-        AppData.autoClimb = {
+        AppData.auto_climb = {
             attempted: this.climbChoices.isChecked("Attempted?"),
             failed: this.climbChoices.isChecked("Failed?")
         }
