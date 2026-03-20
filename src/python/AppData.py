@@ -583,6 +583,6 @@ class AppData:
     @property
     def serialized(self):
         return {
-            "quantitative_data": self.quantitative_scouting_data,
+            "quantitative_data": self.quantitative_scouting_data.serialized,
             "superscouting": self.superscouting_data.serialized
         }
