@@ -6,7 +6,7 @@ import geoip2.database
 import re
 from werkzeug.middleware.proxy_fix import ProxyFix
 from waitress import serve
-from src.python.typehinting.FrontendScoutingData import FrontendScoutingData
+from src.python.typehinting.ScoutingData import ScoutingMatchData
 from src.python.util.ConfigParser import parse_config
 from src.python.AppData import AppData, MatchNotesChunkJSon, PitScoutingNotesChunkJSon
 import src.python.sse.TBAPoller as TBAPoller
@@ -138,7 +138,7 @@ def get_epa_data():
 
 @app.post("/api/scouting/match-data")
 def scouting_data_from_client():
-    match_data: FrontendScoutingData = request.json
+    match_data: ScoutingMatchData = request.json
     spreadsheet_manager.add_row(
         BackendWorksheet.MATCH_DATA, 
         app_data.quantitative_scouting_data.add_scouting_data(match_data)

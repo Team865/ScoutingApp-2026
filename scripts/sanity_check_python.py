@@ -6,6 +6,7 @@ from typing import Mapping, Optional, Self
 from chompjs import chompjs
 
 from src.python.AppData import QuantitativeScoutingData
+from scripts import build_py_app_data_from_ts
 
 _project_root = Path(__file__).parent.parent
 _scouting_app_data_path = _project_root / "src/typescript/scouting/AppData.ts"
@@ -84,6 +85,8 @@ def validate_entry(dict_def: dict, key_sequence: list[str]) -> bool:
     return True
 
 if __name__ == "__main__":
+    build_py_app_data_from_ts.main()
+
     # Quantitative Scouting
     ts_class_def = get_ts_app_data_typedef(_scouting_app_data_path, "ScoutingData")
     class_def_as_dict = chompjs.parse_js_object(ts_class_def)
@@ -91,7 +94,7 @@ if __name__ == "__main__":
     csv_mapping = QuantitativeScoutingData._csv_columns
     checks_passed = True
 
-    for [column_header, key_sequence] in csv_mapping:
+    for [column_header, key_sequence, _] in csv_mapping:
         is_valid_entry = validate_entry(class_def_as_dict, key_sequence)
 
         if(not is_valid_entry):

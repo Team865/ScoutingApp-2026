@@ -1,6 +1,6 @@
 from pathlib import Path
 import re
-from typing import Mapping, Optional, Self
+from typing import Literal, Mapping, Optional, Self
 
 _project_root = Path(__file__).parent.parent
 _scouting_app_data_path = _project_root / "src/typescript/scouting/AppData.ts"
@@ -17,10 +17,6 @@ _ts_type_to_python_type_str: Mapping[str, str] = {
     "string": "str",
     "number": "int | float",
     "boolean": "bool",
-
-    # Custom
-    "RobotPosition": 'Literal["Red Left", "Red Middle", "Red Right", "Blue Left", "Blue Middle", "Blue Right"]',
-    "ClimbHeight": 'Literal["No Attempt", "Level 1", "Level 2", "Level 3"]'
 }
 
 class TypedObjectTS:
@@ -43,7 +39,12 @@ class TypedObjectTS:
                 property_type_py_str = f"_{name}_{property_name}"
                 additional_dicts_str += property_type.get_typed_dict_str(property_type_py_str)
             else:
-                property_type_py_str = _ts_type_to_python_type_str[property_type]
+                property_type_py_str = (
+                    _ts_type_to_python_type_str[property_type] if 
+                    property_type in _ts_type_to_python_type_str
+                    else
+                    property_type
+                )
 
             main_dict_str += f"\n    {property_name}: {property_type_py_str}"
 
@@ -161,12 +162,19 @@ def typed_object_to_typed_dict(typed_dict_name: str, ts_object_type: str) -> str
     return (f"""
 from typing import Literal, TypedDict
 
-__all__ = ["{typed_dict_name}"]""" + 
+__all__ = ["{typed_dict_name}"]
+
+type RobotPosition = Literal["Red Left", "Red Middle", "Red Right", "Blue Left", "Blue Middle", "Blue Right"]
+type ClimbHeight = Literal["No Attempt", "Level 1", "Level 2", "Level 3"]
+""" + 
 (ts_object.get_typed_dict_str(typed_dict_name))
 ).strip()
 
-if __name__ == "__main__":
+def main():
     # Quantitative Scouting
-    with open(_typehinting_directory / "FrontendScoutingData.py", "w", encoding="utf-8") as file:
-        parsed = typed_object_to_typed_dict("FrontendScoutingData", get_ts_app_data_typedef(_scouting_app_data_path, "ScoutingData"))
+    with open(_typehinting_directory / "ScoutingData.py", "w", encoding="utf-8") as file:
+        parsed = typed_object_to_typed_dict("ScoutingMatchData", get_ts_app_data_typedef(_scouting_app_data_path, "ScoutingData"))
         file.write(parsed)
+
+if __name__ == "__main__":
+    main()

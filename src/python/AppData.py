@@ -1,6 +1,7 @@
 from math import ceil
 from typing import Literal, Mapping, Optional, TypedDict, Any, Callable, cast
 
+from src.python.typehinting.ScoutingData import RobotPosition, ScoutingMatchData
 from src.python.typehinting.ScoutingFields import PitScoutingFields
 from src.python.util import ListUtil
 from .sse import MatchNotes as MatchNotesSSE, PitScoutingNotes as PitScoutingSSE
@@ -25,6 +26,13 @@ _scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
     "NUMBER_RANGE": lambda value: int(value) if value is not None else None,
     "SINGLE_CHOICE": lambda value: value if value is not None else None,
     "MULTIPLE_CHOICE": lambda value: (value.split(", ") if value is not None else [])
+}
+
+_scouting_data_csv_cell_parser: dict[type, Callable[[str], Any]] = {
+    str: _scouting_field_value_parser["TEXT"],
+    bool: _scouting_field_value_parser["BOOLEAN"],
+    int: lambda value: int(value) if value is not None else None,
+    float: lambda value: float(value) if value is not None else None
 }
 
 def get_field_value_as_str(field_value):
@@ -58,59 +66,6 @@ class Superscouting_TBAMatchData(TypedDict):
     red_score: int
     blue_score: int
     teams: list[Superscouting_TBAMatchData_Team]
-
-class ScoutingMatchData(TypedDict):
-    class _AutoIntake(TypedDict):
-        depot: bool
-        neutral_zone: bool
-        human_player: bool # pyright: ignore[reportGeneralTypeIssues]
-
-    class _AutoClimb(TypedDict):
-        attempted: bool
-        failed: bool# pyright: ignore[reportGeneralTypeIssues]
-
-    class _TeleopIntake(_AutoIntake):
-        home_alliance: bool
-        opponent_alliance: bool # pyright: ignore[reportGeneralTypeIssues]
-
-    class _Fouls(TypedDict):
-        minor: int
-        major: int # pyright: ignore[reportGeneralTypeIssues]
-
-    class _TeleopDefense(TypedDict):
-        depot: bool
-        human_player: bool
-        trench: bool
-        bump: bool
-        other: bool # pyright: ignore[reportGeneralTypeIssues]
-
-    scouter_name: str
-    match_number: int
-    team_number: int
-
-    robot_position: Literal[
-        "Red Right", "Red Middle", "Red Left",
-        "Blue Left", "Blue Middle", "Blue Right"
-    ]
-    driver_skill: int
-    defense_skill: int
-    comments: str
-
-    auto_fuel_scored: int
-    auto_intake: _AutoIntake
-    auto_climb: _AutoClimb
-
-    teleop_fuel_scored: int
-    teleop_intake: _TeleopIntake
-    teleop_defense: _TeleopDefense
-    teleop_passer: bool
-    teleop_snowploughing: bool
-    teleop_human_player_deposit: bool
-    teleop_fouls: _Fouls
-    
-    endgame_climb_type: Literal["No Attempt", "Level 1", "Level 2", "Level 3"]
-    endgame_climb_failed: bool
-    endgame_climb_time_remaining: float
 
 class MatchNotesChunkJSon(TypedDict):
     team_number: int
@@ -150,35 +105,35 @@ class QuantitativeScoutingData:
     #       value_getter: (FrontendScoutingData) -> cell value
     #   )
     # ]
-    _csv_columns: list[tuple[str, list[str]]] = [
-        ("Match Number", ["match_number"]),
-        ("Team Number", ["team_number"]),
-        ("Scouter Name", ["scouter_name"]),
-        ("Robot Position", ["robot_position"]),
-        ("Driver Skill", ["driver_skill"]),
-        ("Defense Skill", ["defense_skill"]),
-        ("Auto Fuel Scored", ["auto_fuel_scored"]),
-        ("Auto Intake Depot", ["auto_intake", "depot"]),
-        ("Auto Intake Neutral Zone", ["auto_intake", "neutral_zone"]),
-        ("Auto Intake Human Player", ["auto_intake", "human_player"]),
-        ("Auto Climb Attempted", ["auto_climb", "attempted"]),
-        ("Auto Climb Failed", ["auto_climb", "failed"]),
-        ("Teleop Fuel Scored", ["teleop_fuel_scored"]),
-        ("Teleop Intake Depot", ["teleop_intake", "depot"]),
-        ("Teleop Intake Neutral Zone", ["teleop_intake", "neutral_zone"]),
-        ("Teleop Intake Human Player", ["teleop_intake", "human_player"]),
-        ("Teleop Intake Home Alliance", ["teleop_intake", "home_alliance"]),
-        ("Teleop Intake Opponent Alliance", ["teleop_intake", "opponent_alliance"]),
-        ("Teleop Defense", ["teleop_defense"]),
-        ("Teleop Passer", ["teleop_passer"]),
-        ("Teleop Snowploughing", ["teleop_snowploughing"]),
-        ("Teleop Human Player Deposit", ["teleop_human_player_deposit"]),
-        ("Teleop Minor Foul", ["teleop_fouls", "minor"]),
-        ("Teleop Major Foul", ["teleop_fouls", "major"]),
-        ("Endgame Climb Type", ["endgame_climb_type"]),
-        ("Endgame Climb Failed", ["endgame_climb_failed"]),
-        ("Endgame Climb Time Remaining", ["endgame_climb_time_remaining"]),
-        ("Comments", ["comments"])
+    _csv_columns: list[tuple[str, list[str], type]] = [
+        ("Match Number", ["match_number"], int),
+        ("Team Number", ["team_number"], int),
+        ("Scouter Name", ["scouter_name"], str),
+        ("Robot Position", ["robot_position"], str),
+        ("Driver Skill", ["driver_skill"], int),
+        ("Defense Skill", ["defense_skill"], int),
+        ("Auto Fuel Scored", ["auto_fuel_scored"], int),
+        ("Auto Intake Depot", ["auto_intake", "depot"], bool),
+        ("Auto Intake Neutral Zone", ["auto_intake", "neutral_zone"], bool),
+        ("Auto Intake Human Player", ["auto_intake", "human_player"], bool),
+        ("Auto Climb Attempted", ["auto_climb", "attempted"], bool),
+        ("Auto Climb Failed", ["auto_climb", "failed"], bool),
+        ("Teleop Fuel Scored", ["teleop_fuel_scored"], int),
+        ("Teleop Intake Depot", ["teleop_intake", "depot"], bool),
+        ("Teleop Intake Neutral Zone", ["teleop_intake", "neutral_zone"], bool),
+        ("Teleop Intake Human Player", ["teleop_intake", "human_player"], bool),
+        ("Teleop Intake Home Alliance", ["teleop_intake", "home_alliance"], bool),
+        ("Teleop Intake Opponent Alliance", ["teleop_intake", "opponent_alliance"], bool),
+        ("Teleop Defense", ["teleop_defense"], bool),
+        ("Teleop Passer", ["teleop_passer"], bool),
+        ("Teleop Snowploughing", ["teleop_snowploughing"], bool),
+        ("Teleop Human Player Deposit", ["teleop_human_player_deposit"], bool),
+        ("Teleop Minor Foul", ["teleop_fouls", "minor"], int),
+        ("Teleop Major Foul", ["teleop_fouls", "major"], int),
+        ("Endgame Climb Type", ["endgame_climb_type"], str),
+        ("Endgame Climb Failed", ["endgame_climb_failed"], bool),
+        ("Endgame Climb Time Remaining", ["endgame_climb_time_remaining"], float),
+        ("Comments", ["comments"], str)
     ]
 
     def __init__(self) -> None:
@@ -253,8 +208,8 @@ class QuantitativeScoutingData:
     def set_scouting_data_from_csv(self, csv: list[list[str]]):
         if(len(csv) < 2): return # No data
 
-        key_sequences = [column_spec[1] for column_spec in self._csv_columns]
-        min_cells = len(key_sequences)
+        self.data = []
+        min_cells = len(self._csv_columns)
 
         def parse_row(row: list[str]):
             if(len(row) < min_cells): return
@@ -263,7 +218,8 @@ class QuantitativeScoutingData:
 
             for cell_index in range(min_cells):
                 cell = row[cell_index]
-                key_sequence = key_sequences[cell_index]
+                key_sequence = self._csv_columns[cell_index][1]
+                entry_type = self._csv_columns[cell_index][2]
                 num_keys = len(key_sequence)
                 current_dict = match_data
 
@@ -274,7 +230,7 @@ class QuantitativeScoutingData:
 
                         current_dict = current_dict[key]
                     else:
-                        current_dict[key] = cell
+                        current_dict[key] = _scouting_data_csv_cell_parser[entry_type](cell)
 
             self.data.append(match_data)
 
