@@ -10,3 +10,27 @@ div#team-page-subpage-container {
 div#subpage-tab-buttons-container > button.selected {
     background-color: var(--bg-dark);
 }
+
+div.match-notes-page {
+    display: flex;
+    flex-flow: row;
+    align-items: start;
+    justify-content: stretch;
+    width: 100%;
+}
+
+div.match-notes-page > div > h1 {
+    text-align: center;
+    width: 100%;
+}
+
+div.match-notes-page > div:first-of-type {
+    padding: 0 1rem;
+    flex-grow: 2;
+}
+
+div.match-notes-page > div:last-of-type {
+    padding: 0 1rem;
+    background-color: var(--bg);
+    flex-grow: 1;
+}

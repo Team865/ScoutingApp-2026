@@ -1,7 +1,9 @@
-import { FetchedTeamData, MatchData, SuperscoutingData } from "../superscouting/AppData";
+import { ScoutingData } from "../scouting/AppData";
+import { SuperscoutingData } from "../superscouting/AppData";
 
 type CompleteAppData = {
-    superscouting: SuperscoutingData
+    superscouting: SuperscoutingData,
+    quantitative_data: Map<number, ScoutingData[]>
 }
 
 const AppData: CompleteAppData = {
@@ -10,7 +12,8 @@ const AppData: CompleteAppData = {
         match_notes: {},
         pit_scouting_notes: {},
         matches: []
-    }
+    },
+    quantitative_data: new Map()
 };
 
 export default AppData;
