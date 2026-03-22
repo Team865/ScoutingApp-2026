@@ -136,34 +136,46 @@ const setSelectedBlock: SetSelectedBlock = (newSelection) => {
     filterBlockProducersMenu.hidden = isMobileQuery.matches && (topLevelBlock !== null && currentlySelectedBlock === null);
 }
 
-function initSortOptions() {
-    // Metadata options
-    {
-        const metadataOptionGroup = document.createElement("optgroup");
-        metadataOptionGroup.label = "Metadata";
+function createOptionGroup(groupName: string, ...options: string[]) {
+    const optionGroup = document.createElement("optgroup");
+    optionGroup.label = groupName;
 
-        const teamNumberOption = document.createElement("option");
-        teamNumberOption.value = "Metadata/Team Number";
-        teamNumberOption.innerText = "Team Number";
+    for(const option of options) {
+        const optionElement = document.createElement("option");
+        optionElement.value = `${groupName}/${option}`;
+        optionElement.innerText = option;
 
-        const epaOption = document.createElement("option");
-        epaOption.value = "Metadata/EPA";
-        epaOption.innerText = "EPA";
-
-        metadataOptionGroup.append(
-            teamNumberOption,
-            epaOption
-        );
-
-        sortBySelection.appendChild(metadataOptionGroup);
+        optionGroup.appendChild(optionElement);
     }
 
-    // Scouting (WIP)
+    sortBySelection.appendChild(optionGroup);
+}
+
+function initSortOptions() {
+    // Metadata options
+    createOptionGroup(
+        "Metadata",
+        "Team Number",
+        "EPA"
+    );
+
+    // Scouting
+    createOptionGroup(
+        "Scouting",
+        "Fuel Scored",
+        "Teleop Fuel Scored",
+        "Auto Fuel Scored",
+        "Climb",
+        "Fouls",
+        "Minor Fouls",
+        "Major Fouls",
+        "Driver Skill",
+        "Defense Skill"
+    );
 
     // Superscouting/Pit Scouting
     {
-        const pitscoutingGroup = document.createElement("optgroup");
-        pitscoutingGroup.label = "Pit Scouting";
+        const options: string[] = [];
 
         for(const pitscoutingField of PitScoutingFields) {
             if(
@@ -171,13 +183,13 @@ function initSortOptions() {
                 pitscoutingField.type !== FieldType.NUMBER_RANGE
             ) continue;
 
-            const fieldOption = document.createElement("option");
-            fieldOption.value = "Pitscouting/" + pitscoutingField.name;
-            fieldOption.innerText = pitscoutingField.name;
-            pitscoutingGroup.appendChild(fieldOption);
+            options.push(pitscoutingField.name);
         }
 
-        sortBySelection.appendChild(pitscoutingGroup);
+        createOptionGroup(
+            "Pit Scouting",
+            ...options
+        );
     }
 }
 

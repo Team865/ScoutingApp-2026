@@ -5,6 +5,7 @@ import AppData from "../AppData";
 import TeamCard from "../components/TeamCard";
 import TeamPage from "../components/TeamPage/Container";
 import { FilterManager } from "./FilterManager";
+import { ClimbHeight, ScoutingData } from "../../scouting/AppData";
 
 const mainContentContainer = document.querySelector("div#main-content") as HTMLDivElement;
 const teamCardsPageContainer = document.querySelector("div#team-cards-page-container") as HTMLDivElement;
@@ -54,6 +55,68 @@ function populateSortFunctions() {
         if(isDescending) sortedArray.reverse();
         return sortedArray;
     });
+
+    // Scouting
+    {
+        function createSorter(optionName: string, teamValueGetter: (matchData: ScoutingData) => number) {
+            sortFunctions.set(`Scouting/${optionName}`, (isDescending) => {
+                const teamValueLookup: Map<number, number> = new Map();
+
+                for(const [teamNumber, teamDatas] of AppData.quantitative_data.entries()) {
+                    teamValueLookup.set(
+                        teamNumber,
+                        teamDatas
+                            .map(match => teamValueGetter(match))
+                            .reduce((partialSum, value) => partialSum + value, 0)
+                            / teamDatas.length
+                    );
+                }
+
+                const sortedArray = Array.from(teamCards.keys()).toSorted((teamNumber1, teamNumber2) => {
+                    const team1Value = teamValueLookup.get(teamNumber1);
+                    const team2Value = teamValueLookup.get(teamNumber2);
+
+                    if(team1Value && team2Value) {
+                        return team1Value - team2Value;
+                    } else if(team1Value) {
+                        return 1;
+                    } else if(team2Value) {
+                        return -1
+                    } else {
+                        return teamNumber2 - teamNumber1;
+                    }
+                });
+
+                if(isDescending) sortedArray.reverse();
+                return sortedArray;
+            });
+        }
+
+        createSorter("Fuel Scored", match => match.auto_fuel_scored + match.teleop_fuel_scored);
+        createSorter("Teleop Fuel Scored", match => match.teleop_fuel_scored);
+        createSorter("Auto Fuel Scored", match => match.auto_fuel_scored);
+        createSorter("Climb", match => {
+            if(match.endgame_climb_failed) return 0;
+
+            switch(match.endgame_climb_type) {
+                case ClimbHeight.NO_ATTEMPT:
+                    return 0;
+                case ClimbHeight.L1:
+                    return 1;
+                case ClimbHeight.L2:
+                    return 2;
+                case ClimbHeight.L3:
+                    return 3;
+            }
+        });
+
+        createSorter("Fouls", match => match.teleop_fouls.minor + match.teleop_fouls.major);
+        createSorter("Minor Fouls", match => match.teleop_fouls.minor);
+        createSorter("Major Fouls", match => match.teleop_fouls.major);
+
+        createSorter("Driver Skill", match => match.driver_skill);
+        createSorter("Defense Skill", match => match.defense_skill);
+    }
 
     // Pitscouting
     for (const pitscoutingField of PitScoutingFields) {
