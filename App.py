@@ -6,6 +6,7 @@ import geoip2.database
 import re
 from werkzeug.middleware.proxy_fix import ProxyFix
 from waitress import serve
+from src.python.api_helpers import StatboticsAPI
 from src.python.typehinting.ScoutingData import ScoutingMatchData
 from src.python.util.ConfigParser import parse_config
 from src.python.AppData import AppData, MatchNotesChunkJSon, PitScoutingNotesChunkJSon
@@ -135,6 +136,14 @@ def get_epa_data():
             "normalized_epa": app_team_data["normalized_epa"]
         }
     return jsonify(epaJSon)
+
+@app.post("/api/update-epa")
+def update_epa():
+    if(request.remote_addr != "127.0.0.1"): return {"message": "YOU CANNOT ACCESS THIS ROUTE"}, 403
+
+    status_code, message = StatboticsAPI.update_epa(app_data, app_data.event_key)
+
+    return {"message": message}, status_code
 
 @app.post("/api/scouting/match-data")
 def scouting_data_from_client():
