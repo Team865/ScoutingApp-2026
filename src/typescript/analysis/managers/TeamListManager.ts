@@ -49,7 +49,7 @@ function populateSortFunctions() {
             return epaExists? (useNormalizedEPA ?
                 (teamData1.normalized_epa - teamData2.normalized_epa) :
                 (teamData1.epa - teamData2.epa)) : 
-                (teamNumber2 - teamNumber1);
+                (teamNumber1 - teamNumber2);
         });
 
         if(isDescending) sortedArray.reverse();
@@ -77,17 +77,16 @@ function populateSortFunctions() {
                     const team2Value = teamValueLookup.get(teamNumber2);
 
                     if(team1Value && team2Value) {
-                        return team1Value - team2Value;
+                        return isDescending ? (team2Value - team1Value) : (team1Value - team2Value);
                     } else if(team1Value) {
-                        return 1;
+                        return -1;
                     } else if(team2Value) {
-                        return -1
+                        return 1
                     } else {
-                        return teamNumber2 - teamNumber1;
+                        return teamNumber1 - teamNumber2;
                     }
                 });
 
-                if(isDescending) sortedArray.reverse();
                 return sortedArray;
             });
         }
