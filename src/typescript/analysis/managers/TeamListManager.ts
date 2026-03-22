@@ -76,11 +76,11 @@ function populateSortFunctions() {
                     const team1Value = teamValueLookup.get(teamNumber1);
                     const team2Value = teamValueLookup.get(teamNumber2);
 
-                    if(team1Value && team2Value) {
+                    if(team1Value !== undefined && team2Value !== undefined) {
                         return isDescending ? (team2Value - team1Value) : (team1Value - team2Value);
-                    } else if(team1Value) {
+                    } else if(team1Value !== undefined) {
                         return -1;
-                    } else if(team2Value) {
+                    } else if(team2Value !== undefined) {
                         return 1
                     } else {
                         return teamNumber1 - teamNumber2;
