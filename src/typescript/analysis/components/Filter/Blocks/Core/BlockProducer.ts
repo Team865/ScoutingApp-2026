@@ -30,6 +30,9 @@ import PitScoutingFields from "../../../../../appConfig/PitScoutingFields";
 import { FieldType } from "../../../../../appConfig/Field";
 import BlockSlot from "./BlockSlot";
 import Signal from "../../../../../lib/dataTypes/Signal";
+import { ScoutingData } from "../../../../../scouting/AppData";
+import AverageBlock from "../Math/AverageBlock";
+import MaxBlock from "../Math/MaxBlock";
 
 const comparatorsTabButton = document.querySelector("button#comparators-filter-tab-button") as HTMLButtonElement;
 const mathTabButton = document.querySelector("button#math-filter-tab-button") as HTMLButtonElement;
@@ -109,7 +112,9 @@ export namespace BlockProducer {
             createProducerElement("X + Y", () => new AddBlock()),
             createProducerElement("X - Y", () => new SubtractBlock()),
             createProducerElement("X × Y", () => new MultiplyBlock()),
-            createProducerElement("X ÷ Y", () => new DivideBlock())
+            createProducerElement("X ÷ Y", () => new DivideBlock()),
+            createProducerElement("Average of", () => new AverageBlock()),
+            createProducerElement("Max of", () => new MaxBlock())
         );
 
         bindTabButton(mathTabButton, mathPageElements);
@@ -142,7 +147,33 @@ export namespace BlockProducer {
             ))
         );
 
-        // Scouting (WIP)
+        // Scouting
+        dataPageElements.push(scoutingHeader);
+        {
+            function createBlock(fieldName: string, valueGetter: (match: ScoutingData) => any) {
+                dataPageElements.push(createProducerElement(
+                    `ARRAY?: ${fieldName}`,
+                    () => new DataBlock("array?", fieldName, teamNumber => {
+                        const teamDatas = AppData.quantitative_data.get(teamNumber);
+
+                        if(teamDatas === undefined) return undefined;
+
+                        return teamDatas.map(match => valueGetter(match));
+                    })
+                ));
+            }
+
+            const scoutingFields: [string, (match: ScoutingData) => any][] = [
+                ["Fuel Scored", match => match.auto_fuel_scored + match.teleop_fuel_scored],
+                ["Teleop Fuel Scored", match => match.teleop_fuel_scored],
+                ["Auto Fuel Scored", match => match.auto_fuel_scored],
+                ["Driver Skill", match => match.driver_skill],
+                ["Defense Skill", match => match.defense_skill],
+            ]
+
+            scoutingFields.forEach(([fieldName, valueGetter]) => createBlock(fieldName, valueGetter));
+        }
+
         // Superscouting/Pit Scouting
         dataPageElements.push(pitScoutingHeader);
         PitScoutingFields.forEach(fieldConfig => {

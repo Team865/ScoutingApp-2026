@@ -245,7 +245,7 @@ export namespace TeamListManager {
         });
         searchBar.inputElement.addEventListener("input", toggleTeamVisibility);
 
-        buildFilterButton.addEventListener("click", () => applyCustomFilter);
+        buildFilterButton.addEventListener("click", applyCustomFilter);
 
         toggleFilterButton.addEventListener("click", toggleTeamVisibility);
         sortOrderButton.addEventListener("click", sortTeams);
