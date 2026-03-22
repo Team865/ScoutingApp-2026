@@ -34,3 +34,45 @@ div.match-notes-page > div:last-of-type {
     background-color: var(--bg);
     flex-grow: 1;
 }
+
+div.match-data-page > div,
+div.match-data-page > div.matches > div > button {
+    width: 100%;
+}
+
+div.match-data-page > div.matches > div {
+    margin: 0.5rem 0;
+    background-color: var(--bg);
+    border-radius: 0.5rem;
+}
+
+div.match-data-page > div.matches > div > button.red {
+    background-color: var(--red-alliance);
+    border-color: var(--red-alliance-light);
+}
+
+div.match-data-page > div.matches > div > button.red:hover {
+    background-color: var(--red-alliance-light);
+}
+
+div.match-data-page > div.matches > div > button.blue {
+    background-color: var(--blue-alliance);
+    border-color: var(--blue-alliance-light);
+}
+
+div.match-data-page > div.matches > div > button.blue:hover {
+    background-color: var(--blue-alliance-light);
+}
+
+div.match-data-page > div.matches > div > button > h1 {
+    font-size: 1.5rem;
+    margin: 0.5rem;
+}
+
+div.match-data-page > div.matches > div > div {
+    font-size: 1.5rem;
+}
+
+div.match-data-page > div.matches > div > div > div {
+    margin: 1rem;
+}

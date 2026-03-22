@@ -18,6 +18,10 @@ async function refreshAppDataFromBackend() {
         AppData.quantitative_data.get(data.team_number).push(data);
     }
 
+    for(const teamData of AppData.quantitative_data.values()) {
+        teamData.sort((matchData1, matchData2) => matchData1.match_number - matchData2.match_number)
+    }
+
     console.log(AppData);
 }
 
