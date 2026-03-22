@@ -30,7 +30,7 @@ import PitScoutingFields from "../../../../../appConfig/PitScoutingFields";
 import { FieldType } from "../../../../../appConfig/Field";
 import BlockSlot from "./BlockSlot";
 import Signal from "../../../../../lib/dataTypes/Signal";
-import { ScoutingData } from "../../../../../scouting/AppData";
+import { ClimbHeight, ScoutingData } from "../../../../../scouting/AppData";
 import AverageBlock from "../Math/AverageBlock";
 import MaxBlock from "../Math/MaxBlock";
 
@@ -156,7 +156,7 @@ export namespace BlockProducer {
                     () => new DataBlock("array?", fieldName, teamNumber => {
                         const teamDatas = AppData.quantitative_data.get(teamNumber);
 
-                        if(teamDatas === undefined) return undefined;
+                        if(teamDatas === undefined) return null;
 
                         return teamDatas.map(match => valueGetter(match));
                     })
@@ -167,6 +167,15 @@ export namespace BlockProducer {
                 ["Fuel Scored", match => match.auto_fuel_scored + match.teleop_fuel_scored],
                 ["Teleop Fuel Scored", match => match.teleop_fuel_scored],
                 ["Auto Fuel Scored", match => match.auto_fuel_scored],
+                ["Climb Points", match => (
+                    (match.auto_climb.attempted && !match.auto_climb.failed && 15) || 0) + 
+                    ((!match.endgame_climb_failed && (
+                        match.endgame_climb_type === ClimbHeight.NO_ATTEMPT ? 0 :
+                        match.endgame_climb_type === ClimbHeight.L1 ? 10 :
+                        match.endgame_climb_type === ClimbHeight.L2 ? 20 :
+                        30
+                    )) || 0)
+                ],
                 ["Driver Skill", match => match.driver_skill],
                 ["Defense Skill", match => match.defense_skill],
             ]

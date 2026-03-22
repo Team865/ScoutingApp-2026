@@ -95,18 +95,13 @@ function populateSortFunctions() {
         createSorter("Teleop Fuel Scored", match => match.teleop_fuel_scored);
         createSorter("Auto Fuel Scored", match => match.auto_fuel_scored);
         createSorter("Climb", match => {
-            if(match.endgame_climb_failed) return 0;
-
-            switch(match.endgame_climb_type) {
-                case ClimbHeight.NO_ATTEMPT:
-                    return 0;
-                case ClimbHeight.L1:
-                    return 1;
-                case ClimbHeight.L2:
-                    return 2;
-                case ClimbHeight.L3:
-                    return 3;
-            }
+            return ((match.auto_climb.attempted && !match.auto_climb.failed && 15) || 0) + 
+                    ((!match.endgame_climb_failed && (
+                        match.endgame_climb_type === ClimbHeight.NO_ATTEMPT ? 0 :
+                        match.endgame_climb_type === ClimbHeight.L1 ? 10 :
+                        match.endgame_climb_type === ClimbHeight.L2 ? 20 :
+                        30
+                    )) || 0);
         });
 
         createSorter("Fouls", match => match.teleop_fouls.minor + match.teleop_fouls.major);
