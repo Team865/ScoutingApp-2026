@@ -76,3 +76,26 @@ div.match-data-page > div.matches > div > div {
 div.match-data-page > div.matches > div > div > div {
     margin: 1rem;
 }
+
+div.data-visualizer-page {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+
+    background-color: transparent;
+    width: min(800px, 90%);
+    padding: 1rem;
+}
+
+div.data-visualizer-page > h1 {
+    text-align: center;
+}
+
+div.data-visualizer-page > hr {
+    width: 100%;
+}
+
+div.data-visualizer-page > div.options {
+    background-color: transparent;
+    padding: 1rem;
+}

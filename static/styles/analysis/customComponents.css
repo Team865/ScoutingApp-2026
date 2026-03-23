@@ -1,0 +1,7 @@
+div.labeled-checkbox {
+    font-size: 1.5rem;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: 0.5rem;
+}

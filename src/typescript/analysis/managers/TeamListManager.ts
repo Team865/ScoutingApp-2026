@@ -6,6 +6,7 @@ import TeamCard from "../components/TeamCard";
 import TeamPage from "../components/TeamPage/Container";
 import { FilterManager } from "./FilterManager";
 import { ClimbHeight, ScoutingData } from "../../scouting/AppData";
+import { getClimbValue } from "../util/ClimbValue";
 
 const mainContentContainer = document.querySelector("div#main-content") as HTMLDivElement;
 const teamCardsPageContainer = document.querySelector("div#team-cards-page-container") as HTMLDivElement;
@@ -94,15 +95,7 @@ function populateSortFunctions() {
         createSorter("Fuel Scored", match => match.auto_fuel_scored + match.teleop_fuel_scored);
         createSorter("Teleop Fuel Scored", match => match.teleop_fuel_scored);
         createSorter("Auto Fuel Scored", match => match.auto_fuel_scored);
-        createSorter("Climb", match => {
-            return ((match.auto_climb.attempted && !match.auto_climb.failed && 15) || 0) + 
-                    ((!match.endgame_climb_failed && (
-                        match.endgame_climb_type === ClimbHeight.NO_ATTEMPT ? 0 :
-                        match.endgame_climb_type === ClimbHeight.L1 ? 10 :
-                        match.endgame_climb_type === ClimbHeight.L2 ? 20 :
-                        30
-                    )) || 0);
-        });
+        createSorter("Climb", match => getClimbValue(match));
 
         createSorter("Fouls", match => match.teleop_fouls.minor + match.teleop_fouls.major);
         createSorter("Minor Fouls", match => match.teleop_fouls.minor);
