@@ -11,6 +11,19 @@ div.pit-scouting-container > div {
 
 div.pit-scouting-container input[type="checkbox"] {
     background-color: var(--bg);
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+div.pit-scouting-container select,
+div.pit-scouting-container label,
+div.pit-scouting-container input {
+    font-size: 1rem;
+}
+
+div.pit-scouting-container input[type="text"],
+div.pit-scouting-container input[type="number"] {
+    width: 100%;
 }
 
 div.pit-scouting-container input[type="checkbox"]:hover {

@@ -95,6 +95,7 @@ class QuantitativeScoutingData:
 
     tba_match_data: dict[int, Scouting_TBAMatchData]
     data: list[ScoutingMatchData]
+    num_matches: int
 
     _alliance_regex = re.compile(r"^[a-zA-Z]+")
     _alliance_index_regex = re.compile(r"\d$")
@@ -261,14 +262,13 @@ class QuantitativeScoutingData:
 
         if(len(self.tba_match_data) == 0): return csv # No matches detected
 
-        last_match_number = max(self.tba_match_data.keys())
         shift_size = 3
 
-        num_shifts = ceil(last_match_number / shift_size)
+        num_shifts = ceil(self.num_matches / shift_size)
 
         for shift_index in range(0, num_shifts):
             starting_match = 1 + shift_index * shift_size
-            ending_match = min(starting_match + shift_size - 1, last_match_number)
+            ending_match = min(starting_match + shift_size - 1, self.num_matches)
             csv.append([f"{starting_match} - {ending_match}"])
 
         return csv
@@ -520,6 +520,8 @@ class AppData:
                 "epa": None,
                 "normalized_epa": None
             })
+
+        self.quantitative_scouting_data.num_matches = len(tbaTeams) * 2
 
         # Fetch matches data
         tbaMatches = get_matches(self.event_key)

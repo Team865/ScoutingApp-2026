@@ -4,7 +4,7 @@ const PitScoutingFields: FieldConfig[] = [
     {
         name: "Drivetrain",
         type: FieldType.SINGLE_CHOICE,
-        choices: ["Swerve", "Westcoast", "Mechanum", "Kitbot"]
+        choices: ["Swerve", "Tank", "Mechanum", "Kitbot"]
     },
     {
         name: "Robot Size",
@@ -15,12 +15,42 @@ const PitScoutingFields: FieldConfig[] = [
         type: FieldType.BOOLEAN,
     },
     {
-        name: "Coral Scoring Locations",
-        type: FieldType.MULTIPLE_CHOICE,
-        choices: ["L1", "L2", "L3", "L4"]
+        name: "Autos",
+        type: FieldType.TEXT
     },
     {
-        name: "Driveteam Experience",
+        name: "Shooter Type",
+        type: FieldType.SINGLE_CHOICE,
+        choices: [
+            "Small Drum", 
+            "Single Turret", 
+            "Dual Turret",
+            "Single Fixed",
+            "Double Fixed",
+            "Triple Fixed",
+            "Quadruple Fixed",
+        ]
+    },
+    {
+        name: "Adjustable Hood?",
+        type: FieldType.BOOLEAN
+    },
+    {
+        name: "Traversal",
+        type: FieldType.MULTIPLE_CHOICE,
+        choices: ["Bump", "Trench"]
+    },
+    {
+        name: "Shoot On The Move?",
+        type: FieldType.BOOLEAN
+    },
+    {
+        name: "Climb",
+        type: FieldType.MULTIPLE_CHOICE,
+        choices: ["L1", "L2", "L3"]
+    },
+    {
+        name: "Driver Experience",
         type: FieldType.TEXT
     },
     {
@@ -30,10 +60,8 @@ const PitScoutingFields: FieldConfig[] = [
         max: 10
     },
     {
-        name: "Electrical Rating",
-        type: FieldType.NUMBER_RANGE,
-        min: 0,
-        max: 10
+        name: "Additional Comments",
+        type: FieldType.TEXT
     }
 ]
 

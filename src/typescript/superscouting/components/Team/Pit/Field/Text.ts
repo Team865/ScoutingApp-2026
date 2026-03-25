@@ -9,6 +9,8 @@ export default class TextField implements Field {
     constructor(teamNumber: number, name: string) {
         this.name = name;
 
+        this.textInput.type = "text";
+
         this.title.innerText = name;
         this.fieldContainer.appendChild(this.title);
         this.fieldContainer.appendChild(this.textInput);

@@ -4,47 +4,34 @@ export default class SingleChoiceField implements Field {
     public name: string;
     private readonly fieldContainer = document.createElement("div");
     private readonly title = document.createElement("h2");
-    private currentChoice?: string;
+    private readonly select = document.createElement("select");
 
-    private radioChoices: Map<string, HTMLInputElement> = new Map();
+    private radioChoices: Map<string, HTMLOptionElement> = new Map();
 
     constructor(teamNumber: number, name: string, choices: string[]) {
         this.name = name;
 
         this.title.innerText = name;
-        this.fieldContainer.appendChild(this.title);
+        this.fieldContainer.append(this.title, this.select);
 
         for(const choice of choices) {
-            const choiceContainer = document.createElement("div");
-            const label = document.createElement("label");
-            const radio = document.createElement("input");
+            const option = document.createElement("option");
 
-            radio.type = "radio";
-            radio.name = `${teamNumber}-${this.name}`;
-            radio.id = `${teamNumber}-${choice}`;
-            label.htmlFor = `${teamNumber}-${choice}`;
-            label.innerText = choice;
+            option.id = `${teamNumber}-${choice}`;
+            option.innerText = choice;
+            option.value = choice;
+            this.select.appendChild(option);
 
-            choiceContainer.appendChild(radio);
-            choiceContainer.appendChild(label);
-            this.fieldContainer.appendChild(choiceContainer);
-
-            radio.addEventListener("click", () => this.currentChoice = choice);
-
-            this.radioChoices.set(choice, radio);
+            this.radioChoices.set(choice, option);
         }
     }
 
     public setValue(choice: string) {
-        this.currentChoice = choice;
-        this.radioChoices.get(choice).checked = true;
+        this.select.value = choice;
     }
 
     get value(): [isIncomplete: boolean, data: string | null] {
-        if(this.currentChoice === undefined || this.currentChoice === null)
-            return [true, null];
-        
-        return [false, this.currentChoice];
+        return [false, this.select.value];
     }
 
     get domElement() {
