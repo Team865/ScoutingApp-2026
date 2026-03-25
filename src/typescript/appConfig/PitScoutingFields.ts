@@ -23,6 +23,7 @@ const PitScoutingFields: FieldConfig[] = [
         type: FieldType.SINGLE_CHOICE,
         choices: [
             "Small Drum", 
+            "Wide Drum",
             "Single Turret", 
             "Dual Turret",
             "Single Fixed",
