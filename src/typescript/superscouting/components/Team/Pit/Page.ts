@@ -22,6 +22,7 @@ export default class PitScoutingPage implements Page {
     public readonly id = "Pit Scouting";
     private readonly mainContainer = document.createElement("div");
     public readonly submitPitScoutingButton = document.createElement("button");
+    public readonly savePitScoutingButton = document.createElement("button");
     private readonly teamNumber: number;
     
     private readonly fields: Map<FieldConfig, FieldInterface> = new Map();
@@ -62,9 +63,12 @@ export default class PitScoutingPage implements Page {
 
         // Create complete button
         this.submitPitScoutingButton.classList.add("submit-pit-scouting");
+        this.savePitScoutingButton.classList.add("save-pit-scouting");
+        
         this.submitPitScoutingButton.innerText = "Submit";
+        this.savePitScoutingButton.innerText = "Save";
 
-        this.mainContainer.appendChild(this.submitPitScoutingButton);
+        this.mainContainer.append(this.savePitScoutingButton, this.submitPitScoutingButton);
     }
 
     public show(pageContainer: HTMLDivElement): void {
@@ -72,7 +76,7 @@ export default class PitScoutingPage implements Page {
     }
 
     public serverNotesReceived(teamNumber: number) {
-        const notes = TeamNotesManager.getPitScoutingNotes(teamNumber);
+        const [notes, isComplete] = TeamNotesManager.getPitScoutingNotes(teamNumber);
 
         for(const [fieldConfig, field] of this.fields.entries()) {
             const serverNotesFieldValue = notes[fieldConfig.name];

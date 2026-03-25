@@ -37,7 +37,7 @@ class _PitScoutingFields_F3(TypedDict):
 class _PitScoutingFields_F4(TypedDict):
 	name: Literal['Shooter Type']
 	type: Literal['SINGLE_CHOICE']
-	choices: tuple[Literal['Small Drum'], Literal['Single Turret'], Literal['Dual Turret'], Literal['Single Fixed'], Literal['Double Fixed'], Literal['Triple Fixed'], Literal['Quadruple Fixed']]
+	choices: tuple[Literal['Small Drum'], Literal['Wide Drum'], Literal['Single Turret'], Literal['Dual Turret'], Literal['Single Fixed'], Literal['Double Fixed'], Literal['Triple Fixed'], Literal['Quadruple Fixed']]
 class _PitScoutingFields_F5(TypedDict):
 	name: Literal['Adjustable Hood?']
 	type: Literal['BOOLEAN']
@@ -64,4 +64,4 @@ class _PitScoutingFields_F11(TypedDict):
 	name: Literal['Additional Comments']
 	type: Literal['TEXT']
 type PitScoutingFields_t = tuple[_PitScoutingFields_F0, _PitScoutingFields_F1, _PitScoutingFields_F2, _PitScoutingFields_F3, _PitScoutingFields_F4, _PitScoutingFields_F5, _PitScoutingFields_F6, _PitScoutingFields_F7, _PitScoutingFields_F8, _PitScoutingFields_F9, _PitScoutingFields_F10, _PitScoutingFields_F11]
-PitScoutingFields: tuple[FieldConfig, ...] = ({'name': 'Drivetrain', 'type': 'SINGLE_CHOICE', 'choices': ('Swerve', 'Tank', 'Mechanum', 'Kitbot')}, {'name': 'Robot Size', 'type': 'TEXT'}, {'name': '/w Bumpers?', 'type': 'BOOLEAN'}, {'name': 'Autos', 'type': 'TEXT'}, {'name': 'Shooter Type', 'type': 'SINGLE_CHOICE', 'choices': ('Small Drum', 'Single Turret', 'Dual Turret', 'Single Fixed', 'Double Fixed', 'Triple Fixed', 'Quadruple Fixed')}, {'name': 'Adjustable Hood?', 'type': 'BOOLEAN'}, {'name': 'Traversal', 'type': 'MULTIPLE_CHOICE', 'choices': ('Bump', 'Trench')}, {'name': 'Shoot On The Move?', 'type': 'BOOLEAN'}, {'name': 'Climb', 'type': 'MULTIPLE_CHOICE', 'choices': ('L1', 'L2', 'L3')}, {'name': 'Driver Experience', 'type': 'TEXT'}, {'name': 'Mechanical Rating', 'type': 'NUMBER_RANGE', 'min': 0, 'max': 10}, {'name': 'Additional Comments', 'type': 'TEXT'})
+PitScoutingFields: tuple[FieldConfig, ...] = ({'name': 'Drivetrain', 'type': 'SINGLE_CHOICE', 'choices': ('Swerve', 'Tank', 'Mechanum', 'Kitbot')}, {'name': 'Robot Size', 'type': 'TEXT'}, {'name': '/w Bumpers?', 'type': 'BOOLEAN'}, {'name': 'Autos', 'type': 'TEXT'}, {'name': 'Shooter Type', 'type': 'SINGLE_CHOICE', 'choices': ('Small Drum', 'Wide Drum', 'Single Turret', 'Dual Turret', 'Single Fixed', 'Double Fixed', 'Triple Fixed', 'Quadruple Fixed')}, {'name': 'Adjustable Hood?', 'type': 'BOOLEAN'}, {'name': 'Traversal', 'type': 'MULTIPLE_CHOICE', 'choices': ('Bump', 'Trench')}, {'name': 'Shoot On The Move?', 'type': 'BOOLEAN'}, {'name': 'Climb', 'type': 'MULTIPLE_CHOICE', 'choices': ('L1', 'L2', 'L3')}, {'name': 'Driver Experience', 'type': 'TEXT'}, {'name': 'Mechanical Rating', 'type': 'NUMBER_RANGE', 'min': 0, 'max': 10}, {'name': 'Additional Comments', 'type': 'TEXT'})

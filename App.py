@@ -164,6 +164,7 @@ def match_notes_from_client():
 @app.post("/api/superscouting/pit-scouting-notes")
 def pit_scouting_notes_from_client():
     pit_scouting_notes: PitScoutingNotesChunkJSon = request.json
+
     app_data.superscouting_data.set_pit_scouting_notes(pit_scouting_notes)
     spreadsheet_manager.set_row_col_values(BackendWorksheet.PIT_SCOUTING, app_data.superscouting_data.get_pit_scouting_notes_csv)
     return {"message": "SUCCESS"}, 200

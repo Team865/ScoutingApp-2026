@@ -47,7 +47,7 @@ const matchNotesReceived = (newNotes: MatchNotesRequest) => {
 }
 
 const pitScoutingNotesReceived = (newNotes: PitScoutingNotesRequest) => {
-    TeamNotesManager.incomingPitScoutingNotesFromServer(newNotes.team_number, newNotes.data);
+    TeamNotesManager.incomingPitScoutingNotesFromServer(newNotes.team_number, newNotes.is_complete, newNotes.data);
 }
 
 superscoutingSSESource.onmessage = (e) => {

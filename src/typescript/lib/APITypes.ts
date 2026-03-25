@@ -6,5 +6,6 @@ export type MatchNotesRequest = {
 
 export type PitScoutingNotesRequest = {
     team_number: number,
+    is_complete: boolean,
     data: {[key: string]: any}
 }

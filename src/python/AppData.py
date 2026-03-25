@@ -74,6 +74,7 @@ class MatchNotesChunkJSon(TypedDict):
 
 class PitScoutingNotesChunkJSon(TypedDict):
     team_number: int
+    is_complete: bool
     data: dict[str, Any]
 
 class QuantitativeScoutingData:
@@ -302,11 +303,11 @@ class SuperScoutingData:
     match_notes: dict[int, dict[int, str]]
 
     # {
-    #     team_number: {
+    #     team_number: ({
     #         field_name: field_value
-    #     }
+    #     }, is_complete: bool)
     # }
-    pit_scouting_notes: dict[int, dict[str, Any]]
+    pit_scouting_notes: dict[int, tuple[dict[str, Any], bool]]
 
     match_data: list[Superscouting_TBAMatchData]
 
@@ -335,12 +336,13 @@ class SuperScoutingData:
     def set_pit_scouting_notes(self, pit_scouting_notes: PitScoutingNotesChunkJSon):
         team_number = pit_scouting_notes["team_number"]
         notes = pit_scouting_notes["data"]
+        is_complete = pit_scouting_notes["is_complete"]
 
         # Lock notes
         self.data_received_timestamps[f"pit_scouting_notes/{team_number}"] = time()
 
         # Update notes
-        self.pit_scouting_notes[team_number] = notes
+        self.pit_scouting_notes[team_number] = (notes, is_complete)
         # Resort notes
         self.pit_scouting_notes = dict(sorted(self.pit_scouting_notes.items()))
         # Broadcast updates
@@ -405,12 +407,16 @@ class SuperScoutingData:
     def set_pit_scouting_from_csv(self, csv: list[list[str]]):
         if(len(csv) < 2): return # No pit scouting data
         
-        def parse_team_row(row: list[str]) -> Optional[int]:
+        def parse_team_row(row: list[str]) -> Optional[tuple[int, bool]]:
             team_number = int(row[0])
             
             if(self._is_client_data_lockedout(f"pit_scouting_notes/{team_number}")): return None
 
-            fields = row[1:]
+            num_fields = len(PitScoutingFields)
+
+            fields = row[1:1 + num_fields]
+            
+            is_complete = True if (len(row) >= (num_fields + 2) and row[len(row) - 1].lower() == "true") else False
 
             preexisting_notes = team_number in self.pit_scouting_notes and self.pit_scouting_notes[team_number]
             has_changed = False
@@ -426,26 +432,31 @@ class SuperScoutingData:
                 if(not has_changed):
                     if(not preexisting_notes):
                         has_changed = True
-                    elif(field_value != preexisting_notes[field_name]):
+                    elif(field_value != preexisting_notes[0][field_name]):
                         has_changed = True
 
                 team_notes[field_name] = field_value
 
             if(has_changed): 
-                self.pit_scouting_notes[team_number] = team_notes
-                return team_number
+                self.pit_scouting_notes[team_number] = (team_notes, is_complete)
+                return team_number, is_complete
 
         team_rows = csv[1:]
 
         for team_row in team_rows:
-            team_number = parse_team_row(team_row)
+            parsed_row = parse_team_row(team_row)
 
-            if(team_number is None): continue # Notes didn't change
-            
-            PitScoutingSSE.broadcast_pit_scouting_notes({
+            if(parsed_row is None): continue # Notes didn't change
+
+            [team_number, is_complete] = parsed_row
+
+            pit_scouting_notes_json: PitScoutingNotesChunkJSon = {
                 "team_number": team_number,
-                "data": self.pit_scouting_notes[team_number]
-            })
+                "is_complete": is_complete,
+                "data": self.pit_scouting_notes[team_number][0]
+            }
+            
+            PitScoutingSSE.broadcast_pit_scouting_notes(pit_scouting_notes_json)
 
     @property
     def serialized(self):
@@ -475,9 +486,10 @@ class SuperScoutingData:
             [
                 [team_number]+
                 [
-                    get_field_value_as_str(field_value) 
-                    for field_value in team_pit_scouting_notes.values()
-                ] 
+                    get_field_value_as_str(field_value)
+                    for field_value in team_pit_scouting_notes[0].values()
+                ] +
+                [team_pit_scouting_notes[1]]
                 for team_number, team_pit_scouting_notes in self.pit_scouting_notes.items()
             ]
 

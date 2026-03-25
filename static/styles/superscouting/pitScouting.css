@@ -30,12 +30,14 @@ div.pit-scouting-container input[type="checkbox"]:hover {
     background-color: var(--bg-dark);
 }
 
-button.submit-pit-scouting {
+button.submit-pit-scouting,
+button.save-pit-scouting {
     background-color: var(--accent);
     transition: 0.1s scale ease-in-out;
 }
 
-button.submit-pit-scouting:hover {
+button.submit-pit-scouting:hover,
+button.save-pit-scouting:hover {
     scale: 1.01;
 }
 

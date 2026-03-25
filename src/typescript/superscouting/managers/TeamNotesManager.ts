@@ -13,11 +13,12 @@ export namespace TeamNotesManager {
         });
     }
 
-    export function setPitScoutingFromClient(teamNumber: number, pitScoutingNotes: {[key: string]: any}) {
+    export function setPitScoutingFromClient(teamNumber: number, pitScoutingNotes: {[key: string]: any}, isSubmission: boolean) {
         AppData.match_notes[teamNumber] = pitScoutingNotes;
 
         sendPitScoutingNotesFromClient({
             team_number: teamNumber,
+            is_complete: isSubmission,
             data: pitScoutingNotes
         });
     }
@@ -32,10 +33,10 @@ export namespace TeamNotesManager {
         return AppData.match_notes[teamNumber][matchNumber];
     }
 
-    export function incomingPitScoutingNotesFromServer(teamNumber: number, notes: {[key: string]: any}) {
+    export function incomingPitScoutingNotesFromServer(teamNumber: number, isComplete: boolean, notes: {[key: string]: any}) {
         // Data from SSE
-        AppData.pit_scouting_notes[teamNumber] = notes;
-        AppData.serverPitScoutingNotesChanged.emit(teamNumber);
+        AppData.pit_scouting_notes[teamNumber] = [notes, isComplete];
+        AppData.serverPitScoutingNotesChanged.emit([teamNumber, isComplete]);
     }
 
     export function getPitScoutingNotes(teamNumber) {

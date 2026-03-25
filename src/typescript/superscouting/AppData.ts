@@ -32,16 +32,16 @@ export type SuperscoutingData = {
     */
     match_notes: {[key: number]: {[key: number]: string}},
     pit_scouting_notes: {
-        [key: number]: { // Team number
+        [key: number]: [{ // Team number
             [key: string]: any, // {field_name: field_value}
-        }
+        }, boolean] // Is complete
     },
     matches: MatchData[]
 }
 
 type ClientAppData = SuperscoutingData & {
     serverMatchNotesChanged: Signal<[number, number]>, // [team_number, match_number]
-    serverPitScoutingNotesChanged: Signal<number> // team_number
+    serverPitScoutingNotesChanged: Signal<[number, boolean]> // team_number
 }
 
 const AppData: ClientAppData = {

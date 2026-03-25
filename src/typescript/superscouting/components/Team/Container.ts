@@ -87,18 +87,25 @@ export default class TeamContainer {
             const pitScoutingPageInfo = (this.pages.get("Pit Scouting"));
             const pitScoutingPage = pitScoutingPageInfo.page as PitScoutingPage
             pitScoutingPage.submitPitScoutingButton.addEventListener("click", () => this.submitPitScouting(pitScoutingPageInfo));
+            pitScoutingPage.savePitScoutingButton.addEventListener("click", () => this.savePitScouting(pitScoutingPageInfo));
 
             // Check for preexisting notes
-            if(TeamNotesManager.getPitScoutingNotes(this.teamNumber)) {
-                this.pitScoutingSubmitted(pitScoutingPageInfo);
+            const notesTuple = TeamNotesManager.getPitScoutingNotes(this.teamNumber);
+
+            if(notesTuple) {
+                const [notes, isComplete] = notesTuple;
+                if(isComplete) this.pitScoutingSubmitted(pitScoutingPageInfo);
                 pitScoutingPage.serverNotesReceived(teamNumber);
             }
 
             // Pit scouting notes from the server
-            AppData.serverPitScoutingNotesChanged.connect((teamNumber) => {
+            AppData.serverPitScoutingNotesChanged.connect(([teamNumber, isComplete]) => {
                 if(teamNumber !== this.teamNumber) return;
 
-                this.pitScoutingSubmitted(pitScoutingPageInfo);
+                if(isComplete) {
+                    this.pitScoutingSubmitted(pitScoutingPageInfo);
+                }
+                
                 pitScoutingPage.serverNotesReceived(teamNumber);
             });
         }
@@ -143,6 +150,16 @@ export default class TeamContainer {
         (pitScoutingPageInfo.page as PitScoutingPage).submitPitScoutingButton.innerText = "Resubmit";
     }
 
+    public savePitScouting(pitScoutingPageInfo: {tabButton?: HTMLButtonElement, page: Page}) {
+        const pitScoutingPage = pitScoutingPageInfo.page as PitScoutingPage;
+
+        const scoutingData = pitScoutingPage.getData;
+
+        TeamNotesManager.setPitScoutingFromClient(this.teamNumber, scoutingData.data, false);
+
+        alert("Saved");
+    }
+
     public submitPitScouting(pitScoutingPageInfo: {tabButton?: HTMLButtonElement, page: Page}) {
         const pitScoutingPage = pitScoutingPageInfo.page as PitScoutingPage;
 
@@ -157,7 +174,7 @@ export default class TeamContainer {
 
         this.pitScoutingSubmitted(pitScoutingPageInfo);
 
-        TeamNotesManager.setPitScoutingFromClient(this.teamNumber, scoutingData.data);
+        TeamNotesManager.setPitScoutingFromClient(this.teamNumber, scoutingData.data, true);
 
         this.containerDiv.scrollIntoView();
         this.switchToPage("Summary");
