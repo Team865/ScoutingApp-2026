@@ -187,7 +187,7 @@ class QuantitativeScoutingData:
             
             for match_number in range(starting_match, ending_match + 1):
                 if(match_number not in self.tba_match_data):
-                    print("Match data could not be found for match", match_number)
+                    # print("Match data could not be found for match", match_number)
                     continue
 
                 match_data = self.tba_match_data[match_number]
