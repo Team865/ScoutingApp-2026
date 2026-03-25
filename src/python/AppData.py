@@ -186,10 +186,11 @@ class QuantitativeScoutingData:
                 assigned_matches[scouter_name] = (alliance, alliance_index) # type: ignore
             
             for match_number in range(starting_match, ending_match + 1):
-                match_data = self.tba_match_data[match_number]
-                if(match_data is None):
+                if(match_number not in self.tba_match_data):
                     print("Match data could not be found for match", match_number)
                     continue
+
+                match_data = self.tba_match_data[match_number]
 
                 for scouter_name, assigned_match in assigned_matches.items():
                     alliance = assigned_match[0]
