@@ -114,6 +114,7 @@ export default class VisualizerSubpage implements SubpageInterface {
         this.addOption("Total Fouls", match => match.teleop_fouls.minor + match.teleop_fouls.major, "#bd0101");
         this.addOption("Minor Fouls", match => match.teleop_fouls.minor, "#a34bf0");
         this.addOption("Major Fouls", match => match.teleop_fouls.major,"#f04b4b");
+        this.addOption("Defense Skill", match => match.defense_skill,"#47aed7");
     }
 
     private addOption(optionName: string, valueGetter: (match: ScoutingData) => number, defaultColor?: string) {
