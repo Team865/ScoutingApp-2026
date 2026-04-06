@@ -273,6 +273,18 @@ class QuantitativeScoutingData:
 
         return csv
 
+    def get_rotation(self, scouter_name: str):
+        raw_rotation = self.rotations[scouter_name]
+        filtered_rotation: dict[int, tuple[int, QuantitativeScoutingData._Alliance]] = {}
+
+        for match_number, match_info in raw_rotation.items():
+            [team_number, alliance] = match_info
+
+            if(ListUtil.find(self.data, lambda data: data["match_number"] == match_number and data["team_number"] == team_number) is None):
+                filtered_rotation[match_number] = match_info
+
+        return filtered_rotation
+
     @property
     def get_header(self):
         return [

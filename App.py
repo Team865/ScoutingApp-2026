@@ -111,7 +111,8 @@ def get_scouting_rotation_data():
     rotations = app_data.quantitative_scouting_data.rotations
     if scouter_name not in rotations:
         return jsonify({"Error": f"{scouter_name} does not exist in the rotation."}), 404
-    return jsonify(rotations[scouter_name]), 200
+    
+    return jsonify(app_data.quantitative_scouting_data.get_rotation(scouter_name)), 200
 
 @app.route("/api/superscouting")
 def get_superscouting_data():
