@@ -29,8 +29,6 @@ class MatchAccordion {
         this.domElement.append(this.toggleButton, this.accordionBody);
 
         // Displaying data
-        console.log(matchData.endgame_climb_type, matchData.endgame_climb_type === ClimbHeight.NO_ATTEMPT);
-
         const html = new HTMLStringBuilder()
             .append("OVERALL", Element.H1)
             .append(`Comments: ${matchData.comments || "None"}`)
