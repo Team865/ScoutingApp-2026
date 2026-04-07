@@ -177,7 +177,7 @@ class QuantitativeScoutingData:
             assigned_matches: dict[str, tuple[Literal["Red", "Blue"], int]] = {}
 
             for column_index in range(1, len(row)):
-                scouter_name = row[column_index]
+                scouter_name = row[column_index].upper()
 
                 if(not scouter_name) or (scouter_name.lower() == "unset"): continue
 

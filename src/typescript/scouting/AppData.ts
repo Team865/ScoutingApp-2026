@@ -112,11 +112,11 @@ export function getScouterName() {
     if(!removePrefix(document.cookie, "username=")) {
         const scouterName = prompt("What is your FULL name (FirstName LastName)?");
 
-        AppData.scouter_name = titleCase(scouterName) || "Unset";
+        AppData.scouter_name = (scouterName || "Unset").toUpperCase();
 
         document.cookie = "username=" + encrypt(AppData.scouter_name, xorKey);
     } else {
-        AppData.scouter_name = decrypt(removePrefix(document.cookie, "username="), xorKey);
+        AppData.scouter_name = decrypt(removePrefix(document.cookie, "username="), xorKey).toUpperCase();
     }
 }
 
