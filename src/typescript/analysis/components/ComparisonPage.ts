@@ -259,7 +259,7 @@ export default class ComparisonPage {
             const teamNumber = Number.parseInt((row[0].querySelector("select") as HTMLSelectElement).value);
 
             for(let columnIndex = 1; columnIndex < row.length; columnIndex++) {
-                row[columnIndex].innerText = dataGetters[columnIndex - 1](teamNumber).toString();
+                row[columnIndex].innerText = (dataGetters[columnIndex - 1](teamNumber) || "N/A").toString();
             }
         }
     }
