@@ -1,0 +1,14 @@
+div#comparison-table {
+    display: grid;
+    align-items: stretch;
+    justify-content: stretch;
+    background-color: aqua;
+}
+
+div#comparison-table > div {
+    background-color: var(--bg);
+    border: 1px solid var(--bg-light);
+    padding: 0.5rem;
+    min-height: 1rem;
+    min-width: 2rem;
+}
