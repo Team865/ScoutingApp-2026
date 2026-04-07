@@ -7,21 +7,25 @@ enum TeamData {
     MeanDriveSkill = "Mean Drive Skill",
     MedianDriveSkill = "Median Drive Skill",
     MeanDefenseSkill = "Mean Defense Skill",
-    MedianDefenseSkill = "Median Defense Skill"
+    MedianDefenseSkill = "Median Defense Skill",
+    Passing = "Passing",
+    Snowploughing = "Snowploughing",
+    MeanFuelScored = "Mean Fuel Scored",
+    MedianFuelScored = "Median Fuel Scored"
 }
 
-const dataGetterLookup = new Map<TeamData, (teamNumber: number) => number>();
+const dataGetterLookup = new Map<TeamData, (teamNumber: number) => (number | boolean | null)>();
 
 dataGetterLookup.set(TeamData.EPA, (teamNumber) => {
     const teamData = AppData.superscouting.fetched_team_data.find(data => data.number == teamNumber);
 
-    return teamData.epa || teamData.normalized_epa || Number.NaN;
+    return teamData.epa || teamData.normalized_epa || null;
 });
 
 dataGetterLookup.set(TeamData.MeanDriveSkill, (teamNumber) => {
     const teamDatas = AppData.quantitative_data.get(teamNumber);
 
-    if(teamDatas === undefined) return Number.NaN;
+    if(teamDatas === undefined) return null;
 
     return getMean(teamDatas.map(matchData => matchData.driver_skill));
 });
@@ -29,7 +33,7 @@ dataGetterLookup.set(TeamData.MeanDriveSkill, (teamNumber) => {
 dataGetterLookup.set(TeamData.MedianDriveSkill, (teamNumber) => {
     const teamDatas = AppData.quantitative_data.get(teamNumber);
 
-    if(teamDatas === undefined) return Number.NaN;
+    if(teamDatas === undefined) return null;
 
     return getMedian(teamDatas.map(matchData => matchData.driver_skill));
 });
@@ -37,10 +41,10 @@ dataGetterLookup.set(TeamData.MedianDriveSkill, (teamNumber) => {
 dataGetterLookup.set(TeamData.MeanDefenseSkill, (teamNumber) => {
     const teamDatas = AppData.quantitative_data.get(teamNumber);
 
-    if(teamDatas === undefined) return Number.NaN;
+    if(teamDatas === undefined) return null;
 
     const matchesWithDefense = teamDatas.filter(data => data.teleop_defense);
-    if(matchesWithDefense.length == 0) return Number.NaN;
+    if(matchesWithDefense.length == 0) return null;
 
     return getMean(matchesWithDefense.map(matchData => matchData.defense_skill));
 });
@@ -49,12 +53,44 @@ dataGetterLookup.set(TeamData.MeanDefenseSkill, (teamNumber) => {
 dataGetterLookup.set(TeamData.MedianDefenseSkill, (teamNumber) => {
     const teamDatas = AppData.quantitative_data.get(teamNumber);
 
-    if(teamDatas === undefined) return Number.NaN;
+    if(teamDatas === undefined) return null;
 
     const matchesWithDefense = teamDatas.filter(data => data.teleop_defense);
-    if(matchesWithDefense.length == 0) return Number.NaN;
+    if(matchesWithDefense.length == 0) return null;
 
     return getMedian(matchesWithDefense.map(matchData => matchData.defense_skill));
+});
+
+dataGetterLookup.set(TeamData.Passing, (teamNumber) => {
+    const teamDatas = AppData.quantitative_data.get(teamNumber);
+
+    if(teamDatas === undefined) return null;
+
+    return teamDatas.find(data => data.teleop_passer) !== undefined;
+});
+
+dataGetterLookup.set(TeamData.Snowploughing, (teamNumber) => {
+    const teamDatas = AppData.quantitative_data.get(teamNumber);
+
+    if(teamDatas === undefined) return null;
+
+    return teamDatas.find(data => data.teleop_snowploughing) !== undefined;
+});
+
+dataGetterLookup.set(TeamData.MeanFuelScored, (teamNumber) => {
+    const teamDatas = AppData.quantitative_data.get(teamNumber);
+
+    if(teamDatas === undefined) return null;
+
+    return getMean(teamDatas.map(data => data.auto_fuel_scored + data.teleop_fuel_scored));
+});
+
+dataGetterLookup.set(TeamData.MedianFuelScored, (teamNumber) => {
+    const teamDatas = AppData.quantitative_data.get(teamNumber);
+
+    if(teamDatas === undefined) return null;
+
+    return getMedian(teamDatas.map(data => data.auto_fuel_scored + data.teleop_fuel_scored));
 });
 
 export default class ComparisonPage {

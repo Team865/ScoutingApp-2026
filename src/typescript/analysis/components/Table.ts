@@ -9,6 +9,8 @@ export default class Table {
 
     constructor(leftmostColumnName: string) {
         this.cells[0][0].innerText = leftmostColumnName;
+        this.cells[0][0].style.gridRow = "1";
+        this.cells[0][0].style.gridColumn = "1";
         this.domElement.appendChild(this.cells[0][0]);
     }
 
@@ -56,7 +58,7 @@ export default class Table {
 
         for(let i = rowIndex + 1; i < this.numRows; i++) {
             for(const cell of this.cells[i]) {
-                cell.style.gridRow = rowIndex.toString();
+                cell.style.gridRow = i.toString();
             }
         }
 
@@ -67,12 +69,12 @@ export default class Table {
     public removeColumn(columnIndex: number) {
         for(let rowIndex = 0; rowIndex < this.numRows; rowIndex++) {
             const row = this.cells[rowIndex];
-            row[columnIndex].remove();
 
-            for(let i = columnIndex; i < this.numRows; i++) {
-                row[i].style.gridColumn = columnIndex.toString();
+            for(let i = columnIndex + 1; i < this.numColumns; i++) {
+                row[i].style.gridColumn = i.toString();
             }
 
+            row[columnIndex].remove();
             row.splice(columnIndex, 1);
         }
 
