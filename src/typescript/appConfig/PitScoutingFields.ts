@@ -22,6 +22,7 @@ const PitScoutingFields: FieldConfig[] = [
         name: "Shooter Type",
         type: FieldType.SINGLE_CHOICE,
         choices: [
+            "No Shooter",
             "Small Drum", 
             "Wide Drum",
             "Single Turret", 
@@ -37,13 +38,17 @@ const PitScoutingFields: FieldConfig[] = [
         type: FieldType.BOOLEAN
     },
     {
+        name: "Shoot On The Move?",
+        type: FieldType.BOOLEAN
+    },
+    {
+        name: "Hopper Capacity",
+        type: FieldType.NUMBER
+    },
+    {
         name: "Traversal",
         type: FieldType.MULTIPLE_CHOICE,
         choices: ["Bump", "Trench"]
-    },
-    {
-        name: "Shoot On The Move?",
-        type: FieldType.BOOLEAN
     },
     {
         name: "Climb",
