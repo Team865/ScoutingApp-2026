@@ -150,6 +150,8 @@ class QuantitativeScoutingData:
         team_number: int,
         alliance: _Alliance
     ):
+        scouter_name = scouter_name.upper()
+
         if(scouter_name not in self.rotations):
             self.rotations[scouter_name] = {}
         
