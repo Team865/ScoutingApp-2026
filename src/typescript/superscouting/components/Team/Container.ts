@@ -166,9 +166,7 @@ export default class TeamContainer {
         const scoutingData = pitScoutingPage.getData;
 
         if(scoutingData.isIncomplete) {
-            const missingField = scoutingData.data as FieldInterface;
-            missingField.domElement.scrollIntoView();
-            alert(`Missing field: ${missingField.name}`);
+            alert(`Missing fields: ${scoutingData.missingFields.join(", ")}`);
             return;
         }
 

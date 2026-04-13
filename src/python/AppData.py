@@ -20,12 +20,12 @@ __all__ = ["AppData"]
 _match_notes_csv_match_number_regex = re.compile(r"[\d]+\n")
 
 _scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
-    "BOOLEAN": lambda value: value.lower() != "false" if value is not None else False,
-    "TEXT": lambda value: value if value is not None else None,
-    "NUMBER": lambda value: (float(value) if "." in value else int(value)) if value is not None else None,
-    "NUMBER_RANGE": lambda value: int(value) if value is not None else None,
-    "SINGLE_CHOICE": lambda value: value if value is not None else None,
-    "MULTIPLE_CHOICE": lambda value: (value.split(", ") if value is not None else [])
+    "BOOLEAN": lambda value: value.lower() != "false" if value != "" else False,
+    "TEXT": lambda value: value if value != "" else None,
+    "NUMBER": lambda value: (float(value) if "." in value else int(value)) if value != "" else None,
+    "NUMBER_RANGE": lambda value: int(value) if value != "" else None,
+    "SINGLE_CHOICE": lambda value: value if value != "" else None,
+    "MULTIPLE_CHOICE": lambda value: (value.split(", ") if value != "" else [])
 }
 
 _scouting_data_csv_cell_parser: dict[type, Callable[[str], Any]] = {
@@ -350,7 +350,7 @@ class SuperScoutingData:
     def set_pit_scouting_notes(self, pit_scouting_notes: PitScoutingNotesChunkJSon):
         team_number = pit_scouting_notes["team_number"]
         notes = pit_scouting_notes["data"]
-        is_complete = pit_scouting_notes["is_complete"]
+        is_complete = (team_number in self.pit_scouting_notes and self.pit_scouting_notes[team_number][1]) or pit_scouting_notes["is_complete"]
 
         # Lock notes
         self.data_received_timestamps[f"pit_scouting_notes/{team_number}"] = time()
@@ -446,6 +446,8 @@ class SuperScoutingData:
                 if(not has_changed):
                     if(not preexisting_notes):
                         has_changed = True
+                    elif(field_name not in preexisting_notes[0]):
+                        has_changed = True
                     elif(field_value != preexisting_notes[0][field_name]):
                         has_changed = True
 
@@ -500,8 +502,8 @@ class SuperScoutingData:
             [
                 [team_number]+
                 [
-                    get_field_value_as_str(field_value)
-                    for field_value in team_pit_scouting_notes[0].values()
+                    get_field_value_as_str(team_pit_scouting_notes[0][field_name]) if (field_name in team_pit_scouting_notes[0]) else ""
+                    for field_name in field_names
                 ] +
                 [team_pit_scouting_notes[1]]
                 for team_number, team_pit_scouting_notes in self.pit_scouting_notes.items()

@@ -43,7 +43,7 @@ const PitScoutingFields: FieldConfig[] = [
     },
     {
         name: "Hopper Capacity",
-        type: FieldType.NUMBER
+        type: FieldType.TEXT
     },
     {
         name: "Traversal",
@@ -67,7 +67,8 @@ const PitScoutingFields: FieldConfig[] = [
     },
     {
         name: "Additional Comments",
-        type: FieldType.TEXT
+        type: FieldType.TEXT,
+        isOptional: true
     }
 ]
 

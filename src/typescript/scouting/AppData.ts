@@ -110,7 +110,7 @@ export function getScouterName() {
     const xorKey = "d67t819yhusaid";
 
     if(!removePrefix(document.cookie, "username=")) {
-        const scouterName = prompt("What is your FULL name (FirstName LastName)?");
+        const scouterName = prompt("Enter your name as shown on the scouting rotation");
 
         AppData.scouter_name = (scouterName || "Unset").toUpperCase();
 

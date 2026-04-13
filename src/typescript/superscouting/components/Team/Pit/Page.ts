@@ -13,6 +13,7 @@ import { TeamNotesManager } from "../../../managers/TeamNotesManager";
 
 type PitScoutingResults = {
     isIncomplete: boolean, // Whether required fields are missing values
+    missingFields: string[],
     data?: { // Either a dictionary containing the values of each field, or a reference to the Field object of the first required field with a missing value
         [key: string]: any
     } | FieldInterface;
@@ -80,6 +81,8 @@ export default class PitScoutingPage implements Page {
 
         for(const [fieldConfig, field] of this.fields.entries()) {
             const serverNotesFieldValue = notes[fieldConfig.name];
+
+            if(serverNotesFieldValue === undefined || serverNotesFieldValue === null) continue;
             field.setValue(serverNotesFieldValue);
         }
     }
@@ -87,16 +90,20 @@ export default class PitScoutingPage implements Page {
     public get getData(): PitScoutingResults {
         const fieldData: PitScoutingResults = {
             isIncomplete: false,
+            missingFields: [],
             data: {}
         };
 
         for(const [fieldConfig, field] of this.fields.entries()) {
             const [isIncomplete, fieldValue] = field.value;
 
-            if(isIncomplete && !fieldConfig.isOptional)
-                return {isIncomplete: true, data: field};
-            
-            fieldData.data[fieldConfig.name] = fieldValue;
+            if(!isIncomplete) fieldData.data[fieldConfig.name] = fieldValue;
+            else {
+                if(!fieldConfig.isOptional) {
+                    fieldData.missingFields.push(fieldConfig.name);
+                    fieldData.isIncomplete = true;
+                }
+            }
         }
 
         return fieldData;
