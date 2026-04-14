@@ -203,6 +203,10 @@ export default class TeamMatchContainer {
         this.setText(notes);
     }
 
+    public getText(): string {
+        return this.notesDisplay.textContent;
+    }
+
     public setText(text: string) {
         const lines = text.split("\n");
 

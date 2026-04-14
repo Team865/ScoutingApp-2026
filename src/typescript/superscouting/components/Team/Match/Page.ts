@@ -11,6 +11,7 @@ export default class MatchesPage implements Page {
     public readonly teamMatchContainers: Map<MatchKey, TeamMatchContainer> = new Map();
     private readonly toolbar = document.createElement("div");
     private readonly expandAllButton = document.createElement("button");
+    private readonly expandNonEmptyButton = document.createElement("button");
     private readonly collapseAllButton = document.createElement("button");
     private readonly matchList = document.createElement("div");
 
@@ -21,12 +22,13 @@ export default class MatchesPage implements Page {
         this.toolbar.classList.add("match-toolbar");
         this.matchList.classList.add("match-list");
 
-        this.toolbar.appendChild(this.expandAllButton);
-        this.toolbar.appendChild(this.collapseAllButton);
+        this.toolbar.append(this.expandNonEmptyButton, this.expandAllButton, this.collapseAllButton);
 
+        this.expandNonEmptyButton.innerText = "Expand Only Non-Empty";
         this.expandAllButton.innerText = "Expand All";
         this.collapseAllButton.innerText = "Collapse All";
 
+        this.expandNonEmptyButton.addEventListener("click", () => this.teamMatchContainers.forEach(container => container.toggle(container.getText().trim().length > 0)));
         this.expandAllButton.addEventListener("click", () => this.teamMatchContainers.forEach(container => container.toggle(true)));
         this.collapseAllButton.addEventListener("click", () => this.teamMatchContainers.forEach(container => container.toggle(false)));
 
