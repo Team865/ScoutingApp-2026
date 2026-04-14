@@ -1,6 +1,8 @@
 import time
 from typing import cast
 
+from flask import app
+
 from src.python.util import ListUtil
 from ..api_helpers.TBAApi import get_matches
 from .SuperScoutingEndpoint import sse_manager
@@ -24,6 +26,10 @@ def broadcast_match_update(appData: AppData, match_key: str):
     })
 
 def poll_tba_matches(app_data: AppData, event_key: str):
+    for match in app_data.superscouting_data.match_data:
+        if(match["red_score"] and match["red_score"] >= 0):
+            completed_matches.add(match["key"])
+
     while True:
         try:
             matches = get_matches(event_key)
@@ -39,6 +45,8 @@ def poll_tba_matches(app_data: AppData, event_key: str):
                     continue
 
                 completed_matches.add(key)
+
+                print("New match data from match", key)
 
                 teams_in_match = []
                 for alliance in ("red", "blue"):
