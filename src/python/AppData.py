@@ -17,7 +17,7 @@ This python class will act as a container for all of the App Data used by the ba
 
 __all__ = ["AppData"]
 
-_match_notes_csv_match_number_regex = re.compile(r"[\d]+\n")
+_match_notes_csv_match_number_regex = re.compile(r"[\d]+")
 
 _scouting_field_value_parser: dict[str, Callable[[str], Any]] = {
     "BOOLEAN": lambda value: value.lower() != "false" if value != "" else False,
@@ -331,17 +331,24 @@ class SuperScoutingData:
         self.match_data = []
         self.pit_scouting_notes = {}
     
-    def set_match_notes(self, match_notes_chunk: MatchNotesChunkJSon):
+    def add_match_notes(self, match_notes_chunk: MatchNotesChunkJSon):
         # Create aliases for cleaner code
         team_number = match_notes_chunk["team_number"]
         match_number = match_notes_chunk["match_number"]
         notes = match_notes_chunk["notes"]
+
+        if(not notes): return
+
+        if(team_number in self.match_notes and match_number in self.match_notes[team_number]):
+            notes = (self.match_notes[team_number][match_number] + "\n" + notes).strip()
+            match_notes_chunk["notes"] = notes
 
         # Lock notes
         self.data_received_timestamps[f"match_notes/{team_number}/{match_number}"] = time()
 
         # Update notes
         self.match_notes[team_number][match_number] = notes
+        
         # Resort notes
         self.match_notes[team_number] = dict(sorted(self.match_notes[team_number].items()))
         # Broadcast updates
@@ -392,7 +399,7 @@ class SuperScoutingData:
 
                 if(self._is_client_data_lockedout(f"match_notes/{team_number}/{match_number}")): return None
 
-                match_notes = match_note_cell[match_number_match.end():]
+                match_notes = match_note_cell[match_number_match.end():].strip()
 
                 preexisting_match_notes = match_number in self.match_notes[team_number] and self.match_notes[team_number]
                 

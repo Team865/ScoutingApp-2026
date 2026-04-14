@@ -14,7 +14,9 @@ export default class TeamMatchContainer {
     private readonly toggleButton = document.createElement("button");
     private readonly viewMatchDataButton = document.createElement("button");
     private readonly accordionBody = document.createElement("div");
+    private readonly notesDisplay = document.createElement("div");
     private readonly noteTakingArea = document.createElement("div");
+    private readonly submitButton = document.createElement("button");
 
     private readonly matchDataPopupTags = {
         redTitle: document.createElement("h2"),
@@ -46,9 +48,12 @@ export default class TeamMatchContainer {
         const matchData = AppData.matches.find(v => v.number === matchNumber);
         const alliance = matchData.teams.find(v => v.team_number === teamNumber).alliance;
 
+        this.submitButton.innerText = "SUBMIT";
+
         this.matchContainer.classList.add("team-match");
         this.toggleButton.classList.add("accordion-toggle", `${alliance.toLowerCase()}-alliance`);
         this.viewMatchDataButton.classList.add("view-match-data");
+        this.notesDisplay.classList.add("notes-display");
         this.toggleButton.addEventListener("click", () => this.toggle());
         this.matchLabel.innerText = `Q${matchData.number}: ${titleCase(alliance)} Alliance`;
 
@@ -56,7 +61,10 @@ export default class TeamMatchContainer {
         bindTextEditorBehavior(this.noteTakingArea);
         this.initMatchDataPopup();
         this.viewMatchDataButton.addEventListener("click", (e) => this.viewMatchDataClicked(e));
-        this.noteTakingArea.addEventListener("focusout", () => this.clientNotesChanged());
+        this.submitButton.addEventListener("click", () => {
+            this.clientNotesChanged();
+            this.noteTakingArea.innerHTML = null;
+        });
         AppData.serverMatchNotesChanged.connect(e => this.serverNotesReceived(e));
 
         { // Set preexisting notes if they exist
@@ -64,11 +72,11 @@ export default class TeamMatchContainer {
             if(preexistingNotes) this.setText(preexistingNotes);
         }
 
-        this.toggleButton.appendChild(this.matchLabel);
-        this.toggleButton.appendChild(this.viewMatchDataButton);
-        this.accordionBody.appendChild(this.noteTakingArea);
-        this.matchContainer.appendChild(this.toggleButton);
-        this.matchContainer.appendChild(this.accordionBody);
+        this.toggleButton.append(this.matchLabel, this.viewMatchDataButton);
+        
+        this.accordionBody.append(this.notesDisplay, this.noteTakingArea, this.submitButton);
+
+        this.matchContainer.append(this.toggleButton, this.accordionBody);
         listContainer.appendChild(this.matchContainer);
     }
 
@@ -181,7 +189,6 @@ export default class TeamMatchContainer {
     }
 
     public clientNotesChanged() {
-        // SEND DATA TO BACKEND HERE
         TeamNotesManager.setMatchNotesFromClient(this.teamNumber, this.matchNumber, this.noteTakingArea.textContent);
     }
 
@@ -192,8 +199,6 @@ export default class TeamMatchContainer {
         ) return;
 
         const notes = TeamNotesManager.getMatchNotes(teamNumber, matchNumber);
-
-        if(notes === this.noteTakingArea.textContent) return; // This client is the one that made the edit
         
         this.setText(notes);
     }
@@ -201,13 +206,20 @@ export default class TeamMatchContainer {
     public setText(text: string) {
         const lines = text.split("\n");
 
-        this.noteTakingArea.innerHTML = null;
+        this.notesDisplay.innerHTML = null;
+
+        if(lines.length == 0 || lines[0] == "") {
+            this.notesDisplay.classList.remove("has-text");
+            return;
+        }
+        
+        this.notesDisplay.classList.add("has-text");
 
         for(const [lineIndex, line] of lines.entries()) {
-            this.noteTakingArea.append(document.createTextNode(line));
+            this.notesDisplay.append(document.createTextNode(line));
 
             if (lineIndex < lines.length - 1) {
-                this.noteTakingArea.append(document.createTextNode("\n"));
+                this.notesDisplay.append(document.createTextNode("\n"));
             }
         }
     }

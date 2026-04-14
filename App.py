@@ -158,7 +158,7 @@ def scouting_data_from_client():
 @app.post("/api/superscouting/match-notes")
 def match_notes_from_client():
     match_notes: MatchNotesChunkJSon = request.json
-    app_data.superscouting_data.set_match_notes(match_notes)
+    app_data.superscouting_data.add_match_notes(match_notes)
     spreadsheet_manager.set_row_col_values(BackendWorksheet.MATCH_NOTES, app_data.superscouting_data.get_match_notes_csv)
     return {"message": "SUCCESS"}, 200
 

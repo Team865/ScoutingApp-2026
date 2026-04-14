@@ -167,11 +167,11 @@ button.accordion-toggle.blue-alliance:hover {
 div.accordion-body > div[contenteditable="plaintext-only"] {
     tab-size: 4;
     min-height: 50px;
-    width: 100%;
+    margin: 0.5rem;
     overflow: hidden;
     box-sizing: border-box;
     padding: 10px;
-    border: none;
+    border: 2px solid var(--bg-light);
 }
 
 div.match-toolbar {
@@ -188,6 +188,22 @@ div.match-toolbar > button {
 
 div.match-toolbar > button:hover {
     background-color: var(--bg-accented);
+}
+
+div.notes-display {
+    margin: 5px;
+    min-height: 0;
+    white-space: pre-wrap;
+}
+
+div.notes-display.has-text {
+    padding: 0.5rem;
+}
+
+div.team-match > div > button {
+    width: calc(100% - 1rem);
+    box-sizing: border-box;
+    margin: 0 0.5rem 0.5rem 0.5rem;
 }
 
 @media only screen and (max-width: 700px) {
