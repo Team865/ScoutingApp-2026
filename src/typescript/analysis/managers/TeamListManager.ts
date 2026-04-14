@@ -18,6 +18,8 @@ const toggleFilterButton = document.querySelector("button#toggle-filter") as HTM
 const sortOrderButton = document.querySelector("button#sort-order") as HTMLButtonElement;
 const sortBySelection = document.querySelector("select#sorted-by") as HTMLSelectElement;
 
+const matchSearchingRegex = /Q\d+/i;
+
 let searchBar: SearchBar;
 let teamPage: TeamPage;
 
@@ -147,12 +149,21 @@ function sortTeams() {
 function searchFilter(teams?: number[]) {
     teams = teams || Array.from(teamCards.keys());
 
-    const searchResults = searchBar.batchSearchTest(
-        teams
-            .map(teamNumber => teamCards.get(teamNumber).teamString)
-    );
+    if(matchSearchingRegex.test(searchBar.inputElement.value)) {
+        const matchNumberStr = searchBar.inputElement.value.slice(1);
 
-    return teams.filter((_, index) => searchResults[index]);
+        return teams.filter(teamNumber => 
+            AppData.superscouting.fetched_team_data.find(data => data.number == teamNumber)
+            .match_keys.find(key => key.includes(matchNumberStr)) !== undefined
+        );
+    } else {
+        const searchResults = searchBar.batchSearchTest(
+            teams
+                .map(teamNumber => teamCards.get(teamNumber).teamString)
+        );
+
+        return teams.filter((_, index) => searchResults[index]);
+    }
 }
 
 function customFilter(teams?: number[]) {
