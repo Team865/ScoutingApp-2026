@@ -264,7 +264,7 @@ class QuantitativeScoutingData:
     def generate_scouting_rotation_csv(self):
         csv: list[list[str]] = [["Matches", "Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3"]]\
 
-        shift_size = 3
+        shift_size = 4
 
         num_shifts = ceil(self.num_matches / shift_size)
 

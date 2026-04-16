@@ -23,6 +23,7 @@ class BackendWorksheet(StrEnum):
     MATCH_DATA = "Match Data"
     MATCH_NOTES = "Match Notes"
     PIT_SCOUTING = "Pit Scouting"
+    PER_MATCH_ROTATION = "Per Match Rotation"
 
 class GoogleSpreadsheet:
     sheets_id: str
@@ -34,6 +35,7 @@ class GoogleSpreadsheet:
         self.sheets_id = sheets_id
         self._authenticate()
         self._fetch_backend_worksheets()
+        self.generate_per_match_rotation()
 
     def set_row_col_values(self, worksheetEnum: BackendWorksheet, values: list[list]):
         worksheet = self.backend_worksheets[worksheetEnum]
@@ -61,6 +63,7 @@ class GoogleSpreadsheet:
                 # Poll scouting rotation
                 scouting_rotation_csv = self.backend_worksheets[BackendWorksheet.SCOUTING_ROTATION].get()
                 app_data.quantitative_scouting_data.set_scouting_rotation_from_csv(scouting_rotation_csv)
+                self.generate_per_match_rotation()
 
                 # Poll quantitative scouting data
                 match_data_csv = self.backend_worksheets[BackendWorksheet.MATCH_DATA].get()
@@ -187,6 +190,75 @@ class GoogleSpreadsheet:
     def set_scouting_rotation(self, csv: list[list[str]]):
         worksheet = self.backend_worksheets[BackendWorksheet.SCOUTING_ROTATION]
         self.set_row_col_values(BackendWorksheet.SCOUTING_ROTATION, csv)
+
+        requests = [
+            {
+                "setDataValidation": {
+                    "range": {
+                        "sheetId": worksheet.id,
+                        "startRowIndex": 1,
+                        "endRowIndex": len(csv),
+                        "startColumnIndex": 1,
+                        "endColumnIndex": 7,
+                    },
+                    "rule": {
+                        "showCustomUi": True,
+                        "strict": True,
+                        "condition": {"values": [{"userEnteredValue": f"='{BackendWorksheet.SCOUTER_NAMES.value}'!A1:A"}], "type": "ONE_OF_RANGE"},
+                    },
+                }
+            },
+            {
+                "updateDimensionProperties": {    
+                    "range": {
+                        "sheetId": worksheet.id,
+                        "dimension": Dimension.cols,
+                        "startIndex": 1,
+                        "endIndex": 7
+                    },
+                    "properties": {
+                        "pixelSize": 150
+                    },
+                    "fields": "pixelSize"
+                }
+            }
+        ]
+        self.spreadsheet.batch_update({"requests": requests})
+
+    def generate_per_match_rotation(self):
+        worksheet = self.backend_worksheets[BackendWorksheet.PER_MATCH_ROTATION]
+        shifts_csv = self.backend_worksheets[BackendWorksheet.SCOUTING_ROTATION].get()
+        csv: list[list[str]] = [shifts_csv[0]]
+
+        for shift_row in shifts_csv[1:]:
+            shift_range_cell = shift_row[0]
+            temp = shift_range_cell.split("-")
+            start_match = int(temp[0])
+            end_match = int(temp[1])
+
+            for match_number in range(start_match, end_match + 1):
+                csv.append([str(match_number)] + shift_row[1:])
+        
+        def did_rotation_change():
+            try:
+                preexisiting_csv = worksheet.get()
+
+                for row_index in range(len(csv)):
+                    new_row = csv[row_index]
+
+                    for column_index in range(len(new_row)):
+                        new_cell = new_row[column_index]
+
+                        if(new_cell != preexisiting_csv[row_index][column_index]):
+                            return True
+                        
+                return False
+            except:
+                return True
+
+        if(not did_rotation_change()): return
+
+        self.set_row_col_values(BackendWorksheet.PER_MATCH_ROTATION, csv)
 
         requests = [
             {
