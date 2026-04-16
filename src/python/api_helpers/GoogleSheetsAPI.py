@@ -175,7 +175,7 @@ class GoogleSpreadsheet:
                     "sheetId": worksheet.id,
                     "gridProperties": {
                         "frozenRowCount": 1,
-                        "frozenColumnCount": 2 if isMatchDataSheet else 1
+                        "frozenColumnCount": 3 if isMatchDataSheet else 1
                     }
                 },
                 "fields": "gridProperties.frozenRowCount,gridProperties.frozenColumnCount"
