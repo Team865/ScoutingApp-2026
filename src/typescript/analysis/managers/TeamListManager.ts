@@ -154,7 +154,7 @@ function searchFilter(teams?: number[]) {
 
         return teams.filter(teamNumber => 
             AppData.superscouting.fetched_team_data.find(data => data.number == teamNumber)
-            .match_keys.find(key => key.endsWith(matchNumberStr)) !== undefined
+            .match_keys.find(key => key.endsWith("qm" + matchNumberStr)) !== undefined
         );
     } else {
         const searchResults = searchBar.batchSearchTest(
