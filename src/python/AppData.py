@@ -284,7 +284,7 @@ class QuantitativeScoutingData:
         for match_number, match_info in raw_rotation.items():
             [team_number, alliance] = match_info
 
-            if(ListUtil.find(self.data, lambda data: data["match_number"] == match_number and data["team_number"] == team_number) is None):
+            if(ListUtil.find(self.data, lambda data: data["match_number"] == match_number and data["team_number"] == team_number and data["scouter_name"].lower() == scouter_name.lower()) is None):
                 filtered_rotation[match_number] = match_info
 
         return filtered_rotation
