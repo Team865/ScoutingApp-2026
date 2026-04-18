@@ -217,12 +217,13 @@ class QuantitativeScoutingData:
         min_cells = len(self._csv_columns)
 
         def parse_row(row: list[str]):
-            if(len(row) < min_cells): return
+            if(len(row) == 0): return
 
             match_data: ScoutingMatchData = {} # type: ignore
 
             for cell_index in range(min_cells):
-                cell = row[cell_index]
+                cell = row[cell_index] if cell_index < len(row) else ""
+
                 key_sequence = self._csv_columns[cell_index][1]
                 entry_type = self._csv_columns[cell_index][2]
                 num_keys = len(key_sequence)
@@ -278,6 +279,7 @@ class QuantitativeScoutingData:
     def get_rotation(self, scouter_name: str):
         raw_rotation = self.rotations[scouter_name]
         filtered_rotation: dict[int, tuple[int, QuantitativeScoutingData._Alliance]] = {}
+        # print([f"{match_data["match_number"]}, {match_data["team_number"]}" for match_data in self.data])
 
         for match_number, match_info in raw_rotation.items():
             [team_number, alliance] = match_info
