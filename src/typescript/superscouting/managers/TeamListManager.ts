@@ -23,7 +23,7 @@ function applySearch(){
         // Match number searching
         searchResults = Array.from(teamContainers.keys()).map(teamNumber => 
             AppData.fetched_team_data.find(data => data.number == teamNumber)
-            .match_keys.find(key => key.includes(matchNumberStr)) !== undefined
+            .match_keys.find(key => key.endsWith(matchNumberStr)) !== undefined
         )
     } else {
         // Team number/name searching
