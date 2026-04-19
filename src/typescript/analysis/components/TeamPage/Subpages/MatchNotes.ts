@@ -51,6 +51,7 @@ export default class MatchNotesSubpage implements SubpageInterface {
         } else {
             this.scoutingHeader.innerText = "SCOUTING COMMENTS";
             const scoutingNoteStrings = AppData.quantitative_data.get(teamNumber)
+            .filter(data => data.comments !== null)
             .map(data => `Q${data.match_number}:\n${data.comments}\n`);
         
             this.scoutingTextBody.innerText = scoutingNoteStrings.join("\n");

@@ -1,7 +1,10 @@
+import re
 import traceback
 from typing import Optional
 
 from gspread.utils import Dimension, ValidationConditionType
+
+from src.python.util import ListUtil
 
 from ..AppData import AppData
 
@@ -76,6 +79,22 @@ class GoogleSpreadsheet:
                 # Poll pit scouting notes
                 pit_scouting_csv = self.backend_worksheets[BackendWorksheet.PIT_SCOUTING].get()
                 app_data.superscouting_data.set_pit_scouting_from_csv(pit_scouting_csv)
+
+                # missed_matches = []
+                
+                # for fetched_team in app_data.superscouting_data.fetched_team_data:
+                #     for match_key in fetched_team["match_keys"]:
+                #         match_number = int(re.search(r"(?<=qm)[0-9]+", match_key).group())
+                #         team_number = fetched_team["number"]
+                #         match_data = ListUtil.find(app_data.quantitative_scouting_data.data, lambda v: (v["match_number"] == match_number) and (v["team_number"] == team_number))
+                #         if(match_data is None):
+                #             missed_matches.append([match_number, team_number])
+
+                # missed_matches.sort(key=lambda v: v[0])
+                # with open("temp.txt", "wt+") as file:
+                #     file.write("\n".join([f"{match[0]} {match[1]}" for match in missed_matches]))
+
+                #     print("test")
             except Exception as e:
                 print("Error polling sheets data:", traceback.format_exc())
 
